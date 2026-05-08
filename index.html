@@ -1123,7 +1123,37 @@ S.isPlayerTurn = true;
 <button class="wallet-btn" id="walletBtn" onclick="handleWalletClick()">🦊 CONNECT WALLET</button>
 
 <script type="module">
-import { connectWallet, disconnectWallet, depositToEscrow } from './wallet.js';
+async function connectWallet() {
+  try {
+    if (!window.solana || !window.solana.isPhantom) {
+      alert('Please install Phantom Wallet!\nhttps://phantom.app');
+      window.open('https://phantom.app', '_blank');
+      return null;
+    }
+    const resp = await window.solana.connect();
+    const wallet = resp.publicKey.toString();
+    const btn = document.getElementById('walletBtn');
+    btn.textContent = `✅ ${wallet.slice(0,4)}...${wallet.slice(-4)}`;
+    btn.style.borderColor = '#39ff14';
+    btn.style.color = '#39ff14';
+    window._connectedWallet = wallet;
+    return wallet;
+  } catch(err) {
+    console.error('Wallet error:', err);
+    return null;
+  }
+}
+
+window.handleWalletClick = async function() {
+  const btn = document.getElementById('walletBtn');
+  if (btn.textContent.includes('CONNECT')) {
+    await connectWallet();
+  } else {
+    if (window.solana) await window.solana.disconnect();
+    btn.textContent = '🦊 CONNECT WALLET';
+    window._connectedWallet = null;
+  }
+};
 
 window.handleWalletClick = async function() {
   const btn = document.getElementById('walletBtn');
