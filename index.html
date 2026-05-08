@@ -1096,5 +1096,44 @@ $('btnBackMenu').addEventListener('click', () => {
 S.isPlayerTurn = true;
 
 </script>
-</body>
+<!-- Wallet Integration -->
+<script src="https://esm.sh/@solana/web3.js@1.91.1" type="module"></script>
+
+<!-- Wallet Button u header -->
+<style>
+.wallet-btn {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 100;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(57,255,20,0.3);
+  border-radius: 3px;
+  color: rgba(57,255,20,0.5);
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wallet-btn:hover { border-color: var(--g); color: var(--g); }
+</style>
+
+<button class="wallet-btn" id="walletBtn" onclick="handleWalletClick()">🦊 CONNECT WALLET</button>
+
+<script type="module">
+import { connectWallet, disconnectWallet, depositToEscrow } from './wallet.js';
+
+window.handleWalletClick = async function() {
+  const btn = document.getElementById('walletBtn');
+  if (btn.textContent.includes('Connect')) {
+    await connectWallet();
+  } else {
+    await disconnectWallet();
+  }
+};
+
+window.depositToEscrow = depositToEscrow;
+</script> </body>
 </html>
