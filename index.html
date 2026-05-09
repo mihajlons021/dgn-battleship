@@ -111,7 +111,8 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 @keyframes blink{50%{opacity:0}}
 .deposit-box{background:rgba(3,6,8,0.9);border:1px solid rgba(57,255,20,0.3);border-radius:4px;padding:16px;margin:12px 0;text-align:center}
 .deposit-box p{font-size:12px;color:var(--dim);margin-bottom:8px}
-.deposit-addr{font-family:'Orbitron',monospace;font-size:10px;color:var(--g);word-break:break-all;margin-bottom:8px}
+.deposit-addr{font-family:'Orbitron',monospace;font-size:9px;color:var(--g);word-break:break-all;margin-bottom:10px;padding:8px;background:rgba(57,255,20,0.05);border-radius:3px}
+.deposit-status{font-size:12px;font-family:'Orbitron',monospace;letter-spacing:1px;margin-top:6px}
 #placementScreen{max-width:640px;margin:20px auto;padding:0 16px}
 .place-hdr{text-align:center;margin-bottom:14px}
 .ppill{display:inline-block;padding:6px 20px;border-radius:2px;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:3px;margin-bottom:6px;text-transform:uppercase}
@@ -213,7 +214,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
       <div class="mode-card pvp" id="btnMultiPlayer">
         <span class="mode-icon">⚔️</span>
         <div class="mode-name">1 vs 1 — Token Wager</div>
-        <div class="mode-desc">Challenge another player. Choose your wager: 100, 500 or 1000 FREEDOM. Winner takes the entire pot.</div>
+        <div class="mode-desc">Challenge another player. Both deposit FREEDOM tokens. Winner takes all automatically.</div>
         <span class="mode-badge badge-p">100 / 500 / 1000 FREEDOM</span>
       </div>
     </div>
@@ -237,7 +238,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
     <div class="panel">
       <div class="panel-title">🤖 Single Player vs AI</div>
       <input type="text" id="spNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="fee-notice">⚠ Entry fee: <strong>100 FREEDOM</strong> tokens<br>Connect wallet and send before battle starts</div>
+      <div class="fee-notice">⚠ Entry fee: <strong>100 FREEDOM</strong> tokens<br>Connect wallet — tokens sent automatically</div>
       <button class="btn btn-g" id="spStart">DEPLOY FLEET</button>
     </div>
   </div>
@@ -269,6 +270,22 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
   </div>
 </div>
 
+<div class="screen" id="depositScreen">
+  <div class="wrap">
+    <div class="panel" style="text-align:center">
+      <div class="panel-title" style="justify-content:center">💰 Deposit Required</div>
+      <div class="deposit-box">
+        <p>Send exactly <strong id="depositAmount" style="color:var(--g)">0 FREEDOM</strong> to escrow:</p>
+        <div class="deposit-addr">GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu</div>
+        <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">🦊 SEND VIA PHANTOM</button>
+        <div class="deposit-status" id="depositStatusMsg" style="color:var(--dim);margin-top:10px"></div>
+      </div>
+      <div class="pot-row" style="margin-top:12px"><span class="pr-lbl">🏆 Winner receives</span><span class="pr-val big" id="depositPot">0 FREEDOM</span></div>
+      <button class="btn btn-outline" id="depositAbort" style="max-width:180px;margin:12px auto 0">ABORT</button>
+    </div>
+  </div>
+</div>
+
 <div class="screen" id="waitingScreen">
   <div class="wrap">
     <div class="panel" style="text-align:center">
@@ -279,11 +296,6 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
       </div>
       <div class="pot-row"><span class="pr-lbl">Each deposits</span><span class="pr-val" id="dispWager">0 FREEDOM</span></div>
       <div class="pot-row"><span class="pr-lbl">🏆 Winner receives</span><span class="pr-val big" id="dispPot">0 FREEDOM</span></div>
-      <div class="deposit-box">
-        <p>Send FREEDOM tokens to escrow wallet:</p>
-        <div class="deposit-addr">GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu</div>
-        <p id="depositStatus" style="color:var(--g)">⏳ Waiting for your deposit...</p>
-      </div>
       <div class="status-wait"><span class="blink">●</span> &nbsp;Awaiting opponent...</div>
       <button class="btn btn-outline" id="btnAbort" style="max-width:180px;margin:0 auto">ABORT</button>
     </div>
@@ -334,7 +346,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
     <div class="res-prize"><span class="coin" id="resPrize">0</span> <span style="font-size:22px;color:var(--dim)">FREEDOM</span></div>
     <div class="res-sub" id="resSub"></div>
     <div class="res-stats" id="resStats"></div>
-    <div id="payoutStatus" style="margin-bottom:16px;font-size:13px;color:var(--g)"></div>
+    <div id="payoutStatus" style="margin-bottom:16px;font-size:13px;color:var(--g);font-family:monospace"></div>
     <button class="btn btn-g" id="btnPlayAgain" style="max-width:300px;margin:0 auto 12px">NEW BATTLE</button>
     <button class="btn btn-outline" id="btnBackMenu" style="max-width:300px;margin:0 auto">← MAIN MENU</button>
     <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
@@ -361,6 +373,9 @@ const TOTAL = 17;
 const COLS = "ABCDEFGHIJ".split("");
 const AI_DELAY = 900;
 const API_BASE = "https://dgn-battleship.vercel.app";
+const ESCROW = "GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu";
+const FREEDOM_MINT = "DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
+const HELIUS_RPC = "https://mainnet.helius-rpc.com/?api-key=a4536678-eec8-4f91-8895-3df0757785e8";
 
 let S = {
   mode:null, roomCode:null, playerId:null, nickname:null, wager:0,
@@ -368,7 +383,8 @@ let S = {
   myHits:[], enemyHits:[], aiGrid:null, aiHitStack:[],
   isPlayerTurn:true, turnCount:0, startTime:null,
   gameStats:{hits:0, misses:0},
-  walletAddress:null
+  walletAddress:null,
+  depositTxSig:null
 };
 
 const $ = id => document.getElementById(id);
@@ -384,8 +400,8 @@ function newGrid(){return Array(10).fill(null).map(()=>Array(10).fill(0))}
 // ===== WALLET =====
 $('walletBtn').addEventListener('click', async () => {
   try {
-    if (!window.solana || !window.solana.isPhantom) {
-      alert('Please install Phantom Wallet!\nhttps://phantom.app');
+    if (!window.solana?.isPhantom) {
+      alert('Install Phantom Wallet!\nhttps://phantom.app');
       window.open('https://phantom.app', '_blank');
       return;
     }
@@ -420,6 +436,68 @@ window.addEventListener('load', async () => {
     } catch(e) {}
   }
 });
+
+// ===== REAL DEPOSIT FUNCTION =====
+async function sendDepositToEscrow(wagerAmount) {
+  if (!S.walletAddress) {
+    toast('⚠ Connect wallet first!');
+    return false;
+  }
+  try {
+    $('depositStatusMsg').textContent = '⏳ Loading Solana libraries...';
+    $('depositStatusMsg').style.color = 'var(--g)';
+
+    const web3 = await import('https://esm.sh/@solana/web3.js@1.91.1');
+    const spl = await import('https://esm.sh/@solana/spl-token@0.4.6');
+
+    $('depositStatusMsg').textContent = '⏳ Connecting to Solana...';
+
+    const connection = new web3.Connection(HELIUS_RPC, 'confirmed');
+    const fromPubkey = new web3.PublicKey(S.walletAddress);
+    const toPubkey = new web3.PublicKey(ESCROW);
+    const mintPubkey = new web3.PublicKey(FREEDOM_MINT);
+
+    $('depositStatusMsg').textContent = '⏳ Getting token info...';
+    const mintInfo = await spl.getMint(connection, mintPubkey);
+    const amount = BigInt(Math.floor(wagerAmount * Math.pow(10, mintInfo.decimals)));
+
+    const fromATA = await spl.getAssociatedTokenAddress(mintPubkey, fromPubkey);
+    const toATA = await spl.getAssociatedTokenAddress(mintPubkey, toPubkey);
+
+    $('depositStatusMsg').textContent = '⏳ Building transaction...';
+    const tx = new web3.Transaction().add(
+      spl.createTransferCheckedInstruction(
+        fromATA, mintPubkey, toATA, fromPubkey, amount, mintInfo.decimals
+      )
+    );
+
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    tx.recentBlockhash = blockhash;
+    tx.feePayer = fromPubkey;
+
+    $('depositStatusMsg').textContent = '⏳ Please approve in Phantom...';
+
+    const signed = await window.solana.signTransaction(tx);
+    $('depositStatusMsg').textContent = '⏳ Sending transaction...';
+
+    const sig = await connection.sendRawTransaction(signed.serialize());
+    $('depositStatusMsg').textContent = '⏳ Confirming...';
+
+    await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed');
+
+    S.depositTxSig = sig;
+    $('depositStatusMsg').textContent = '✅ Deposit confirmed! TX: ' + sig.slice(0,8) + '...';
+    $('depositStatusMsg').style.color = '#39ff14';
+    toast('✅ ' + wagerAmount + ' FREEDOM deposited!');
+    return true;
+
+  } catch(e) {
+    $('depositStatusMsg').textContent = '❌ ' + e.message;
+    $('depositStatusMsg').style.color = '#ff3232';
+    toast('❌ Deposit failed: ' + e.message);
+    return false;
+  }
+}
 
 // ===== LEADERBOARD =====
 async function loadLeaderboards() {
@@ -489,53 +567,102 @@ document.querySelectorAll('.wopt').forEach(el=>{
   });
 });
 
-$('spStart').addEventListener('click',()=>{
+// ===== SINGLE PLAYER =====
+$('spStart').addEventListener('click', async()=>{
   const nick=$('spNick').value.trim();
   if (!nick) return toast('⚠ Enter your callsign!');
   S.mode='sp'; S.nickname=nick; S.wager=100;
-  startPlacement();
+  if (!S.walletAddress) return toast('⚠ Connect wallet first!');
+  // Show deposit screen for SP
+  showScreen('depositScreen');
+  $('depositAmount').textContent='100 FREEDOM';
+  $('depositPot').textContent='Entry fee — leaderboard points';
+  $('depositStatusMsg').textContent='';
+  $('depositBtn').onclick = async() => {
+    const ok = await sendDepositToEscrow(100);
+    if (ok) { await new Promise(r=>setTimeout(r,1500)); startPlacement(); }
+  };
+  $('depositAbort').onclick = ()=>showScreen('spSetupScreen');
 });
 
+// ===== MP CREATE =====
 $('mpCreateBtn').addEventListener('click', async()=>{
   const nick=$('mpCreateNick').value.trim();
   if (!nick) return toast('⚠ Enter your callsign!');
   if (!S.wager) return toast('⚠ Select a wager!');
-  const code=genCode();
-  showWait('DEPLOYING FLEET...');
-  try {
-    await set(ref(db,`rooms/${code}`),{
-      wager:S.wager,status:'waiting',currentTurn:'p1',winner:null,
-      p1:{nickname:nick,ready:false,grid:'',hits:'',wallet:S.walletAddress||''},p2:null
-    });
-    S.roomCode=code; S.playerId='p1'; S.nickname=nick; S.mode='mp';
-    hideWait();
-    showScreen('waitingScreen');
-    $('displayCode').textContent=code;
-    $('dispWager').textContent=`${S.wager.toLocaleString()} FREEDOM`;
-    $('dispPot').textContent=`${(S.wager*2).toLocaleString()} FREEDOM`;
-    listenOpponent();
-  } catch(e){hideWait();toast('❌ Error. Try again.');}
+  if (!S.walletAddress) return toast('⚠ Connect wallet first!');
+  S.nickname=nick; S.mode='mp';
+
+  // Show deposit screen first
+  showScreen('depositScreen');
+  $('depositAmount').textContent=S.wager+' FREEDOM';
+  $('depositPot').textContent=(S.wager*2)+' FREEDOM';
+  $('depositStatusMsg').textContent='';
+  $('depositBtn').onclick = async() => {
+    const ok = await sendDepositToEscrow(S.wager);
+    if (ok) {
+      await new Promise(r=>setTimeout(r,1500));
+      // Create room after deposit confirmed
+      const code=genCode();
+      showWait('CREATING BATTLE ROOM...');
+      try {
+        await set(ref(db,`rooms/${code}`),{
+          wager:S.wager,status:'waiting',currentTurn:'p1',winner:null,
+          p1:{nickname:nick,ready:false,grid:'',hits:'',wallet:S.walletAddress,depositTx:S.depositTxSig},p2:null
+        });
+        S.roomCode=code; S.playerId='p1';
+        hideWait();
+        showScreen('waitingScreen');
+        $('displayCode').textContent=code;
+        $('dispWager').textContent=`${S.wager.toLocaleString()} FREEDOM`;
+        $('dispPot').textContent=`${(S.wager*2).toLocaleString()} FREEDOM`;
+        listenOpponent();
+      } catch(e){hideWait();toast('❌ Error. Try again.');}
+    }
+  };
+  $('depositAbort').onclick = ()=>showScreen('mpSetupScreen');
 });
 
+// ===== MP JOIN =====
 $('mpJoinBtn').addEventListener('click', async()=>{
   const nick=$('mpJoinNick').value.trim();
   const code=$('mpJoinCode').value.trim().toUpperCase();
   if (!nick) return toast('⚠ Enter your callsign!');
   if (!code) return toast('⚠ Enter room code!');
-  showWait('JOINING BATTLE...');
+  if (!S.walletAddress) return toast('⚠ Connect wallet first!');
+
+  showWait('CHECKING ROOM...');
   try {
     const snap=await get(ref(db,`rooms/${code}`));
     if (!snap.exists()){hideWait();return toast('❌ Room not found!')}
     const d=snap.val();
     if (d.status!=='waiting'){hideWait();return toast('❌ Battle already started!')}
     if (d.p2){hideWait();return toast('❌ Room is full!')}
-    await update(ref(db,`rooms/${code}`),{
-      'p2/nickname':nick,'p2/ready':false,'p2/grid':'','p2/hits':'',
-      'p2/wallet':S.walletAddress||'',status:'placement'
-    });
-    S.roomCode=code; S.playerId='p2'; S.nickname=nick; S.wager=d.wager; S.mode='mp';
-    hideWait(); startPlacement();
-  } catch(e){hideWait();toast('❌ Error joining.');}
+    hideWait();
+    S.wager=d.wager; S.nickname=nick; S.mode='mp';
+
+    // Show deposit screen for P2
+    showScreen('depositScreen');
+    $('depositAmount').textContent=S.wager+' FREEDOM';
+    $('depositPot').textContent=(S.wager*2)+' FREEDOM';
+    $('depositStatusMsg').textContent='';
+    $('depositBtn').onclick = async() => {
+      const ok = await sendDepositToEscrow(S.wager);
+      if (ok) {
+        await new Promise(r=>setTimeout(r,1500));
+        showWait('JOINING BATTLE...');
+        try {
+          await update(ref(db,`rooms/${code}`),{
+            'p2/nickname':nick,'p2/ready':false,'p2/grid':'','p2/hits':'',
+            'p2/wallet':S.walletAddress,'p2/depositTx':S.depositTxSig,status:'placement'
+          });
+          S.roomCode=code; S.playerId='p2';
+          hideWait(); startPlacement();
+        } catch(e){hideWait();toast('❌ Error joining.');}
+      }
+    };
+    $('depositAbort').onclick = ()=>showScreen('mpSetupScreen');
+  } catch(e){hideWait();toast('❌ Error.');}
 });
 
 $('btnAbort').addEventListener('click', async()=>{
@@ -550,7 +677,7 @@ function listenOpponent(){
     if (d.p2&&d.status==='placement'){off(r);startPlacement();}
   });
 }
-  // ===== PLACEMENT =====
+// ===== PLACEMENT =====
 function startPlacement(){
   showScreen('placementScreen');
   S.myGrid=newGrid(); S.placedShips=[]; S.selShip=SHIPS[0]; S.orient='H';
@@ -653,7 +780,7 @@ $('readyBtn').addEventListener('click', async()=>{
     S.startTime=Date.now(); S.turnCount=0;
     S.gameStats={hits:0,misses:0}; S.isPlayerTurn=true;
     showScreen('battleScreen');
-    $('battlePotVal').textContent='VS AI — 100 FREEDOM ENTRY';
+    $('battlePotVal').textContent='VS AI — 100 FREEDOM';
     renderBoards(); updateTurnBox(true);
     addLog('⚡ Battle vs AI commenced!','l-info');
     return;
@@ -847,13 +974,13 @@ function listenBattle(){
       if (won){
         saveToLeaderboard('pvp_points',S.nickname,score);
         saveToLeaderboard('pvp_tokens',S.nickname,wager*2);
-        triggerPayout(S.roomCode,S.walletAddress);
+        triggerPayout(S.roomCode,S.walletAddress,wager);
       }
       showResultScreen(won,wager,score,false);
     }
   });
 }
-  async function triggerPayout(roomCode, winnerWallet){
+async function triggerPayout(roomCode, winnerWallet, wager){
   if (!winnerWallet){
     $('payoutStatus').textContent='⚠ Connect wallet to receive payout!';
     return;
@@ -867,7 +994,7 @@ function listenBattle(){
     });
     const data=await res.json();
     if (data.success){
-      $('payoutStatus').textContent=`✅ ${data.amount} FREEDOM sent! TX: ${data.signature?.slice(0,8)}...`;
+      $('payoutStatus').textContent=`✅ ${wager*2} FREEDOM sent! TX: ${data.signature?.slice(0,8)}...`;
     } else {
       $('payoutStatus').textContent=`⚠ ${data.error}`;
     }
