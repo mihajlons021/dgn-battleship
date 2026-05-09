@@ -238,7 +238,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
     <div class="panel">
       <div class="panel-title">🤖 Single Player vs AI</div>
       <input type="text" id="spNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="fee-notice">⚠ Entry fee: <strong>100 FREEDOM</strong> tokens<br>Connect wallet — tokens sent automatically</div>
+      <div class="fee-notice">⚠ Entry fee: <strong>100 FREEDOM</strong> tokens<br>Phantom will ask you to approve the transaction</div>
       <button class="btn btn-g" id="spStart">DEPLOY FLEET</button>
     </div>
   </div>
@@ -357,37 +357,36 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase, ref, set, get, update, onValue, remove, off, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const FB = {
-  apiKey: "AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",
-  authDomain: "project-freedom-a004e.firebaseapp.com",
-  databaseURL: "https://project-freedom-a004e-default-rtdb.firebaseio.com",
-  projectId: "project-freedom-a004e",
-  storageBucket: "project-freedom-a004e.firebasestorage.app",
-  messagingSenderId: "844172246267",
-  appId: "1:844172246267:web:023a064294d369d2f7845e"
+  apiKey:"AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",
+  authDomain:"project-freedom-a004e.firebaseapp.com",
+  databaseURL:"https://project-freedom-a004e-default-rtdb.firebaseio.com",
+  projectId:"project-freedom-a004e",
+  storageBucket:"project-freedom-a004e.firebasestorage.app",
+  messagingSenderId:"844172246267",
+  appId:"1:844172246267:web:023a064294d369d2f7845e"
 };
 const app = initializeApp(FB);
 const db = getDatabase(app);
 
-const SHIPS = [{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
-const TOTAL = 17;
-const COLS = "ABCDEFGHIJ".split("");
-const AI_DELAY = 900;
-const API_BASE = "https://dgn-battleship.vercel.app";
-const ESCROW = "GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu";
-const FREEDOM_MINT = "DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
-const HELIUS_RPC = "https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a0-733d9d41d1a4";
+const SHIPS=[{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
+const TOTAL=17;
+const COLS="ABCDEFGHIJ".split("");
+const AI_DELAY=900;
+const API_BASE="https://dgn-battleship.vercel.app";
+const ESCROW="GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu";
+const FREEDOM_MINT="DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
+const HELIUS_RPC="https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a0-733d9d41d1a4";
 
-let S = {
-  mode:null, roomCode:null, playerId:null, nickname:null, wager:0,
-  myGrid:null, orient:'H', selShip:null, placedShips:[],
-  myHits:[], enemyHits:[], aiGrid:null, aiHitStack:[],
-  isPlayerTurn:true, turnCount:0, startTime:null,
-  gameStats:{hits:0, misses:0},
-  walletAddress:null,
-  depositTxSig:null
+let S={
+  mode:null,roomCode:null,playerId:null,nickname:null,wager:0,
+  myGrid:null,orient:'H',selShip:null,placedShips:[],
+  myHits:[],enemyHits:[],aiGrid:null,aiHitStack:[],
+  isPlayerTurn:true,turnCount:0,startTime:null,
+  gameStats:{hits:0,misses:0},
+  walletAddress:null,depositTxSig:null
 };
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
 function showWait(t){$('waitTxt').textContent=t;$('waitingOverlay').classList.add('show')}
 function hideWait(){$('waitingOverlay').classList.remove('show')}
@@ -398,111 +397,86 @@ function parseGrid(f){return f.split(';').map(r=>r.split(',').map(Number))}
 function newGrid(){return Array(10).fill(null).map(()=>Array(10).fill(0))}
 
 // ===== WALLET =====
-$('walletBtn').addEventListener('click', async () => {
-  try {
-    if (!window.solana?.isPhantom) {
-      alert('Install Phantom Wallet!\nhttps://phantom.app');
-      window.open('https://phantom.app', '_blank');
-      return;
-    }
-    const btn = $('walletBtn');
-    if (!S.walletAddress) {
-      const resp = await window.solana.connect();
-      S.walletAddress = resp.publicKey.toString();
-      btn.textContent = '✅ ' + S.walletAddress.slice(0,4) + '...' + S.walletAddress.slice(-4);
-      btn.style.borderColor = '#39ff14';
-      btn.style.color = '#39ff14';
+$('walletBtn').addEventListener('click',async()=>{
+  try{
+    if(!window.solana?.isPhantom){alert('Install Phantom!\nhttps://phantom.app');window.open('https://phantom.app','_blank');return;}
+    const btn=$('walletBtn');
+    if(!S.walletAddress){
+      const resp=await window.solana.connect();
+      S.walletAddress=resp.publicKey.toString();
+      btn.textContent='✅ '+S.walletAddress.slice(0,4)+'...'+S.walletAddress.slice(-4);
+      btn.style.borderColor='#39ff14';btn.style.color='#39ff14';
       toast('✅ Wallet connected!');
-    } else {
+    }else{
       await window.solana.disconnect();
-      S.walletAddress = null;
-      btn.textContent = '🦊 CONNECT WALLET';
-      btn.style.borderColor = '';
-      btn.style.color = '';
+      S.walletAddress=null;
+      btn.textContent='🦊 CONNECT WALLET';
+      btn.style.borderColor='';btn.style.color='';
       toast('Wallet disconnected');
     }
-  } catch(e) { toast('❌ ' + e.message); }
+  }catch(e){toast('❌ '+e.message);}
 });
 
-window.addEventListener('load', async () => {
-  if (window.solana?.isPhantom) {
-    try {
-      const resp = await window.solana.connect({onlyIfTrusted:true});
-      S.walletAddress = resp.publicKey.toString();
-      const btn = $('walletBtn');
-      btn.textContent = '✅ ' + S.walletAddress.slice(0,4) + '...' + S.walletAddress.slice(-4);
-      btn.style.borderColor = '#39ff14';
-      btn.style.color = '#39ff14';
-    } catch(e) {}
+window.addEventListener('load',async()=>{
+  if(window.solana?.isPhantom){
+    try{
+      const resp=await window.solana.connect({onlyIfTrusted:true});
+      S.walletAddress=resp.publicKey.toString();
+      const btn=$('walletBtn');
+      btn.textContent='✅ '+S.walletAddress.slice(0,4)+'...'+S.walletAddress.slice(-4);
+      btn.style.borderColor='#39ff14';btn.style.color='#39ff14';
+    }catch(e){}
   }
 });
 
-// ===== REAL DEPOSIT FUNCTION =====
-async function sendDepositToEscrow(wagerAmount) {
-  if (!S.walletAddress) {
-    toast('⚠ Connect wallet first!');
-    return false;
-  }
-  try {
-    $('depositStatusMsg').textContent = '⏳ Loading Solana libraries...';
-    $('depositStatusMsg').style.color = 'var(--g)';
-
-    const web3 = await import('https://esm.sh/@solana/web3.js@1.91.1');
-    const spl = await import('https://esm.sh/@solana/spl-token@0.4.6');
-
-    $('depositStatusMsg').textContent = '⏳ Connecting to Solana...';
-
-    const connection = new web3.Connection(HELIUS_RPC, 'confirmed');
-    const fromPubkey = new web3.PublicKey(S.walletAddress);
-    const toPubkey = new web3.PublicKey(ESCROW);
-    const mintPubkey = new web3.PublicKey(FREEDOM_MINT);
-
-    $('depositStatusMsg').textContent = '⏳ Getting token info...';
-    const mintInfo = await spl.getMint(connection, mintPubkey);
-    const amount = BigInt(Math.floor(wagerAmount * Math.pow(10, mintInfo.decimals)));
-
-    const fromATA = await spl.getAssociatedTokenAddress(mintPubkey, fromPubkey);
-    const toATA = await spl.getAssociatedTokenAddress(mintPubkey, toPubkey);
-
-    $('depositStatusMsg').textContent = '⏳ Building transaction...';
-    const tx = new web3.Transaction().add(
-      spl.createTransferCheckedInstruction(
-        fromATA, mintPubkey, toATA, fromPubkey, amount, mintInfo.decimals
-      )
+// ===== REAL DEPOSIT =====
+async function sendDepositToEscrow(wagerAmount){
+  if(!S.walletAddress){toast('⚠ Connect wallet first!');return false;}
+  try{
+    $('depositStatusMsg').textContent='⏳ Loading Solana...';
+    $('depositStatusMsg').style.color='var(--g)';
+    const web3=await import('https://esm.sh/@solana/web3.js@1.91.1');
+    const spl=await import('https://esm.sh/@solana/spl-token@0.4.6');
+    $('depositStatusMsg').textContent='⏳ Connecting to Solana...';
+    const connection=new web3.Connection(HELIUS_RPC,'confirmed');
+    const fromPubkey=new web3.PublicKey(S.walletAddress);
+    const toPubkey=new web3.PublicKey(ESCROW);
+    const mintPubkey=new web3.PublicKey(FREEDOM_MINT);
+    $('depositStatusMsg').textContent='⏳ Getting token info...';
+    const mintInfo=await spl.getMint(connection,mintPubkey);
+    const amount=BigInt(Math.floor(wagerAmount*Math.pow(10,mintInfo.decimals)));
+    const fromATA=await spl.getAssociatedTokenAddress(mintPubkey,fromPubkey);
+    const toATA=await spl.getAssociatedTokenAddress(mintPubkey,toPubkey);
+    $('depositStatusMsg').textContent='⏳ Building transaction...';
+    const tx=new web3.Transaction().add(
+      spl.createTransferCheckedInstruction(fromATA,mintPubkey,toATA,fromPubkey,amount,mintInfo.decimals)
     );
-
-    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-    tx.recentBlockhash = blockhash;
-    tx.feePayer = fromPubkey;
-
-    $('depositStatusMsg').textContent = '⏳ Please approve in Phantom...';
-
-    const signed = await window.solana.signTransaction(tx);
-    $('depositStatusMsg').textContent = '⏳ Sending transaction...';
-
-    const sig = await connection.sendRawTransaction(signed.serialize());
-    $('depositStatusMsg').textContent = '⏳ Confirming...';
-
-    await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed');
-
-    S.depositTxSig = sig;
-    $('depositStatusMsg').textContent = '✅ Deposit confirmed! TX: ' + sig.slice(0,8) + '...';
-    $('depositStatusMsg').style.color = '#39ff14';
-    toast('✅ ' + wagerAmount + ' FREEDOM deposited!');
+    tx.feePayer=fromPubkey;
+    $('depositStatusMsg').textContent='⏳ Please approve in Phantom...';
+    const signed=await window.solana.signTransaction(tx);
+    const {blockhash,lastValidBlockHeight}=await connection.getLatestBlockhash('confirmed');
+    signed.recentBlockhash=blockhash;
+    $('depositStatusMsg').textContent='⏳ Sending transaction...';
+    const sig=await connection.sendRawTransaction(signed.serialize());
+    $('depositStatusMsg').textContent='⏳ Confirming...';
+    await connection.confirmTransaction({signature:sig,blockhash,lastValidBlockHeight},'confirmed');
+    S.depositTxSig=sig;
+    $('depositStatusMsg').textContent='✅ Deposit confirmed! TX: '+sig.slice(0,8)+'...';
+    $('depositStatusMsg').style.color='#39ff14';
+    toast('✅ '+wagerAmount+' FREEDOM deposited!');
     return true;
-
-  } catch(e) {
-    $('depositStatusMsg').textContent = '❌ ' + e.message;
-    $('depositStatusMsg').style.color = '#ff3232';
-    toast('❌ Deposit failed: ' + e.message);
+  }catch(e){
+    $('depositStatusMsg').textContent='❌ '+e.message;
+    $('depositStatusMsg').style.color='#ff3232';
+    toast('❌ Deposit failed: '+e.message);
     return false;
   }
 }
 
 // ===== LEADERBOARD =====
-async function loadLeaderboards() {
-  try {
-    const [s1,s2,s3] = await Promise.all([
+async function loadLeaderboards(){
+  try{
+    const [s1,s2,s3]=await Promise.all([
       get(ref(db,'leaderboard/sp_points')),
       get(ref(db,'leaderboard/pvp_points')),
       get(ref(db,'leaderboard/pvp_tokens'))
@@ -510,37 +484,37 @@ async function loadLeaderboards() {
     renderLB('lb1',s1,'pts','score-g');
     renderLB('lb2',s2,'pts','score-p');
     renderLB('lb3',s3,'FREEDOM','score-gold');
-  } catch(e){}
+  }catch(e){}
 }
 
-function renderLB(id,snap,unit,sc) {
-  const el=$(id); if (!snap.exists()) return;
+function renderLB(id,snap,unit,sc){
+  const el=$(id);if(!snap.exists())return;
   const entries=Object.values(snap.val()).sort((a,b)=>b.score-a.score).slice(0,10);
-  if (!entries.length) return;
+  if(!entries.length)return;
   el.innerHTML='';
   entries.forEach((e,i)=>{
-    const row=document.createElement('div'); row.className='lb-row';
+    const row=document.createElement('div');row.className='lb-row';
     const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
     row.innerHTML=`<div class="lb-rank ${rc}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div><div class="lb-name">${e.name}</div><div class="lb-score ${sc}">${e.score.toLocaleString()} ${unit}</div>`;
     el.appendChild(row);
   });
 }
 
-async function saveToLeaderboard(key,name,score) {
-  try {
+async function saveToLeaderboard(key,name,score){
+  try{
     const snap=await get(ref(db,`leaderboard/${key}`));
     let existing=null;
-    if (snap.exists()) {
-      for (const [k,v] of Object.entries(snap.val())) {
-        if (v.name===name){existing={k,v};break}
+    if(snap.exists()){
+      for(const [k,v] of Object.entries(snap.val())){
+        if(v.name===name){existing={k,v};break}
       }
     }
-    if (existing) {
-      if (score>existing.v.score) await update(ref(db,`leaderboard/${key}/${existing.k}`),{score,updatedAt:Date.now()});
-    } else {
+    if(existing){
+      if(score>existing.v.score)await update(ref(db,`leaderboard/${key}/${existing.k}`),{score,updatedAt:Date.now()});
+    }else{
       await push(ref(db,`leaderboard/${key}`),{name,score,updatedAt:Date.now()});
     }
-  } catch(e){}
+  }catch(e){}
 }
 
 document.querySelectorAll('.lb-tab').forEach(tab=>{
@@ -568,162 +542,155 @@ document.querySelectorAll('.wopt').forEach(el=>{
 });
 
 // ===== SINGLE PLAYER =====
-$('spStart').addEventListener('click', async()=>{
+$('spStart').addEventListener('click',async()=>{
   const nick=$('spNick').value.trim();
-  if (!nick) return toast('⚠ Enter your callsign!');
-  S.mode='sp'; S.nickname=nick; S.wager=100;
-  if (!S.walletAddress) return toast('⚠ Connect wallet first!');
-  // Show deposit screen for SP
+  if(!nick)return toast('⚠ Enter your callsign!');
+  if(!S.walletAddress)return toast('⚠ Connect wallet first!');
+  S.mode='sp';S.nickname=nick;S.wager=100;
   showScreen('depositScreen');
   $('depositAmount').textContent='100 FREEDOM';
   $('depositPot').textContent='Entry fee — leaderboard points';
   $('depositStatusMsg').textContent='';
-  $('depositBtn').onclick = async() => {
-    const ok = await sendDepositToEscrow(100);
-    if (ok) { await new Promise(r=>setTimeout(r,1500)); startPlacement(); }
+  $('depositBtn').onclick=async()=>{
+    const ok=await sendDepositToEscrow(100);
+    if(ok){await new Promise(r=>setTimeout(r,1500));startPlacement();}
   };
-  $('depositAbort').onclick = ()=>showScreen('spSetupScreen');
+  $('depositAbort').onclick=()=>showScreen('spSetupScreen');
 });
 
 // ===== MP CREATE =====
-$('mpCreateBtn').addEventListener('click', async()=>{
+$('mpCreateBtn').addEventListener('click',async()=>{
   const nick=$('mpCreateNick').value.trim();
-  if (!nick) return toast('⚠ Enter your callsign!');
-  if (!S.wager) return toast('⚠ Select a wager!');
-  if (!S.walletAddress) return toast('⚠ Connect wallet first!');
-  S.nickname=nick; S.mode='mp';
-
-  // Show deposit screen first
+  if(!nick)return toast('⚠ Enter your callsign!');
+  if(!S.wager)return toast('⚠ Select a wager!');
+  if(!S.walletAddress)return toast('⚠ Connect wallet first!');
+  S.nickname=nick;S.mode='mp';
   showScreen('depositScreen');
   $('depositAmount').textContent=S.wager+' FREEDOM';
   $('depositPot').textContent=(S.wager*2)+' FREEDOM';
   $('depositStatusMsg').textContent='';
-  $('depositBtn').onclick = async() => {
-    const ok = await sendDepositToEscrow(S.wager);
-    if (ok) {
+  $('depositBtn').onclick=async()=>{
+    const ok=await sendDepositToEscrow(S.wager);
+    if(ok){
       await new Promise(r=>setTimeout(r,1500));
-      // Create room after deposit confirmed
       const code=genCode();
       showWait('CREATING BATTLE ROOM...');
-      try {
+      try{
         await set(ref(db,`rooms/${code}`),{
           wager:S.wager,status:'waiting',currentTurn:'p1',winner:null,
           p1:{nickname:nick,ready:false,grid:'',hits:'',wallet:S.walletAddress,depositTx:S.depositTxSig},p2:null
         });
-        S.roomCode=code; S.playerId='p1';
+        S.roomCode=code;S.playerId='p1';
         hideWait();
         showScreen('waitingScreen');
         $('displayCode').textContent=code;
         $('dispWager').textContent=`${S.wager.toLocaleString()} FREEDOM`;
         $('dispPot').textContent=`${(S.wager*2).toLocaleString()} FREEDOM`;
         listenOpponent();
-      } catch(e){hideWait();toast('❌ Error. Try again.');}
+      }catch(e){hideWait();toast('❌ Error. Try again.');}
     }
   };
-  $('depositAbort').onclick = ()=>showScreen('mpSetupScreen');
+  $('depositAbort').onclick=()=>showScreen('mpSetupScreen');
 });
 
 // ===== MP JOIN =====
-$('mpJoinBtn').addEventListener('click', async()=>{
+$('mpJoinBtn').addEventListener('click',async()=>{
   const nick=$('mpJoinNick').value.trim();
   const code=$('mpJoinCode').value.trim().toUpperCase();
-  if (!nick) return toast('⚠ Enter your callsign!');
-  if (!code) return toast('⚠ Enter room code!');
-  if (!S.walletAddress) return toast('⚠ Connect wallet first!');
-
+  if(!nick)return toast('⚠ Enter your callsign!');
+  if(!code)return toast('⚠ Enter room code!');
+  if(!S.walletAddress)return toast('⚠ Connect wallet first!');
   showWait('CHECKING ROOM...');
-  try {
+  try{
     const snap=await get(ref(db,`rooms/${code}`));
-    if (!snap.exists()){hideWait();return toast('❌ Room not found!')}
+    if(!snap.exists()){hideWait();return toast('❌ Room not found!')}
     const d=snap.val();
-    if (d.status!=='waiting'){hideWait();return toast('❌ Battle already started!')}
-    if (d.p2){hideWait();return toast('❌ Room is full!')}
+    if(d.status!=='waiting'){hideWait();return toast('❌ Battle already started!')}
+    if(d.p2){hideWait();return toast('❌ Room is full!')}
     hideWait();
-    S.wager=d.wager; S.nickname=nick; S.mode='mp';
-
-    // Show deposit screen for P2
+    S.wager=d.wager;S.nickname=nick;S.mode='mp';
     showScreen('depositScreen');
     $('depositAmount').textContent=S.wager+' FREEDOM';
     $('depositPot').textContent=(S.wager*2)+' FREEDOM';
     $('depositStatusMsg').textContent='';
-    $('depositBtn').onclick = async() => {
-      const ok = await sendDepositToEscrow(S.wager);
-      if (ok) {
+    $('depositBtn').onclick=async()=>{
+      const ok=await sendDepositToEscrow(S.wager);
+      if(ok){
         await new Promise(r=>setTimeout(r,1500));
         showWait('JOINING BATTLE...');
-        try {
+        try{
           await update(ref(db,`rooms/${code}`),{
             'p2/nickname':nick,'p2/ready':false,'p2/grid':'','p2/hits':'',
             'p2/wallet':S.walletAddress,'p2/depositTx':S.depositTxSig,status:'placement'
           });
-          S.roomCode=code; S.playerId='p2';
-          hideWait(); startPlacement();
-        } catch(e){hideWait();toast('❌ Error joining.');}
+          S.roomCode=code;S.playerId='p2';
+          hideWait();startPlacement();
+        }catch(e){hideWait();toast('❌ Error joining.');}
       }
     };
-    $('depositAbort').onclick = ()=>showScreen('mpSetupScreen');
-  } catch(e){hideWait();toast('❌ Error.');}
+    $('depositAbort').onclick=()=>showScreen('mpSetupScreen');
+  }catch(e){hideWait();toast('❌ Error.');}
 });
 
-$('btnAbort').addEventListener('click', async()=>{
-  if (S.roomCode) await remove(ref(db,`rooms/${S.roomCode}`));
+$('btnAbort').addEventListener('click',async()=>{
+  if(S.roomCode)await remove(ref(db,`rooms/${S.roomCode}`));
   location.reload();
 });
 
 function listenOpponent(){
   const r=ref(db,`rooms/${S.roomCode}`);
   onValue(r,snap=>{
-    const d=snap.val(); if (!d) return;
-    if (d.p2&&d.status==='placement'){off(r);startPlacement();}
+    const d=snap.val();if(!d)return;
+    if(d.p2&&d.status==='placement'){off(r);startPlacement();}
   });
 }
 // ===== PLACEMENT =====
 function startPlacement(){
   showScreen('placementScreen');
-  S.myGrid=newGrid(); S.placedShips=[]; S.selShip=SHIPS[0]; S.orient='H';
+  S.myGrid=newGrid();S.placedShips=[];S.selShip=SHIPS[0];S.orient='H';
   const pill=$('placePill');
-  if (S.mode==='sp'){pill.textContent='🤖 VS AI — PLACE YOUR FLEET';pill.className='ppill ppill-g';}
+  if(S.mode==='sp'){pill.textContent='🤖 VS AI — PLACE YOUR FLEET';pill.className='ppill ppill-g';}
   else{pill.textContent=S.playerId==='p1'?'🔵 PLAYER 1 — YOUR FLEET':'🔴 PLAYER 2 — YOUR FLEET';pill.className='ppill '+(S.playerId==='p1'?'ppill-g':'ppill-p');}
-  renderTray(); renderPlaceGrid();
+  renderTray();renderPlaceGrid();
 }
 
 function renderTray(){
-  const el=$('shipTray'); el.innerHTML='';
+  const el=$('shipTray');el.innerHTML='';
   SHIPS.forEach(ship=>{
     const d=document.createElement('div');
     const placed=S.placedShips.find(s=>s.name===ship.name);
     const sel=S.selShip&&S.selShip.name===ship.name;
     d.className='schip '+(placed?'sc-done':sel?'sc-sel':'sc-pend');
     d.textContent=`${ship.name} (${ship.size})`;
-    if (!placed) d.onclick=()=>{S.selShip=ship;renderTray()};
+    if(!placed)d.onclick=()=>{S.selShip=ship;renderTray()};
     el.appendChild(d);
   });
 }
 
 function renderPlaceGrid(hr=-1,hc=-1){
-  const cont=$('placeGrid'); cont.innerHTML='';
-  const top=document.createElement('div'); top.className='gcr';
+  const cont=$('placeGrid');cont.innerHTML='';
+  const top=document.createElement('div');top.className='gcr';
   COLS.forEach(c=>{const l=document.createElement('div');l.className='gcl';l.textContent=c;top.appendChild(l)});
   cont.appendChild(top);
   const ship=S.selShip;
   let prev=[],valid=false;
-  if (ship&&hr>=0){
-    valid=true; prev=[];
-    for (let i=0;i<ship.size;i++){
+  if(ship&&hr>=0){
+    valid=true;prev=[];
+    for(let i=0;i<ship.size;i++){
       const r=S.orient==='H'?hr:hr+i,c=S.orient==='H'?hc+i:hc;
-      if (r>=10||c>=10||S.myGrid[r][c]!==0) valid=false;
+      if(r>=10||c>=10||S.myGrid[r][c]!==0)valid=false;
       prev.push(`${r}-${c}`);
     }
   }
-  for (let r=0;r<10;r++){
-    const row=document.createElement('div'); row.className='grow';
-    const rl=document.createElement('div'); rl.className='grl'; rl.textContent=r+1; row.appendChild(rl);
-    for (let c=0;c<10;c++){
-      const cell=document.createElement('div'); cell.className='cell';
-      if (S.myGrid[r][c]) cell.classList.add('ship');
+  for(let r=0;r<10;r++){
+    const row=document.createElement('div');row.className='grow';
+    const rl=document.createElement('div');rl.className='grl';rl.textContent=r+1;row.appendChild(rl);
+    for(let c=0;c<10;c++){
+      const cell=document.createElement('div');cell.className='cell';
+      if(S.myGrid[r][c])cell.classList.add('ship');
       const k=`${r}-${c}`;
-      if (prev.includes(k)) cell.classList.add(valid?'prev':'prev-bad');
-      cell.addEventListener('mouseenter',()=>{if (ship&&!S.placedShips.find(s=>s.name===ship?.name)) renderPlaceGrid(r,c)});
+      if(prev.includes(k))cell.classList.add(valid?'prev':'prev-bad');
+      cell.addEventListener('mouseenter',()=>{if(ship&&!S.placedShips.find(s=>s.name===ship?.name))renderPlaceGrid(r,c)});
       cell.addEventListener('mouseleave',()=>renderPlaceGrid());
       cell.addEventListener('click',()=>placeShip(r,c));
       row.appendChild(cell);
@@ -733,55 +700,55 @@ function renderPlaceGrid(hr=-1,hc=-1){
 }
 
 function placeShip(r,c){
-  const ship=S.selShip; if (!ship||S.placedShips.find(s=>s.name===ship.name)) return;
-  const cells=[]; let ok=true;
-  for (let i=0;i<ship.size;i++){
+  const ship=S.selShip;if(!ship||S.placedShips.find(s=>s.name===ship.name))return;
+  const cells=[];let ok=true;
+  for(let i=0;i<ship.size;i++){
     const row=S.orient==='H'?r:r+i,col=S.orient==='H'?c+i:c;
-    if (row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break}
+    if(row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break}
     cells.push([row,col]);
   }
-  if (!ok) return;
+  if(!ok)return;
   cells.forEach(([row,col])=>{S.myGrid[row][col]=1});
   S.placedShips.push(ship);
   const rem=SHIPS.filter(s=>!S.placedShips.find(p=>p.name===s.name));
   S.selShip=rem[0]||null;
-  if (S.placedShips.length===SHIPS.length) $('readyBtn').disabled=false;
-  renderTray(); renderPlaceGrid();
+  if(S.placedShips.length===SHIPS.length)$('readyBtn').disabled=false;
+  renderTray();renderPlaceGrid();
 }
 
 $('btnH').addEventListener('click',()=>{S.orient='H';$('btnH').classList.add('active');$('btnV').classList.remove('active')});
 $('btnV').addEventListener('click',()=>{S.orient='V';$('btnV').classList.add('active');$('btnH').classList.remove('active')});
 $('btnRandom').addEventListener('click',()=>{
-  S.myGrid=newGrid(); S.placedShips=[];
-  for (const ship of SHIPS){
+  S.myGrid=newGrid();S.placedShips=[];
+  for(const ship of SHIPS){
     let placed=false,att=0;
-    while (!placed&&att<1000){
+    while(!placed&&att<1000){
       att++;
       const h=Math.random()<0.5;
       const r=Math.floor(Math.random()*(h?10:11-ship.size));
       const c=Math.floor(Math.random()*(h?11-ship.size:10));
-      const cells=[]; let ok=true;
-      for (let i=0;i<ship.size;i++){
+      const cells=[];let ok=true;
+      for(let i=0;i<ship.size;i++){
         const row=h?r:r+i,col=h?c+i:c;
-        if (row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break}
+        if(row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break}
         cells.push([row,col]);
       }
-      if (ok){cells.forEach(([row,col])=>{S.myGrid[row][col]=1});S.placedShips.push(ship);placed=true}
+      if(ok){cells.forEach(([row,col])=>{S.myGrid[row][col]=1});S.placedShips.push(ship);placed=true}
     }
   }
-  S.selShip=null; $('readyBtn').disabled=false;
-  renderTray(); renderPlaceGrid();
+  S.selShip=null;$('readyBtn').disabled=false;
+  renderTray();renderPlaceGrid();
 });
 
-$('readyBtn').addEventListener('click', async()=>{
-  if (S.mode==='sp'){
+$('readyBtn').addEventListener('click',async()=>{
+  if(S.mode==='sp'){
     S.aiGrid=placeShipsRandom();
-    S.myHits=[]; S.enemyHits=[]; S.aiHitStack=[];
-    S.startTime=Date.now(); S.turnCount=0;
-    S.gameStats={hits:0,misses:0}; S.isPlayerTurn=true;
+    S.myHits=[];S.enemyHits=[];S.aiHitStack=[];
+    S.startTime=Date.now();S.turnCount=0;
+    S.gameStats={hits:0,misses:0};S.isPlayerTurn=true;
     showScreen('battleScreen');
     $('battlePotVal').textContent='VS AI — 100 FREEDOM';
-    renderBoards(); updateTurnBox(true);
+    renderBoards();updateTurnBox(true);
     addLog('⚡ Battle vs AI commenced!','l-info');
     return;
   }
@@ -789,86 +756,86 @@ $('readyBtn').addEventListener('click', async()=>{
   await update(ref(db,`rooms/${S.roomCode}/${S.playerId}`),{ready:true,grid:flatGrid(S.myGrid),hits:''});
   const r=ref(db,`rooms/${S.roomCode}`);
   onValue(r,snap=>{
-    const d=snap.val(); if (!d) return;
-    if (d.p1?.ready&&d.p2?.ready&&d.status==='placement') update(ref(db,`rooms/${S.roomCode}`),{status:'battle'});
-    if (d.status==='battle'){off(r);hideWait();startMPBattle(d);}
+    const d=snap.val();if(!d)return;
+    if(d.p1?.ready&&d.p2?.ready&&d.status==='placement')update(ref(db,`rooms/${S.roomCode}`),{status:'battle'});
+    if(d.status==='battle'){off(r);hideWait();startMPBattle(d);}
   });
 });
 
 function placeShipsRandom(){
   const g=newGrid();
-  for (const ship of SHIPS){
+  for(const ship of SHIPS){
     let placed=false,att=0;
-    while (!placed&&att<1000){
+    while(!placed&&att<1000){
       att++;
       const h=Math.random()<0.5;
       const r=Math.floor(Math.random()*(h?10:11-ship.size));
       const c=Math.floor(Math.random()*(h?11-ship.size:10));
-      const cells=[]; let ok=true;
-      for (let i=0;i<ship.size;i++){
+      const cells=[];let ok=true;
+      for(let i=0;i<ship.size;i++){
         const row=h?r:r+i,col=h?c+i:c;
-        if (row>=10||col>=10||g[row][col]!==0){ok=false;break}
+        if(row>=10||col>=10||g[row][col]!==0){ok=false;break}
         cells.push([row,col]);
       }
-      if (ok){cells.forEach(([row,col])=>{g[row][col]=1});placed=true}
+      if(ok){cells.forEach(([row,col])=>{g[row][col]=1});placed=true}
     }
   }
   return g;
 }
 
 function aiChooseTarget(){
-  if (S.aiHitStack.length>0){
+  if(S.aiHitStack.length>0){
     const last=S.aiHitStack[S.aiHitStack.length-1];
     const dirs=[[0,1],[0,-1],[1,0],[-1,0]].sort(()=>Math.random()-0.5);
-    for (const [dr,dc] of dirs){
+    for(const [dr,dc] of dirs){
       const nr=last.r+dr,nc=last.c+dc,k=`${nr}-${nc}`;
-      if (nr>=0&&nr<10&&nc>=0&&nc<10&&!S.enemyHits.find(h=>h.key===k)) return {r:nr,c:nc};
+      if(nr>=0&&nr<10&&nc>=0&&nc<10&&!S.enemyHits.find(h=>h.key===k))return{r:nr,c:nc};
     }
   }
   const untried=[];
-  for (let r=0;r<10;r++) for (let c=0;c<10;c++){
-    if (!S.enemyHits.find(h=>h.key===`${r}-${c}`)) untried.push({r,c});
+  for(let r=0;r<10;r++)for(let c=0;c<10;c++){
+    if(!S.enemyHits.find(h=>h.key===`${r}-${c}`))untried.push({r,c});
   }
   return untried[Math.floor(Math.random()*untried.length)];
 }
 
 function handleSPPlayerFire(r,c){
   const k=`${r}-${c}`;
-  if (S.myHits.find(h=>h.key===k)||!S.isPlayerTurn) return;
+  if(S.myHits.find(h=>h.key===k)||!S.isPlayerTurn)return;
   S.isPlayerTurn=false;
   const isHit=S.aiGrid[r][c]===1;
-  S.myHits.push({key:k,hit:isHit,r,c}); S.turnCount++;
-  if (isHit){S.gameStats.hits++;addLog(`💥 You hit ${COLS[c]}${r+1}!`,'l-hit');}
+  S.myHits.push({key:k,hit:isHit,r,c});S.turnCount++;
+  if(isHit){S.gameStats.hits++;addLog(`💥 You hit ${COLS[c]}${r+1}!`,'l-hit');}
   else{S.gameStats.misses++;addLog(`💧 Missed ${COLS[c]}${r+1}`,'l-miss');}
-  renderBoards(); updateProgress();
-  if (S.myHits.filter(h=>h.hit).length>=TOTAL){endSPGame(true);return;}
-  if (isHit){S.isPlayerTurn=true;updateTurnBox(true);}
+  renderBoards();updateProgress();
+  if(S.myHits.filter(h=>h.hit).length>=TOTAL){endSPGame(true);return;}
+  if(isHit){S.isPlayerTurn=true;updateTurnBox(true);}
   else{updateTurnBox(false);setTimeout(doAITurn,AI_DELAY);}
 }
 
 function doAITurn(){
-  const target=aiChooseTarget(); if (!target) return;
+  const target=aiChooseTarget();if(!target)return;
   const k=`${target.r}-${target.c}`;
   const isHit=S.myGrid[target.r][target.c]===1;
   S.enemyHits.push({key:k,hit:isHit,r:target.r,c:target.c});
-  if (isHit){S.aiHitStack.push(target);addLog(`🔴 AI hit ${COLS[target.c]}${target.r+1}!`,'l-sunk');}
+  if(isHit){S.aiHitStack.push(target);addLog(`🔴 AI hit ${COLS[target.c]}${target.r+1}!`,'l-sunk');}
   else{addLog(`AI missed ${COLS[target.c]}${target.r+1}`,'l-miss');}
-  renderBoards(); updateProgress();
-  if (S.enemyHits.filter(h=>h.hit).length>=TOTAL){endSPGame(false);return;}
-  if (isHit){setTimeout(doAITurn,AI_DELAY);}
+  renderBoards();updateProgress();
+  if(S.enemyHits.filter(h=>h.hit).length>=TOTAL){endSPGame(false);return;}
+  if(isHit){setTimeout(doAITurn,AI_DELAY);}
   else{
     S.aiHitStack=S.aiHitStack.filter(h=>{
-      return [[0,1],[0,-1],[1,0],[-1,0]].some(([dr,dc])=>{
+      return[[0,1],[0,-1],[1,0],[-1,0]].some(([dr,dc])=>{
         const nr=h.r+dr,nc=h.c+dc,k=`${nr}-${nc}`;
         return nr>=0&&nr<10&&nc>=0&&nc<10&&!S.enemyHits.find(eh=>eh.key===k);
       });
     });
-    S.isPlayerTurn=true; updateTurnBox(true);
+    S.isPlayerTurn=true;updateTurnBox(true);
   }
 }
 
 function calcScore(won){
-  if (!won) return 0;
+  if(!won)return 0;
   const timeBonus=Math.max(0,300-Math.floor((Date.now()-S.startTime)/1000));
   const acc=S.gameStats.hits/Math.max(1,S.gameStats.hits+S.gameStats.misses);
   return S.myHits.filter(h=>h.hit).length*50+Math.floor(acc*200)+timeBonus;
@@ -877,15 +844,15 @@ function calcScore(won){
 async function endSPGame(won){
   S.isPlayerTurn=false;
   const score=calcScore(won);
-  if (won&&S.nickname) await saveToLeaderboard('sp_points',S.nickname,score);
+  if(won&&S.nickname)await saveToLeaderboard('sp_points',S.nickname,score);
   showResultScreen(won,0,score,true);
 }
 
 function startMPBattle(data){
   showScreen('battleScreen');
-  S.myHits=[]; S.enemyHits=[];
+  S.myHits=[];S.enemyHits=[];
   $('battlePotVal').textContent=`${(S.wager*2).toLocaleString()} FREEDOM`;
-  renderBoards(); listenBattle();
+  renderBoards();listenBattle();
 }
 
 function renderBoards(){
@@ -896,20 +863,20 @@ function renderBoards(){
 
 function buildGrid(container,clickable,showShips,hits){
   container.innerHTML='';
-  const top=document.createElement('div'); top.className='gcr';
+  const top=document.createElement('div');top.className='gcr';
   COLS.forEach(c=>{const l=document.createElement('div');l.className='gcl';l.textContent=c;top.appendChild(l)});
   container.appendChild(top);
-  for (let r=0;r<10;r++){
-    const row=document.createElement('div'); row.className='grow';
-    const rl=document.createElement('div'); rl.className='grl'; rl.textContent=r+1; row.appendChild(rl);
-    for (let c=0;c<10;c++){
-      const cell=document.createElement('div'); cell.className='cell';
+  for(let r=0;r<10;r++){
+    const row=document.createElement('div');row.className='grow';
+    const rl=document.createElement('div');rl.className='grl';rl.textContent=r+1;row.appendChild(rl);
+    for(let c=0;c<10;c++){
+      const cell=document.createElement('div');cell.className='cell';
       const k=`${r}-${c}`;
       const h=hits.find(x=>x.key===k);
-      if (h) cell.classList.add(h.hit?'hit':'miss');
-      else if (showShips&&S.myGrid&&S.myGrid[r][c]) cell.classList.add('ship');
-      if (clickable) cell.addEventListener('click',()=>{
-        if (S.mode==='sp') handleSPPlayerFire(r,c);
+      if(h)cell.classList.add(h.hit?'hit':'miss');
+      else if(showShips&&S.myGrid&&S.myGrid[r][c])cell.classList.add('ship');
+      if(clickable)cell.addEventListener('click',()=>{
+        if(S.mode==='sp')handleSPPlayerFire(r,c);
         else fireAt(r,c);
       });
       row.appendChild(cell);
@@ -934,10 +901,10 @@ function updateTurnBox(mine){
 
 async function fireAt(r,c){
   const k=`${r}-${c}`;
-  if (S.myHits.find(h=>h.key===k)) return;
+  if(S.myHits.find(h=>h.key===k))return;
   const snap=await get(ref(db,`rooms/${S.roomCode}`));const d=snap.val();
-  if (!d||d.currentTurn!==S.playerId){toast('⏳ Wait for your turn!');return}
-  if (d.status!=='battle') return;
+  if(!d||d.currentTurn!==S.playerId){toast('⏳ Wait for your turn!');return}
+  if(d.status!=='battle')return;
   const eid=S.playerId==='p1'?'p2':'p1';
   const egrid=parseGrid(d[eid].grid);
   const isHit=egrid[r][c]===1;
@@ -946,32 +913,32 @@ async function fireAt(r,c){
   const upd={};
   upd[`rooms/${S.roomCode}/${S.playerId}/hits`]=JSON.stringify(existing);
   const hitCount=existing.filter(h=>h.hit).length;
-  if (hitCount>=TOTAL){upd[`rooms/${S.roomCode}/winner`]=S.playerId;upd[`rooms/${S.roomCode}/status`]='finished';}
-  else if (!isHit){upd[`rooms/${S.roomCode}/currentTurn`]=eid;}
+  if(hitCount>=TOTAL){upd[`rooms/${S.roomCode}/winner`]=S.playerId;upd[`rooms/${S.roomCode}/status`]='finished';}
+  else if(!isHit){upd[`rooms/${S.roomCode}/currentTurn`]=eid;}
   await update(ref(db),upd);
 }
 
 function listenBattle(){
   const r=ref(db,`rooms/${S.roomCode}`);
   onValue(r,snap=>{
-    const d=snap.val(); if (!d) return;
+    const d=snap.val();if(!d)return;
     const eid=S.playerId==='p1'?'p2':'p1';
     const newMH=d[S.playerId]?.hits?JSON.parse(d[S.playerId].hits):[];
     const newEH=d[eid]?.hits?JSON.parse(d[eid].hits):[];
-    if (newMH.length>S.myHits.length){const last=newMH[newMH.length-1];addLog(last.hit?`💥 You hit ${COLS[last.c]}${last.r+1}!`:`💧 Missed ${COLS[last.c]}${last.r+1}`,last.hit?'l-hit':'l-miss');}
-    if (newEH.length>S.enemyHits.length){const last=newEH[newEH.length-1];addLog(last.hit?`🔴 Enemy hit ${COLS[last.c]}${last.r+1}!`:`Enemy missed ${COLS[last.c]}${last.r+1}`,last.hit?'l-sunk':'l-miss');}
-    S.myHits=newMH; S.enemyHits=newEH;
+    if(newMH.length>S.myHits.length){const last=newMH[newMH.length-1];addLog(last.hit?`💥 You hit ${COLS[last.c]}${last.r+1}!`:`💧 Missed ${COLS[last.c]}${last.r+1}`,last.hit?'l-hit':'l-miss');}
+    if(newEH.length>S.enemyHits.length){const last=newEH[newEH.length-1];addLog(last.hit?`🔴 Enemy hit ${COLS[last.c]}${last.r+1}!`:`Enemy missed ${COLS[last.c]}${last.r+1}`,last.hit?'l-sunk':'l-miss');}
+    S.myHits=newMH;S.enemyHits=newEH;
     renderBoards();
     const mine=d.currentTurn===S.playerId;
     const tb=$('turnBox');
     tb.textContent=mine?'⚡ YOUR TURN — FIRE!':'⏳ ENEMY TURN — STANDBY...';
     tb.className='turn-box '+(mine?'t-mine':'t-enemy');
-    if (d.status==='finished'&&d.winner){
+    if(d.status==='finished'&&d.winner){
       off(r);
       const won=d.winner===S.playerId;
       const wager=parseFloat(d.wager)||0;
       const score=newMH.filter(h=>h.hit).length*50;
-      if (won){
+      if(won){
         saveToLeaderboard('pvp_points',S.nickname,score);
         saveToLeaderboard('pvp_tokens',S.nickname,wager*2);
         triggerPayout(S.roomCode,S.walletAddress,wager);
@@ -980,12 +947,9 @@ function listenBattle(){
     }
   });
 }
-async function triggerPayout(roomCode, winnerWallet, wager){
-  if (!winnerWallet){
-    $('payoutStatus').textContent='⚠ Connect wallet to receive payout!';
-    return;
-  }
-  try {
+async function triggerPayout(roomCode,winnerWallet,wager){
+  if(!winnerWallet){$('payoutStatus').textContent='⚠ Connect wallet to receive payout!';return;}
+  try{
     $('payoutStatus').textContent='⏳ Processing payout...';
     const res=await fetch(`${API_BASE}/api/payout`,{
       method:'POST',
@@ -993,19 +957,19 @@ async function triggerPayout(roomCode, winnerWallet, wager){
       body:JSON.stringify({roomCode,winnerWallet})
     });
     const data=await res.json();
-    if (data.success){
+    if(data.success){
       $('payoutStatus').textContent=`✅ ${wager*2} FREEDOM sent! TX: ${data.signature?.slice(0,8)}...`;
-    } else {
+    }else{
       $('payoutStatus').textContent=`⚠ ${data.error}`;
     }
-  } catch(e){
+  }catch(e){
     $('payoutStatus').textContent='⚠ Payout error — contact admin';
   }
 }
 
 function addLog(msg,cls='l-info'){
   const box=$('logBox');
-  const div=document.createElement('div'); div.className=cls; div.textContent=msg;
+  const div=document.createElement('div');div.className=cls;div.textContent=msg;
   box.prepend(div);
 }
 
@@ -1031,7 +995,7 @@ function showResultScreen(won,wager,score,isSP){
       :`<div class="rs-row"><span class="rs-key">Prize</span><span class="rs-val">${prize.toLocaleString()} FREEDOM</span></div>`
     }
   `;
-  if (!isSP&&!won) $('payoutStatus').textContent='';
+  if(!isSP&&!won)$('payoutStatus').textContent='';
 }
 
 $('btnPlayAgain').addEventListener('click',()=>location.reload());
