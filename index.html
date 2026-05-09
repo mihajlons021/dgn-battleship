@@ -437,6 +437,47 @@ async function sendDepositToEscrow(wagerAmount){
     $('depositStatusMsg').style.color='var(--g)';
     const web3=await import('https://esm.sh/@solana/web3.js@1.91.1');
     const spl=await import('https://esm.sh/@solana/spl-token@0.4.6');
+    $('depositStatusMsg').textContent='⏳ Connecting...';
+    const connection=new web3.Connection(HELIUS_RPC,'confirmed');
+    const fromPubkey=new web3.PublicKey(S.walletAddress);
+    const toPubkey=new web3.PublicKey(ESCROW);
+    const mintPubkey=new web3.PublicKey(FREEDOM_MINT);
+    $('depositStatusMsg').textContent='⏳ Getting token info...';
+    const mintInfo=await spl.getMint(connection,mintPubkey);
+    const amount=BigInt(Math.floor(wagerAmount*Math.pow(10,mintInfo.decimals)));
+    const fromATA=await spl.getAssociatedTokenAddress(mintPubkey,fromPubkey);
+    const toATA=await spl.getAssociatedTokenAddress(mintPubkey,toPubkey);
+    $('depositStatusMsg').textContent='⏳ Building transaction...';
+    const {blockhash,lastValidBlockHeight}=await connection.getLatestBlockhash('confirmed');
+    const tx=new web3.Transaction();
+    tx.recentBlockhash=blockhash;
+    tx.lastValidBlockHeight=lastValidBlockHeight;
+    tx.feePayer=fromPubkey;
+    tx.add(spl.createTransferCheckedInstruction(fromATA,mintPubkey,toATA,fromPubkey,amount,mintInfo.decimals));
+    $('depositStatusMsg').textContent='⏳ Please approve in Phantom...';
+    const signed=await window.solana.signTransaction(tx);
+    $('depositStatusMsg').textContent='⏳ Sending...';
+    const sig=await connection.sendRawTransaction(signed.serialize());
+    $('depositStatusMsg').textContent='⏳ Confirming...';
+    await connection.confirmTransaction({signature:sig,blockhash,lastValidBlockHeight},'confirmed');
+    S.depositTxSig=sig;
+    $('depositStatusMsg').textContent='✅ Deposit confirmed! TX: '+sig.slice(0,8)+'...';
+    $('depositStatusMsg').style.color='#39ff14';
+    toast('✅ '+wagerAmount+' FREEDOM deposited!');
+    return true;
+  }catch(e){
+    $('depositStatusMsg').textContent='❌ '+e.message;
+    $('depositStatusMsg').style.color='#ff3232';
+    toast('❌ Deposit failed: '+e.message);
+    return false;
+  }
+}
+  if(!S.walletAddress){toast('⚠ Connect wallet first!');return false;}
+  try{
+    $('depositStatusMsg').textContent='⏳ Loading Solana...';
+    $('depositStatusMsg').style.color='var(--g)';
+    const web3=await import('https://esm.sh/@solana/web3.js@1.91.1');
+    const spl=await import('https://esm.sh/@solana/spl-token@0.4.6');
     $('depositStatusMsg').textContent='⏳ Connecting to Solana...';
     const connection=new web3.Connection(HELIUS_RPC,'confirmed');
     const fromPubkey=new web3.PublicKey(S.walletAddress);
