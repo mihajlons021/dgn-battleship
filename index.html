@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -189,161 +190,204 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 </head>
 <body>
 <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
-<header>
-  <div class="h-eyebrow">⚓ Naval Warfare · Token Stakes · Strait of Hormuz</div>
-  <div class="h-title">PROJECT FREEDOM</div>
-  <div class="h-sub">Battleship · Winner Takes All · No Registration Required</div>
-  <div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div>
-</header>
-<button class="wallet-btn" id="walletBtn">🦊 CONNECT WALLET</button>
-<div class="waiting-overlay" id="waitingOverlay"><div class="spinner"></div><div class="wait-txt" id="waitTxt">LOADING...</div></div>
-<div class="toast" id="toast"></div>
-<div class="screen active" id="menuScreen">
-  <div style="max-width:900px;margin:0 auto;padding:28px 20px">
-    <div class="menu-title">⚡ SELECT GAME MODE</div>
-    <div class="mode-grid">
-      <div class="mode-card" id="btnSinglePlayer">
-        <span class="mode-icon">🤖</span>
-        <div class="mode-name">Single Player</div>
-        <div class="mode-desc">Battle against the AI. Entry fee 100 FREEDOM. Earn points for every hit, sunk ship, and speed of victory.</div>
-        <span class="mode-badge badge-g">100 FREEDOM ENTRY</span>
-      </div>
-      <div class="mode-card pvp" id="btnMultiPlayer">
-        <span class="mode-icon">⚔️</span>
-        <div class="mode-name">1 vs 1 — Token Wager</div>
-        <div class="mode-desc">Challenge another player. Both deposit FREEDOM tokens. Winner takes all automatically.</div>
-        <span class="mode-badge badge-p">100 / 500 / 1000 FREEDOM</span>
-      </div>
-    </div>
-    <div class="lb-section">
-      <div class="lb-tabs">
-        <button class="lb-tab active" data-tab="lb1">🏆 Most Points<br><small style="font-size:8px">VS CPU</small></button>
-        <button class="lb-tab tab-p" data-tab="lb2">⚔ Most Points<br><small style="font-size:8px">PVP</small></button>
-        <button class="lb-tab tab-gold" data-tab="lb3">💰 Most Earned<br><small style="font-size:8px">FREEDOM</small></button>
-      </div>
-      <div class="lb-content active" id="lb1"><div class="lb-empty">⚡ No battles yet!</div></div>
-      <div class="lb-content" id="lb2"><div class="lb-empty">⚡ No battles yet!</div></div>
-      <div class="lb-content" id="lb3"><div class="lb-empty">⚡ No battles yet!</div></div>
-    </div>
-    <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
-  </div>
-</div>
-<div class="screen" id="spSetupScreen">
-  <div class="wrap"><button class="btn-back" id="spBack">← Back</button>
-    <div class="panel"><div class="panel-title">🤖 Single Player vs AI</div>
-      <input type="text" id="spNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="fee-notice">⚠ Entry fee: <strong>100 FREEDOM</strong> — Approve in Phantom</div>
-      <button class="btn btn-g" id="spStart">DEPLOY FLEET</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="mpSetupScreen">
-  <div class="wrap"><button class="btn-back" id="mpBack">← Back</button>
-    <div class="panel"><div class="panel-title">⚔ Create Battle</div>
-      <input type="text" id="mpCreateNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="wager-row"><div class="wager-lbl">Select Wager</div>
-        <div class="wager-opts">
-          <div class="wopt" data-val="100">100<small>FREEDOM</small></div>
-          <div class="wopt" data-val="500">500<small>FREEDOM</small></div>
-          <div class="wopt" data-val="1000">1000<small>FREEDOM</small></div>
-        </div>
-      </div>
-      <button class="btn btn-g" id="mpCreateBtn">DEPLOY FLEET</button>
-    </div>
-    <div class="divider">OR</div>
-    <div class="panel pvp-panel"><div class="panel-title pvp-title">🎯 Join Battle</div>
-      <input type="text" id="mpJoinNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <input type="text" id="mpJoinCode" placeholder="ROOM CODE (e.g. DGN-4821)" maxlength="10" style="text-transform:uppercase">
-      <button class="btn btn-p" id="mpJoinBtn">ENTER BATTLE</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="depositScreen">
-  <div class="wrap">
-    <div class="panel" style="text-align:center">
-      <div class="panel-title" style="justify-content:center">💰 Deposit Required</div>
-      <div class="deposit-box">
-        <p>Send exactly <strong id="depositAmount" style="color:var(--g)">0 FREEDOM</strong> to escrow:</p>
-        <div class="deposit-addr">GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu</div>
-        <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">🦊 SEND VIA PHANTOM</button>
-        <div class="deposit-status" id="depositStatusMsg" style="color:var(--dim);margin-top:10px"></div>
-      </div>
-      <div class="pot-row" style="margin-top:12px"><span class="pr-lbl">🏆 Winner receives</span><span class="pr-val big" id="depositPot">0 FREEDOM</span></div>
-      <button class="btn btn-outline" id="depositAbort" style="max-width:180px;margin:12px auto 0">ABORT</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="waitingScreen">
-  <div class="wrap">
-    <div class="panel" style="text-align:center">
-      <div class="panel-title" style="justify-content:center">📡 Battle Room Created</div>
-      <div class="room-code-box">
-        <div class="rc-lbl">SHARE THIS CODE WITH YOUR ENEMY</div>
-        <div class="rc-val" id="displayCode">----</div>
-      </div>
-      <div class="pot-row"><span class="pr-lbl">Each deposits</span><span class="pr-val" id="dispWager">0 FREEDOM</span></div>
-      <div class="pot-row"><span class="pr-lbl">🏆 Winner receives</span><span class="pr-val big" id="dispPot">0 FREEDOM</span></div>
-      <div class="status-wait"><span class="blink">●</span> &nbsp;Awaiting opponent...</div>
-      <button class="btn btn-outline" id="btnAbort" style="max-width:180px;margin:0 auto">ABORT</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="placementScreen">
-  <div style="max-width:640px;margin:20px auto;padding:0 16px">
-    <div class="place-hdr">
-      <div class="ppill ppill-g" id="placePill">PLAYER 1</div>
-      <div style="font-size:13px;color:var(--dim);margin:4px 0 10px">Position your fleet — enemy cannot see this</div>
-      <div class="o-row">
-        <button class="obtn active" id="btnH">↔ HORIZONTAL</button>
-        <button class="obtn" id="btnV">↕ VERTICAL</button>
-        <button class="obtn" id="btnRandom">🎲 RANDOM</button>
-      </div>
-    </div>
-    <div class="ship-tray" id="shipTray"></div>
-    <div class="grid-wrap"><div class="gc" id="placeGrid"></div></div>
-    <div style="text-align:center;margin-top:12px">
-      <button class="btn btn-g" id="readyBtn" disabled style="max-width:320px">⚡ BATTLE STATIONS READY</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="battleScreen">
-  <div style="padding:14px">
-    <div class="b-top"><div class="turn-box t-mine" id="turnBox">YOUR TURN</div></div>
-    <div class="pot-c"><div class="pc-lbl">PRIZE POOL</div><div class="pc-val" id="battlePotVal">0 FREEDOM</div></div>
-    <div class="prog-w">
-      <div class="pc"><div class="plbl"><span style="color:#ff6060">YOUR HITS</span><span id="myHC">0/17</span></div><div class="pbar"><div class="pfill pf-a" id="myHBar" style="width:0%"></div></div></div>
-      <div class="pc"><div class="plbl"><span style="color:rgba(155,48,255,0.8)">ENEMY HITS</span><span id="enHC">0/17</span></div><div class="pbar"><div class="pfill pf-d" id="enHBar" style="width:0%"></div></div></div>
-    </div>
-    <div class="boards-wrap">
-      <div class="bcol"><div class="blbl bl-atk">⚔ ENEMY WATERS</div><div class="grid-wrap"><div class="gc" id="atkGrid"></div></div></div>
-      <div class="bcol"><div class="blbl bl-def">🛡 YOUR FLEET</div><div class="grid-wrap"><div class="gc" id="defGrid"></div></div></div>
-    </div>
-    <div class="log-box" id="logBox"><div class="l-info">⚡ Battle commenced. Fire at will!</div></div>
-    <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
-  </div>
-</div>
-<div class="screen" id="resultScreen">
-  <div style="max-width:520px;margin:48px auto;padding:0 20px;text-align:center">
-    <span class="res-icon" id="resIcon">🏆</span>
-    <div class="res-title" id="resTitle">VICTORY!</div>
-    <div style="font-size:12px;color:var(--dim);margin-bottom:6px;letter-spacing:2px">WINNER TAKES ALL</div>
-    <div class="res-prize"><span class="coin" id="resPrize">0</span> <span style="font-size:22px;color:var(--dim)">FREEDOM</span></div>
-    <div class="res-sub" id="resSub"></div>
-    <div class="res-stats" id="resStats"></div>
-    <div id="payoutStatus" style="margin-bottom:16px;font-size:13px;color:var(--g);font-family:monospace"></div>
-    <button class="btn btn-g" id="btnPlayAgain" style="max-width:300px;margin:0 auto 12px">NEW BATTLE</button>
-    <button class="btn btn-outline" id="btnBackMenu" style="max-width:300px;margin:0 auto">← MAIN MENU</button>
-    <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJECT FREEDOM — BATTLESHIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#39ff14;--g2:#20cc00;--p:#9b30ff;--dark:#060b12;--darker:#030608;--panel:rgba(8,14,24,0.9);--border-g:rgba(57,255,20,0.2);--border-p:rgba(155,48,255,0.25);--text:#b8ccb0;--dim:rgba(184,204,176,0.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--darker);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(57,255,20,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,0.025) 1px,transparent 1px);background-size:44px 44px;animation:gridscroll 25s linear infinite;pointer-events:none;z-index:0}
+@keyframes gridscroll{0%{background-position:0 0}100%{background-position:44px 44px}}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+.o1{width:500px;height:500px;background:var(--g);top:-150px;left:-150px;opacity:0.07;animation:oa 9s ease-in-out infinite}
+.o2{width:400px;height:400px;background:var(--p);bottom:-100px;right:-100px;opacity:0.08;animation:ob 11s ease-in-out infinite}
+.o3{width:250px;height:250px;background:var(--g);top:40%;right:5%;opacity:0.05;animation:oc 7s ease-in-out infinite}
+@keyframes oa{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,25px)}}
+@keyframes ob{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
+@keyframes oc{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-25px)}}
+header{position:relative;z-index:10;text-align:center;padding:24px 16px 18px;border-bottom:1px solid rgba(57,255,20,0.1);background:rgba(3,6,8,0.7);backdrop-filter:blur(20px)}
+.h-eyebrow{font-size:10px;letter-spacing:5px;color:rgba(57,255,20,0.5);text-transform:uppercase;margin-bottom:6px}
+.h-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(26px,6.5vw,52px);letter-spacing:5px;line-height:1;background:linear-gradient(180deg,#fff 0%,#39ff14 55%,#20cc00 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 24px rgba(57,255,20,0.55));animation:hglow 3s ease-in-out infinite}
+@keyframes hglow{0%,100%{filter:drop-shadow(0 0 24px rgba(57,255,20,0.55))}50%{filter:drop-shadow(0 0 40px rgba(57,255,20,0.85))}}
+.h-sub{font-size:11px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin:6px 0 14px}
+.h-brand{display:inline-flex;align-items:center;gap:10px;padding:7px 18px;border:1px solid rgba(155,48,255,0.35);border-radius:3px;background:rgba(155,48,255,0.06)}
+.h-brand span{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
+.dg{color:var(--p);text-shadow:0 0 12px rgba(155,48,255,0.9)}
+.sf{color:var(--g);text-shadow:0 0 12px rgba(57,255,20,0.9)}
+.fn{color:var(--p);text-shadow:0 0 12px rgba(155,48,255,0.9)}
+.h-label{font-size:10px;letter-spacing:2px;color:rgba(184,204,176,0.35)}
+.wallet-btn{position:fixed;top:14px;right:16px;z-index:200;padding:8px 14px;background:transparent;border:1px solid rgba(57,255,20,0.3);border-radius:3px;color:rgba(57,255,20,0.5);font-family:'Orbitron',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all 0.2s}
+.wallet-btn:hover{border-color:var(--g);color:var(--g)}
+.screen{display:none;position:relative;z-index:10}
+.screen.active{display:block}
+#menuScreen{max-width:900px;margin:0 auto;padding:32px 20px}
+.menu-title{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:4px;color:var(--g);text-align:center;margin-bottom:28px;text-transform:uppercase}
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:28px}
+.mode-card{background:var(--panel);border:1px solid var(--border-g);border-radius:6px;padding:28px 22px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;display:block}
+.mode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity 0.25s}
+.mode-card:hover{border-color:var(--g);transform:translateY(-4px);box-shadow:0 8px 30px rgba(57,255,20,0.15)}
+.mode-card:hover::before{opacity:1}
+.mode-card.pvp{border-color:var(--border-p)}
+.mode-card.pvp::before{background:linear-gradient(90deg,transparent,var(--p),transparent)}
+.mode-card.pvp:hover{border-color:var(--p);box-shadow:0 8px 30px rgba(155,48,255,0.15)}
+.mode-icon{font-size:40px;margin-bottom:14px;display:block}
+.mode-name{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:2px;color:white;margin-bottom:6px;text-transform:uppercase}
+.mode-card.pvp .mode-name{color:var(--p)}
+.mode-desc{font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:12px}
+.mode-badge{display:inline-block;padding:4px 10px;border-radius:2px;font-size:10px;letter-spacing:2px;font-weight:700;text-transform:uppercase}
+.badge-g{background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);color:var(--g)}
+.badge-p{background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.3);color:var(--p)}
+.lb-section{background:var(--panel);border:1px solid var(--border-g);border-radius:6px;overflow:hidden}
+.lb-tabs{display:flex;border-bottom:1px solid rgba(57,255,20,0.1)}
+.lb-tab{flex:1;padding:12px 8px;text-align:center;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);cursor:pointer;transition:all 0.2s;text-transform:uppercase;border:none;background:transparent}
+.lb-tab.active{color:var(--g);background:rgba(57,255,20,0.06);border-bottom:2px solid var(--g)}
+.lb-tab.tab-p.active{color:var(--p);background:rgba(155,48,255,0.06);border-bottom-color:var(--p)}
+.lb-tab.tab-gold.active{color:#ffc800;background:rgba(255,200,0,0.06);border-bottom-color:#ffc800}
+.lb-content{display:none;padding:0}
+.lb-content.active{display:block}
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid rgba(57,255,20,0.05)}
+.lb-rank{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;width:28px;text-align:center}
+.lb-name{flex:1;font-size:14px;font-weight:600}
+.lb-score{font-family:'Orbitron',monospace;font-size:12px;font-weight:700}
+.rank-1{color:#ffd700}.rank-2{color:#c0c0c0}.rank-3{color:#cd7f32}
+.score-g{color:var(--g)}.score-p{color:var(--p)}.score-gold{color:#ffc800}
+.lb-empty{padding:28px;text-align:center;color:var(--dim);font-size:13px}
+.wrap{max-width:520px;margin:32px auto;padding:0 20px}
+.panel{background:var(--panel);border:1px solid var(--border-g);border-radius:5px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0.5}
+.panel.pvp-panel{border-color:var(--border-p)}
+.panel.pvp-panel::before{background:linear-gradient(90deg,transparent,var(--p),transparent)}
+.panel-title{font-family:'Orbitron',monospace;font-size:11px;color:var(--g);letter-spacing:3px;margin-bottom:20px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.panel-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border-g),transparent)}
+.panel-title.pvp-title{color:var(--p)}
+.panel-title.pvp-title::after{background:linear-gradient(90deg,var(--border-p),transparent)}
+input[type=text]{width:100%;background:rgba(3,6,8,0.9);border:1px solid rgba(57,255,20,0.18);border-radius:3px;color:var(--g);font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;padding:12px 14px;outline:none;transition:all 0.2s;margin-bottom:12px;letter-spacing:1px}
+input::placeholder{color:rgba(57,255,20,0.2)}
+input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
+.wager-row{margin-bottom:18px}
+.wager-lbl{font-size:11px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.wager-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.wopt{padding:14px 6px;background:rgba(3,6,8,0.8);border:1px solid rgba(57,255,20,0.15);border-radius:3px;color:rgba(57,255,20,0.55);font-family:'Orbitron',monospace;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.2}
+.wopt small{display:block;font-size:9px;color:rgba(57,255,20,0.35);letter-spacing:1px;margin-top:3px;font-family:'Rajdhani',sans-serif}
+.wopt:hover{border-color:var(--g);color:var(--g);transform:translateY(-2px)}
+.wopt.sel{border-color:var(--g);color:#000;background:var(--g);box-shadow:0 0 25px rgba(57,255,20,0.5)}
+.wopt.sel small{color:rgba(0,0,0,0.55)}
+.fee-notice{background:rgba(57,255,20,0.05);border:1px solid rgba(57,255,20,0.15);border-radius:3px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:rgba(57,255,20,0.7);text-align:center}
+.btn{width:100%;padding:15px;border:none;border-radius:3px;font-family:'Orbitron',monospace;font-weight:700;font-size:11px;letter-spacing:3px;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.btn-g{background:linear-gradient(135deg,#39ff14,#20cc00);color:#000;box-shadow:0 0 20px rgba(57,255,20,0.35)}
+.btn-g:hover{box-shadow:0 0 35px rgba(57,255,20,0.65);transform:translateY(-2px)}
+.btn-p{background:transparent;color:var(--p);border:1px solid var(--p);margin-top:10px}
+.btn-p:hover{background:rgba(155,48,255,0.1)}
+.btn-outline{background:transparent;color:rgba(57,255,20,0.5);border:1px solid rgba(57,255,20,0.2);margin-top:8px}
+.btn:disabled{opacity:0.3;cursor:not-allowed;transform:none !important}
+.btn-back{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:transparent;border:1px solid rgba(57,255,20,0.15);border-radius:3px;color:var(--dim);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:20px;transition:all 0.15s}
+.btn-back:hover{border-color:var(--g);color:var(--g)}
+.divider{text-align:center;color:rgba(57,255,20,0.15);font-size:10px;margin:6px 0;letter-spacing:3px;display:flex;align-items:center;gap:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(57,255,20,0.08)}
+.room-code-box{background:rgba(3,6,8,0.95);border:1px solid var(--g);border-radius:4px;padding:20px;text-align:center;margin:14px 0;box-shadow:0 0 30px rgba(57,255,20,0.12)}
+.rc-lbl{font-size:9px;letter-spacing:3px;color:var(--dim);margin-bottom:8px;text-transform:uppercase}
+.rc-val{font-family:'Orbitron',monospace;font-size:34px;font-weight:900;color:var(--g);letter-spacing:8px;text-shadow:0 0 20px rgba(57,255,20,0.8);animation:rcpulse 2s ease-in-out infinite}
+@keyframes rcpulse{0%,100%{text-shadow:0 0 20px rgba(57,255,20,0.8)}50%{text-shadow:0 0 30px rgba(57,255,20,1)}}
+.pot-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(3,6,8,0.6);border:1px solid rgba(57,255,20,0.1);border-radius:3px;margin:6px 0}
+.pr-lbl{font-size:11px;color:var(--dim);letter-spacing:1px}
+.pr-val{font-family:'Orbitron',monospace;font-size:13px;color:var(--g);font-weight:700}
+.pr-val.big{font-size:17px;color:var(--p)}
+.status-wait{text-align:center;padding:12px;border:1px solid rgba(57,255,20,0.15);border-radius:3px;background:rgba(57,255,20,0.04);font-size:13px;color:var(--g);letter-spacing:1px;margin:12px 0}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.deposit-box{background:rgba(3,6,8,0.9);border:1px solid rgba(57,255,20,0.3);border-radius:4px;padding:16px;margin:12px 0;text-align:center}
+.deposit-box p{font-size:12px;color:var(--dim);margin-bottom:8px}
+.deposit-addr{font-family:'Orbitron',monospace;font-size:9px;color:var(--g);word-break:break-all;margin-bottom:10px;padding:8px;background:rgba(57,255,20,0.05);border-radius:3px}
+.deposit-status{font-size:11px;font-family:'Orbitron',monospace;letter-spacing:0.5px;margin-top:8px;word-break:break-all;line-height:1.6}
+#placementScreen{max-width:640px;margin:20px auto;padding:0 16px}
+.place-hdr{text-align:center;margin-bottom:14px}
+.ppill{display:inline-block;padding:6px 20px;border-radius:2px;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:3px;margin-bottom:6px;text-transform:uppercase}
+.ppill-g{background:rgba(57,255,20,0.08);border:1px solid var(--g);color:var(--g)}
+.ppill-p{background:rgba(155,48,255,0.08);border:1px solid var(--p);color:var(--p)}
+.o-row{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
+.obtn{padding:8px 14px;background:transparent;border:1px solid rgba(57,255,20,0.18);border-radius:2px;color:rgba(57,255,20,0.45);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.15s}
+.obtn.active,.obtn:hover{border-color:var(--g);color:var(--g);background:rgba(57,255,20,0.07)}
+.ship-tray{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.schip{padding:5px 12px;border-radius:2px;font-size:12px;letter-spacing:1px;font-weight:600;border:1px solid;cursor:pointer;font-family:'Rajdhani',sans-serif}
+.sc-pend{border-color:rgba(184,204,176,0.18);color:rgba(184,204,176,0.35)}
+.sc-sel{border-color:var(--g);color:var(--g);background:rgba(57,255,20,0.08)}
+.sc-done{border-color:rgba(57,255,20,0.15);color:rgba(57,255,20,0.25);text-decoration:line-through}
+.grid-wrap{display:flex;justify-content:center;margin:10px 0}
+.gc{display:inline-block}
+.gcr{display:flex;margin-left:24px;margin-bottom:2px}
+.gcl{width:29px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(57,255,20,0.28);font-family:'Orbitron',monospace}
+.grow{display:flex;align-items:center}
+.grl{width:24px;height:29px;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(57,255,20,0.28);font-family:'Orbitron',monospace}
+.cell{width:29px;height:29px;background:rgba(3,8,16,0.95);border:1px solid rgba(57,255,20,0.08);cursor:pointer;transition:all 0.1s;display:flex;align-items:center;justify-content:center;position:relative;font-size:12px}
+.cell:hover{background:rgba(57,255,20,0.07);border-color:rgba(57,255,20,0.35)}
+.cell.ship{background:rgba(57,255,20,0.14);border-color:rgba(57,255,20,0.45)}
+.cell.hit{background:rgba(255,50,50,0.75);border-color:#ff3232}
+.cell.hit::after{content:'✕';color:#fff;font-size:13px;font-weight:bold;position:absolute}
+.cell.miss{background:rgba(155,48,255,0.12);border-color:rgba(155,48,255,0.25)}
+.cell.miss::after{content:'◦';color:rgba(155,48,255,0.6);font-size:17px;position:absolute}
+.cell.prev{background:rgba(57,255,20,0.18);border-color:var(--g)}
+.cell.prev-bad{background:rgba(255,50,50,0.18);border-color:rgba(255,50,50,0.55)}
+#battleScreen{padding:14px}
+.b-top{text-align:center;margin-bottom:10px}
+.turn-box{display:inline-flex;align-items:center;gap:10px;padding:9px 26px;border-radius:2px;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;border:1px solid;transition:all 0.3s}
+.t-mine{border-color:var(--g);color:var(--g);background:rgba(57,255,20,0.07);animation:tglow 1.5s ease-in-out infinite}
+.t-enemy{border-color:rgba(155,48,255,0.45);color:rgba(155,48,255,0.75);background:rgba(155,48,255,0.04)}
+@keyframes tglow{0%,100%{box-shadow:0 0 12px rgba(57,255,20,0.25)}50%{box-shadow:0 0 28px rgba(57,255,20,0.55)}}
+.pot-c{text-align:center;margin:6px 0 10px}
+.pc-lbl{font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase}
+.pc-val{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:var(--g)}
+.boards-wrap{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.bcol{text-align:center}
+.blbl{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;margin-bottom:6px;text-transform:uppercase}
+.bl-atk{color:#ff5050}.bl-def{color:var(--g)}
+.prog-w{max-width:700px;margin:6px auto;display:flex;gap:10px}
+.pc{flex:1}
+.plbl{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-bottom:3px}
+.pbar{height:4px;background:rgba(57,255,20,0.06);border-radius:2px;overflow:hidden}
+.pfill{height:100%;border-radius:2px;transition:width 0.4s}
+.pf-a{background:linear-gradient(90deg,#ff3232,#ff8080)}
+.pf-d{background:linear-gradient(90deg,var(--p),#c080ff)}
+.log-box{max-width:700px;margin:8px auto 0;background:rgba(3,6,8,0.85);border:1px solid rgba(57,255,20,0.08);border-radius:3px;padding:10px 12px;height:88px;overflow-y:auto;font-size:12px;line-height:1.75}
+.l-hit{color:#ff6060}.l-miss{color:rgba(155,48,255,0.65)}.l-info{color:var(--g)}.l-sunk{color:#ff9900;font-weight:700}
+#resultScreen{max-width:520px;margin:48px auto;padding:0 20px;text-align:center}
+.res-icon{font-size:90px;animation:respop 0.5s ease-out;display:block;margin-bottom:14px}
+@keyframes respop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.res-title{font-family:'Orbitron',monospace;font-size:clamp(22px,5.5vw,38px);font-weight:900;letter-spacing:4px;margin-bottom:6px}
+.rt-win{color:var(--g);text-shadow:0 0 30px rgba(57,255,20,0.65)}
+.rt-lose{color:#ff3232}
+.res-prize{font-family:'Orbitron',monospace;font-size:46px;font-weight:900;color:white;margin:18px 0 4px}
+.res-prize .coin{color:var(--g)}
+.res-sub{font-size:12px;color:var(--dim);margin-bottom:26px;letter-spacing:1px}
+.res-stats{background:var(--panel);border:1px solid var(--border-g);border-radius:4px;padding:16px;margin-bottom:20px;text-align:left}
+.rs-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(57,255,20,0.06);font-size:13px}
+.rs-row:last-child{border-bottom:none}
+.rs-key{color:var(--dim)}
+.rs-val{color:var(--g);font-family:'Orbitron',monospace;font-size:12px}
+.waiting-overlay{position:fixed;inset:0;background:rgba(3,6,8,0.96);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:500;backdrop-filter:blur(12px)}
+.waiting-overlay.show{display:flex}
+.spinner{width:54px;height:54px;border:2px solid rgba(57,255,20,0.08);border-top-color:var(--g);border-right-color:var(--p);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wait-txt{font-family:'Orbitron',monospace;font-size:12px;color:var(--g);letter-spacing:3px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(8,14,24,0.97);border:1px solid var(--g);border-radius:3px;padding:11px 22px;font-size:13px;font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--g);z-index:600;transition:transform 0.3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.brand-foot{text-align:center;padding:18px;border-top:1px solid rgba(57,255,20,0.06);margin-top:16px}
+@media(max-width:600px){.cell{width:25px;height:25px}.gcl,.grl{width:25px}.boards-wrap{gap:8px}.wopt{font-size:12px;padding:12px 4px}.mode-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getDatabase,ref,set,get,update,onValue,remove,off,push}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
 const FB={apiKey:"AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",authDomain:"project-freedom-a004e.firebaseapp.com",databaseURL:"https://project-freedom-a004e-default-rtdb.firebaseio.com",projectId:"project-freedom-a004e",storageBucket:"project-freedom-a004e.firebasestorage.app",messagingSenderId:"844172246267",appId:"1:844172246267:web:023a064294d369d2f7845e"};
 const app=initializeApp(FB);
 const db=getDatabase(app);
-
 const SHIPS=[{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
 const TOTAL=17;
 const COLS="ABCDEFGHIJ".split("");
@@ -352,10 +396,8 @@ const API_BASE="https://dgn-battleship.vercel.app";
 const ESCROW="GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu";
 const FREEDOM_MINT="DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
 const HELIUS_RPC="https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a0-733d9d41d1a4";
-const PRIORITY_FEE=500000; // 0.5M microLamports — dovoljno visok da prođe odmah
-
+const PRIORITY_FEE=500000;
 let S={mode:null,roomCode:null,playerId:null,nickname:null,wager:0,myGrid:null,orient:'H',selShip:null,placedShips:[],myHits:[],enemyHits:[],aiGrid:null,aiHitStack:[],isPlayerTurn:true,turnCount:0,startTime:null,gameStats:{hits:0,misses:0},walletAddress:null,depositTxSig:null};
-
 const $=id=>document.getElementById(id);
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
 function showWait(t){$('waitTxt').textContent=t;$('waitingOverlay').classList.add('show')}
@@ -383,7 +425,6 @@ $('walletBtn').addEventListener('click',async()=>{
     }
   }catch(e){toast('❌ '+e.message);}
 });
-
 window.addEventListener('load',async()=>{
   if(window.solana?.isPhantom){
     try{
@@ -396,52 +437,36 @@ window.addEventListener('load',async()=>{
   }
 });
 
-// ===== DEPOSIT SA PRIORITY FEE — GEMINI RJEŠENJE =====
 async function sendDepositToEscrow(wagerAmount){
   if(!S.walletAddress){toast('⚠ Connect wallet first!');return false;}
   const msg=$('depositStatusMsg');
   const setMsg=(t,c='var(--g)')=>{msg.textContent=t;msg.style.color=c;};
   try{
     setMsg('⏳ Loading Solana...');
-    const{Connection,PublicKey,Transaction,ComputeBudgetProgram}=
-      await import('https://esm.sh/@solana/web3.js@1.91.1');
-    const{getMint,getAssociatedTokenAddress,createTransferCheckedInstruction}=
-      await import('https://esm.sh/@solana/spl-token@0.4.6');
-
+    const{Connection,PublicKey,Transaction,ComputeBudgetProgram}=await import('https://esm.sh/@solana/web3.js@1.91.1');
+    const{getMint,getAssociatedTokenAddress,createTransferCheckedInstruction}=await import('https://esm.sh/@solana/spl-token@0.4.6');
     setMsg('⏳ Connecting...');
     const connection=new Connection(HELIUS_RPC,'confirmed');
     const fromPubkey=new PublicKey(S.walletAddress);
     const toPubkey=new PublicKey(ESCROW);
     const mintPubkey=new PublicKey(FREEDOM_MINT);
-
     setMsg('⏳ Getting token info...');
     const mintInfo=await getMint(connection,mintPubkey);
     const decimals=mintInfo.decimals;
     const amount=BigInt(Math.floor(wagerAmount*Math.pow(10,decimals)));
     const fromATA=await getAssociatedTokenAddress(mintPubkey,fromPubkey);
     const toATA=await getAssociatedTokenAddress(mintPubkey,toPubkey);
-
-    // Dohvati SVJEZI blockhash neposredno prije TX
     setMsg('⏳ Preparing transaction...');
     const{blockhash,lastValidBlockHeight}=await connection.getLatestBlockhash('finalized');
-
     const tx=new Transaction();
     tx.recentBlockhash=blockhash;
     tx.feePayer=fromPubkey;
-
-    // 1. PRIORITY FEE — ovo je ključ! Gemini je bio u pravu!
     tx.add(ComputeBudgetProgram.setComputeUnitPrice({microLamports:PRIORITY_FEE}));
-    // 2. Compute unit limit
     tx.add(ComputeBudgetProgram.setComputeUnitLimit({units:200000}));
-    // 3. Transfer instrukcija
     tx.add(createTransferCheckedInstruction(fromATA,mintPubkey,toATA,fromPubkey,amount,decimals));
-
     setMsg('⏳ Approve in Phantom...');
-    // signAndSendTransaction — Phantom potpisuje i šalje odmah
     const{signature}=await window.solana.signAndSendTransaction(tx);
-
     setMsg('⏳ Confirming...');
-    // Polling za potvrdu
     for(let i=0;i<40;i++){
       await new Promise(r=>setTimeout(r,1500));
       const status=await connection.getSignatureStatus(signature,{searchTransactionHistory:true});
@@ -452,13 +477,12 @@ async function sendDepositToEscrow(wagerAmount){
         toast('✅ '+wagerAmount+' FREEDOM deposited!');
         return true;
       }
-      if(status?.value?.err){throw new Error('TX failed: '+JSON.stringify(status.value.err));}
+      if(status?.value?.err)throw new Error('TX failed on chain');
     }
-    throw new Error('Timeout — check Solana Explorer for TX: '+signature.slice(0,8));
+    throw new Error('Timeout — check Explorer for: '+signature.slice(0,8));
   }catch(e){
-    const msg2=e.message||'Unknown error';
-    setMsg('❌ '+msg2,'#ff3232');
-    toast('❌ '+msg2.slice(0,60));
+    setMsg('❌ '+e.message,'#ff3232');
+    toast('❌ '+e.message.slice(0,60));
     return false;
   }
 }
@@ -466,7 +490,9 @@ async function sendDepositToEscrow(wagerAmount){
 async function loadLeaderboards(){
   try{
     const[s1,s2,s3]=await Promise.all([get(ref(db,'leaderboard/sp_points')),get(ref(db,'leaderboard/pvp_points')),get(ref(db,'leaderboard/pvp_tokens'))]);
-    renderLB('lb1',s1,'pts','score-g');renderLB('lb2',s2,'pts','score-p');renderLB('lb3',s3,'FREEDOM','score-gold');
+    renderLB('lb1',s1,'pts','score-g');
+    renderLB('lb2',s2,'pts','score-p');
+    renderLB('lb3',s3,'FREEDOM','score-gold');
   }catch(e){}
 }
 function renderLB(id,snap,unit,sc){
@@ -481,12 +507,26 @@ function renderLB(id,snap,unit,sc){
   });
 }
 async function saveToLeaderboard(key,name,score){
+  if(!name||score<=0)return;
   try{
-    const snap=await get(ref(db,`leaderboard/${key}`));let existing=null;
-    if(snap.exists())for(const[k,v]of Object.entries(snap.val())){if(v.name===name){existing={k,v};break}}
-    if(existing){if(score>existing.v.score)await update(ref(db,`leaderboard/${key}/${existing.k}`),{score,updatedAt:Date.now()});}
-    else await push(ref(db,`leaderboard/${key}`),{name,score,updatedAt:Date.now()});
-  }catch(e){}
+    const snap=await get(ref(db,`leaderboard/${key}`));
+    let existing=null;
+    if(snap.exists()){
+      for(const[k,v]of Object.entries(snap.val())){
+        if(v.name===name){existing={k,v};break}
+      }
+    }
+    if(existing){
+      if(score>existing.v.score){
+        await update(ref(db,`leaderboard/${key}/${existing.k}`),{score,updatedAt:Date.now()});
+      }
+    }else{
+      await push(ref(db,`leaderboard/${key}`),{name,score,updatedAt:Date.now()});
+    }
+    console.log('✅ LB saved:',key,name,score);
+  }catch(e){
+    console.error('❌ LB error:',key,e);
+  }
 }
 document.querySelectorAll('.lb-tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
@@ -707,8 +747,26 @@ function doAITurn(){
     S.isPlayerTurn=true;updateTurnBox(true);
   }
 }
-function calcScore(won){if(!won)return 0;const timeBonus=Math.max(0,300-Math.floor((Date.now()-S.startTime)/1000));const acc=S.gameStats.hits/Math.max(1,S.gameStats.hits+S.gameStats.misses);return S.myHits.filter(h=>h.hit).length*50+Math.floor(acc*200)+timeBonus;}
-async function endSPGame(won){S.isPlayerTurn=false;const score=calcScore(won);if(won&&S.nickname)await saveToLeaderboard('sp_points',S.nickname,score);showResultScreen(won,0,score,true);}
+function calcScore(won){
+  if(!won)return 0;
+  const timeBonus=Math.max(0,300-Math.floor((Date.now()-S.startTime)/1000));
+  const acc=S.gameStats.hits/Math.max(1,S.gameStats.hits+S.gameStats.misses);
+  return S.myHits.filter(h=>h.hit).length*50+Math.floor(acc*200)+timeBonus;
+}
+async function endSPGame(won){
+  S.isPlayerTurn=false;
+  const score=calcScore(won);
+  if(won){
+    addLog('🏆 VICTORY! You destroyed the enemy fleet!','l-sunk');
+    // Uvijek spremi score kad pobijedi
+    if(S.nickname&&score>0){
+      await saveToLeaderboard('sp_points',S.nickname,score);
+    }
+  }else{
+    addLog('💀 DEFEATED! Your fleet was sunk.','l-sunk');
+  }
+  showResultScreen(won,0,score,true);
+}
 function startMPBattle(data){showScreen('battleScreen');S.myHits=[];S.enemyHits=[];$('battlePotVal').textContent=`${(S.wager*2).toLocaleString()} FREEDOM`;renderBoards();listenBattle();}
 function renderBoards(){buildGrid($('atkGrid'),true,false,S.myHits);buildGrid($('defGrid'),false,true,S.enemyHits);updateProgress();}
 function buildGrid(container,clickable,showShips,hits){
@@ -763,7 +821,11 @@ function listenBattle(){
     if(d.status==='finished'&&d.winner){
       off(r);const won=d.winner===S.playerId;const wager=parseFloat(d.wager)||0;
       const score=newMH.filter(h=>h.hit).length*50;
-      if(won){saveToLeaderboard('pvp_points',S.nickname,score);saveToLeaderboard('pvp_tokens',S.nickname,wager*2);triggerPayout(S.roomCode,S.walletAddress,wager);}
+      if(won){
+        saveToLeaderboard('pvp_points',S.nickname,score);
+        saveToLeaderboard('pvp_tokens',S.nickname,wager*2);
+        triggerPayout(S.roomCode,S.walletAddress,wager);
+      }
       showResultScreen(won,wager,score,false);
     }
   });
@@ -785,15 +847,21 @@ function showResultScreen(won,wager,score,isSP){
   $('resTitle').textContent=won?'VICTORY!':'DEFEATED!';
   $('resTitle').className='res-title '+(won?'rt-win':'rt-lose');
   const prize=won?(isSP?0:wager*2):0;
-  $('resPrize').textContent=prize.toLocaleString();
-  $('resSub').textContent=isSP?`Entry: 100 FREEDOM · Score: ${score.toLocaleString()} pts`:`Wager: ${wager.toLocaleString()} FREEDOM × 2 players`;
-  const hits=S.myHits.filter(h=>h.hit).length;const misses=S.myHits.filter(h=>!h.hit).length;
+  $('resPrize').textContent=isSP?score.toLocaleString():prize.toLocaleString();
+  $('resSub').textContent=isSP
+    ?`Score: ${score.toLocaleString()} pts · Entry: 100 FREEDOM`
+    :`Wager: ${wager.toLocaleString()} FREEDOM × 2 players`;
+  const hits=S.myHits.filter(h=>h.hit).length;
+  const misses=S.myHits.filter(h=>!h.hit).length;
   const acc=hits+misses>0?Math.round((hits/(hits+misses))*100):0;
   $('resStats').innerHTML=`
     <div class="rs-row"><span class="rs-key">Shots fired</span><span class="rs-val">${hits+misses}</span></div>
     <div class="rs-row"><span class="rs-key">Hits</span><span class="rs-val">${hits}</span></div>
     <div class="rs-row"><span class="rs-key">Accuracy</span><span class="rs-val">${acc}%</span></div>
-    ${isSP?`<div class="rs-row"><span class="rs-key">Score</span><span class="rs-val">${score.toLocaleString()} pts</span></div>`:`<div class="rs-row"><span class="rs-key">Prize</span><span class="rs-val">${prize.toLocaleString()} FREEDOM</span></div>`}
+    ${isSP
+      ?`<div class="rs-row"><span class="rs-key">Score</span><span class="rs-val">${score.toLocaleString()} pts</span></div>`
+      :`<div class="rs-row"><span class="rs-key">Prize</span><span class="rs-val">${prize.toLocaleString()} FREEDOM</span></div>`
+    }
   `;
   if(!isSP&&!won)$('payoutStatus').textContent='';
 }
