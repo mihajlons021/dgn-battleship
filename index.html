@@ -854,15 +854,7 @@ function showResultScreen(won,wager,score,isSP){
   const hits=S.myHits.filter(h=>h.hit).length;
   const misses=S.myHits.filter(h=>!h.hit).length;
   const acc=hits+misses>0?Math.round((hits/(hits+misses))*100):0;
-  $('resStats').innerHTML=`
-    <div class="rs-row"><span class="rs-key">Shots fired</span><span class="rs-val">${hits+misses}</span></div>
-    <div class="rs-row"><span class="rs-key">Hits</span><span class="rs-val">${hits}</span></div>
-    <div class="rs-row"><span class="rs-key">Accuracy</span><span class="rs-val">${acc}%</span></div>
-    ${isSP
-      ?`<div class="rs-row"><span class="rs-key">Score</span><span class="rs-val">${score.toLocaleString()} pts</span></div>`
-      :`<div class="rs-row"><span class="rs-key">Prize</span><span class="rs-val">${prize.toLocaleString()} FREEDOM</span></div>`
-    }
-  `;
+  $('resStats').innerHTML='<div class="rs-row"><span class="rs-key">Shots fired</span><span class="rs-val">'+(hits+misses)+'</span></div><div class="rs-row"><span class="rs-key">Hits</span><span class="rs-val">'+hits+'</span></div><div class="rs-row"><span class="rs-key">Accuracy</span><span class="rs-val">'+acc+'%</span></div><div class="rs-row"><span class="rs-key">'+(isSP?'Score':'Prize')+'</span><span class="rs-val">'+(isSP?score.toLocaleString()+' pts':prize.toLocaleString()+' FREEDOM')+'</span></div>';
   if(!isSP&&!won)$('payoutStatus').textContent='';
 }
 $('btnPlayAgain').addEventListener('click',()=>location.reload());
