@@ -191,17 +191,17 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 <body>
 <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 <header>
-  <div class="h-eyebrow">Naval Warfare - Token Stakes - Strait of Hormuz</div>
+  <div class="h-eyebrow">&#9875; Naval Warfare &middot; Token Stakes &middot; Strait of Hormuz</div>
   <div class="h-title">PROJECT FREEDOM</div>
-  <div class="h-sub">Battleship - Winner Takes All - No Registration Required</div>
+  <div class="h-sub">Battleship &middot; Winner Takes All &middot; No Registration Required</div>
   <div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div>
 </header>
-<button class="wallet-btn" id="walletBtn">CONNECT WALLET</button>
+<button class="wallet-btn" id="walletBtn">&#x1F98A; CONNECT WALLET</button>
 <div class="waiting-overlay" id="waitingOverlay"><div class="spinner"></div><div class="wait-txt" id="waitTxt">LOADING...</div></div>
 <div class="toast" id="toast"></div>
 <div class="screen active" id="menuScreen">
   <div style="max-width:900px;margin:0 auto;padding:28px 20px">
-    <div class="menu-title">SELECT GAME MODE</div>
+    <div class="menu-title">&#9889; SELECT GAME MODE</div>
     <div class="mode-grid">
       <div class="mode-card" id="btnSinglePlayer">
         <span class="mode-icon">&#x1F916;</span>
@@ -210,37 +210,37 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
         <span class="mode-badge badge-g">100 FREEDOM ENTRY</span>
       </div>
       <div class="mode-card pvp" id="btnMultiPlayer">
-        <span class="mode-icon">&#x2694;&#xFE0F;</span>
-        <div class="mode-name">1 vs 1 - Token Wager</div>
+        <span class="mode-icon">&#x2694;</span>
+        <div class="mode-name">1 vs 1 &mdash; Token Wager</div>
         <div class="mode-desc">Challenge another player. Both deposit FREEDOM tokens. Winner takes all automatically.</div>
         <span class="mode-badge badge-p">100 / 500 / 1000 FREEDOM</span>
       </div>
     </div>
     <div class="lb-section">
       <div class="lb-tabs">
-        <button class="lb-tab active" data-tab="lb1">Most Points VS CPU</button>
-        <button class="lb-tab tab-p" data-tab="lb2">Most Points PVP</button>
-        <button class="lb-tab tab-gold" data-tab="lb3">Most Earned FREEDOM</button>
+        <button class="lb-tab active" data-tab="lb1">&#x1F3C6; Most Points<br><small style="font-size:8px">VS CPU</small></button>
+        <button class="lb-tab tab-p" data-tab="lb2">&#x2694; Most Points<br><small style="font-size:8px">PVP</small></button>
+        <button class="lb-tab tab-gold" data-tab="lb3">&#x1F4B0; Most Earned<br><small style="font-size:8px">FREEDOM</small></button>
       </div>
-      <div class="lb-content active" id="lb1"><div class="lb-empty">No battles yet!</div></div>
-      <div class="lb-content" id="lb2"><div class="lb-empty">No battles yet!</div></div>
-      <div class="lb-content" id="lb3"><div class="lb-empty">No battles yet!</div></div>
+      <div class="lb-content active" id="lb1"><div class="lb-empty">&#9889; No battles yet!</div></div>
+      <div class="lb-content" id="lb2"><div class="lb-empty">&#9889; No battles yet!</div></div>
+      <div class="lb-content" id="lb3"><div class="lb-empty">&#9889; No battles yet!</div></div>
     </div>
     <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
   </div>
 </div>
 <div class="screen" id="spSetupScreen">
-  <div class="wrap"><button class="btn-back" id="spBack">Back</button>
-    <div class="panel"><div class="panel-title">Single Player vs AI</div>
+  <div class="wrap"><button class="btn-back" id="spBack">&larr; Back</button>
+    <div class="panel"><div class="panel-title">&#x1F916; Single Player vs AI</div>
       <input type="text" id="spNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="fee-notice">Entry fee: 100 FREEDOM - Approve in Phantom</div>
+      <div class="fee-notice">Entry fee: <strong>100 FREEDOM</strong> &mdash; Approve in Phantom</div>
       <button class="btn btn-g" id="spStart">DEPLOY FLEET</button>
     </div>
   </div>
 </div>
 <div class="screen" id="mpSetupScreen">
-  <div class="wrap"><button class="btn-back" id="mpBack">Back</button>
-    <div class="panel"><div class="panel-title">Create Battle</div>
+  <div class="wrap"><button class="btn-back" id="mpBack">&larr; Back</button>
+    <div class="panel"><div class="panel-title">&#x2694; Create Battle</div>
       <input type="text" id="mpCreateNick" placeholder="YOUR CALLSIGN" maxlength="16">
       <div class="wager-row"><div class="wager-lbl">Select Wager</div>
         <div class="wager-opts">
@@ -252,9 +252,9 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
       <button class="btn btn-g" id="mpCreateBtn">DEPLOY FLEET</button>
     </div>
     <div class="divider">OR</div>
-    <div class="panel pvp-panel"><div class="panel-title pvp-title">Join Battle</div>
+    <div class="panel pvp-panel"><div class="panel-title pvp-title">&#x1F3AF; Join Battle</div>
       <input type="text" id="mpJoinNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <input type="text" id="mpJoinCode" placeholder="ROOM CODE e.g. DGN-4821" maxlength="10" style="text-transform:uppercase">
+      <input type="text" id="mpJoinCode" placeholder="ROOM CODE (e.g. DGN-4821)" maxlength="10" style="text-transform:uppercase">
       <button class="btn btn-p" id="mpJoinBtn">ENTER BATTLE</button>
     </div>
   </div>
@@ -262,14 +262,14 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 <div class="screen" id="depositScreen">
   <div class="wrap">
     <div class="panel" style="text-align:center">
-      <div class="panel-title" style="justify-content:center">Deposit Required</div>
+      <div class="panel-title" style="justify-content:center">&#x1F4B0; Deposit Required</div>
       <div class="deposit-box">
         <p>Send exactly <strong id="depositAmount" style="color:var(--g)">0 FREEDOM</strong> to escrow:</p>
         <div class="deposit-addr">GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu</div>
-        <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">SEND VIA PHANTOM</button>
+        <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">&#x1F98A; SEND VIA PHANTOM</button>
         <div class="deposit-status" id="depositStatusMsg" style="color:var(--dim);margin-top:10px"></div>
       </div>
-      <div class="pot-row" style="margin-top:12px"><span class="pr-lbl">Winner receives</span><span class="pr-val big" id="depositPot">0 FREEDOM</span></div>
+      <div class="pot-row" style="margin-top:12px"><span class="pr-lbl">&#x1F3C6; Winner receives</span><span class="pr-val big" id="depositPot">0 FREEDOM</span></div>
       <button class="btn btn-outline" id="depositAbort" style="max-width:180px;margin:12px auto 0">ABORT</button>
     </div>
   </div>
@@ -277,14 +277,14 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 <div class="screen" id="waitingScreen">
   <div class="wrap">
     <div class="panel" style="text-align:center">
-      <div class="panel-title" style="justify-content:center">Battle Room Created</div>
+      <div class="panel-title" style="justify-content:center">&#x1F4E1; Battle Room Created</div>
       <div class="room-code-box">
         <div class="rc-lbl">SHARE THIS CODE WITH YOUR ENEMY</div>
         <div class="rc-val" id="displayCode">----</div>
       </div>
       <div class="pot-row"><span class="pr-lbl">Each deposits</span><span class="pr-val" id="dispWager">0 FREEDOM</span></div>
-      <div class="pot-row"><span class="pr-lbl">Winner receives</span><span class="pr-val big" id="dispPot">0 FREEDOM</span></div>
-      <div class="status-wait"><span class="blink">*</span> Awaiting opponent...</div>
+      <div class="pot-row"><span class="pr-lbl">&#x1F3C6; Winner receives</span><span class="pr-val big" id="dispPot">0 FREEDOM</span></div>
+      <div class="status-wait"><span class="blink">&#9679;</span> &nbsp;Awaiting opponent...</div>
       <button class="btn btn-outline" id="btnAbort" style="max-width:180px;margin:0 auto">ABORT</button>
     </div>
   </div>
@@ -293,17 +293,17 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
   <div style="max-width:640px;margin:20px auto;padding:0 16px">
     <div class="place-hdr">
       <div class="ppill ppill-g" id="placePill">PLAYER 1</div>
-      <div style="font-size:13px;color:var(--dim);margin:4px 0 10px">Position your fleet - enemy cannot see this</div>
+      <div style="font-size:13px;color:var(--dim);margin:4px 0 10px">Position your fleet &mdash; enemy cannot see this</div>
       <div class="o-row">
-        <button class="obtn active" id="btnH">HORIZONTAL</button>
-        <button class="obtn" id="btnV">VERTICAL</button>
-        <button class="obtn" id="btnRandom">RANDOM</button>
+        <button class="obtn active" id="btnH">&#x2194; HORIZONTAL</button>
+        <button class="obtn" id="btnV">&#x2195; VERTICAL</button>
+        <button class="obtn" id="btnRandom">&#x1F3B2; RANDOM</button>
       </div>
     </div>
     <div class="ship-tray" id="shipTray"></div>
     <div class="grid-wrap"><div class="gc" id="placeGrid"></div></div>
     <div style="text-align:center;margin-top:12px">
-      <button class="btn btn-g" id="readyBtn" disabled style="max-width:320px">BATTLE STATIONS READY</button>
+      <button class="btn btn-g" id="readyBtn" disabled style="max-width:320px">&#9889; BATTLE STATIONS READY</button>
     </div>
   </div>
 </div>
@@ -316,10 +316,10 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
       <div class="pc"><div class="plbl"><span style="color:rgba(155,48,255,0.8)">ENEMY HITS</span><span id="enHC">0/17</span></div><div class="pbar"><div class="pfill pf-d" id="enHBar" style="width:0%"></div></div></div>
     </div>
     <div class="boards-wrap">
-      <div class="bcol"><div class="blbl bl-atk">ENEMY WATERS</div><div class="grid-wrap"><div class="gc" id="atkGrid"></div></div></div>
-      <div class="bcol"><div class="blbl bl-def">YOUR FLEET</div><div class="grid-wrap"><div class="gc" id="defGrid"></div></div></div>
+      <div class="bcol"><div class="blbl bl-atk">&#x2694; ENEMY WATERS</div><div class="grid-wrap"><div class="gc" id="atkGrid"></div></div></div>
+      <div class="bcol"><div class="blbl bl-def">&#x1F6E1; YOUR FLEET</div><div class="grid-wrap"><div class="gc" id="defGrid"></div></div></div>
     </div>
-    <div class="log-box" id="logBox"><div class="l-info">Battle commenced. Fire at will!</div></div>
+    <div class="log-box" id="logBox"><div class="l-info">&#9889; Battle commenced. Fire at will!</div></div>
     <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
   </div>
 </div>
@@ -333,259 +333,331 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
     <div class="res-stats" id="resStats"></div>
     <div id="payoutStatus" style="margin-bottom:16px;font-size:13px;color:var(--g);font-family:monospace"></div>
     <button class="btn btn-g" id="btnPlayAgain" style="max-width:300px;margin:0 auto 12px">NEW BATTLE</button>
-    <button class="btn btn-outline" id="btnBackMenu" style="max-width:300px;margin:0 auto">MAIN MENU</button>
+    <button class="btn btn-outline" id="btnBackMenu" style="max-width:300px;margin:0 auto">&larr; MAIN MENU</button>
     <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
   </div>
 </div>
-<header>
-  <div class="h-eyebrow">Naval Warfare - Token Stakes - Strait of Hormuz</div>
-  <div class="h-title">PROJECT FREEDOM</div>
-  <div class="h-sub">Battleship - Winner Takes All - No Registration Required</div>
-  <div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div>
-</header>
-<button class="wallet-btn" id="walletBtn">CONNECT WALLET</button>
-<div class="waiting-overlay" id="waitingOverlay"><div class="spinner"></div><div class="wait-txt" id="waitTxt">LOADING...</div></div>
-<div class="toast" id="toast"></div>
-<div class="screen active" id="menuScreen">
-  <div style="max-width:900px;margin:0 auto;padding:28px 20px">
-    <div class="menu-title">SELECT GAME MODE</div>
-    <div class="mode-grid">
-      <div class="mode-card" id="btnSinglePlayer">
-        <span class="mode-icon">&#x1F916;</span>
-        <div class="mode-name">Single Player</div>
-        <div class="mode-desc">Battle against the AI. Entry fee 100 FREEDOM. Earn points for every hit, sunk ship, and speed of victory.</div>
-        <span class="mode-badge badge-g">100 FREEDOM ENTRY</span>
-      </div>
-      <div class="mode-card pvp" id="btnMultiPlayer">
-        <span class="mode-icon">&#x2694;&#xFE0F;</span>
-        <div class="mode-name">1 vs 1 - Token Wager</div>
-        <div class="mode-desc">Challenge another player. Both deposit FREEDOM tokens. Winner takes all automatically.</div>
-        <span class="mode-badge badge-p">100 / 500 / 1000 FREEDOM</span>
-      </div>
-    </div>
-    <div class="lb-section">
-      <div class="lb-tabs">
-        <button class="lb-tab active" data-tab="lb1">Most Points VS CPU</button>
-        <button class="lb-tab tab-p" data-tab="lb2">Most Points PVP</button>
-        <button class="lb-tab tab-gold" data-tab="lb3">Most Earned FREEDOM</button>
-      </div>
-      <div class="lb-content active" id="lb1"><div class="lb-empty">No battles yet!</div></div>
-      <div class="lb-content" id="lb2"><div class="lb-empty">No battles yet!</div></div>
-      <div class="lb-content" id="lb3"><div class="lb-empty">No battles yet!</div></div>
-    </div>
-    <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
-  </div>
-</div>
-<div class="screen" id="spSetupScreen">
-  <div class="wrap"><button class="btn-back" id="spBack">Back</button>
-    <div class="panel"><div class="panel-title">Single Player vs AI</div>
-      <input type="text" id="spNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="fee-notice">Entry fee: 100 FREEDOM - Approve in Phantom</div>
-      <button class="btn btn-g" id="spStart">DEPLOY FLEET</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="mpSetupScreen">
-  <div class="wrap"><button class="btn-back" id="mpBack">Back</button>
-    <div class="panel"><div class="panel-title">Create Battle</div>
-      <input type="text" id="mpCreateNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="wager-row"><div class="wager-lbl">Select Wager</div>
-        <div class="wager-opts">
-          <div class="wopt" data-val="100">100<small>FREEDOM</small></div>
-          <div class="wopt" data-val="500">500<small>FREEDOM</small></div>
-          <div class="wopt" data-val="1000">1000<small>FREEDOM</small></div>
-        </div>
-      </div>
-      <button class="btn btn-g" id="mpCreateBtn">DEPLOY FLEET</button>
-    </div>
-    <div class="divider">OR</div>
-    <div class="panel pvp-panel"><div class="panel-title pvp-title">Join Battle</div>
-      <input type="text" id="mpJoinNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <input type="text" id="mpJoinCode" placeholder="ROOM CODE e.g. DGN-4821" maxlength="10" style="text-transform:uppercase">
-      <button class="btn btn-p" id="mpJoinBtn">ENTER BATTLE</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="depositScreen">
-  <div class="wrap">
-    <div class="panel" style="text-align:center">
-      <div class="panel-title" style="justify-content:center">Deposit Required</div>
-      <div class="deposit-box">
-        <p>Send exactly <strong id="depositAmount" style="color:var(--g)">0 FREEDOM</strong> to escrow:</p>
-        <div class="deposit-addr">GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu</div>
-        <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">SEND VIA PHANTOM</button>
-        <div class="deposit-status" id="depositStatusMsg" style="color:var(--dim);margin-top:10px"></div>
-      </div>
-      <div class="pot-row" style="margin-top:12px"><span class="pr-lbl">Winner receives</span><span class="pr-val big" id="depositPot">0 FREEDOM</span></div>
-      <button class="btn btn-outline" id="depositAbort" style="max-width:180px;margin:12px auto 0">ABORT</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="waitingScreen">
-  <div class="wrap">
-    <div class="panel" style="text-align:center">
-      <div class="panel-title" style="justify-content:center">Battle Room Created</div>
-      <div class="room-code-box">
-        <div class="rc-lbl">SHARE THIS CODE WITH YOUR ENEMY</div>
-        <div class="rc-val" id="displayCode">----</div>
-      </div>
-      <div class="pot-row"><span class="pr-lbl">Each deposits</span><span class="pr-val" id="dispWager">0 FREEDOM</span></div>
-      <div class="pot-row"><span class="pr-lbl">Winner receives</span><span class="pr-val big" id="dispPot">0 FREEDOM</span></div>
-      <div class="status-wait"><span class="blink">*</span> Awaiting opponent...</div>
-      <button class="btn btn-outline" id="btnAbort" style="max-width:180px;margin:0 auto">ABORT</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="placementScreen">
-  <div style="max-width:640px;margin:20px auto;padding:0 16px">
-    <div class="place-hdr">
-      <div class="ppill ppill-g" id="placePill">PLAYER 1</div>
-      <div style="font-size:13px;color:var(--dim);margin:4px 0 10px">Position your fleet - enemy cannot see this</div>
-      <div class="o-row">
-        <button class="obtn active" id="btnH">HORIZONTAL</button>
-        <button class="obtn" id="btnV">VERTICAL</button>
-        <button class="obtn" id="btnRandom">RANDOM</button>
-      </div>
-    </div>
-    <div class="ship-tray" id="shipTray"></div>
-    <div class="grid-wrap"><div class="gc" id="placeGrid"></div></div>
-    <div style="text-align:center;margin-top:12px">
-      <button class="btn btn-g" id="readyBtn" disabled style="max-width:320px">BATTLE STATIONS READY</button>
-    </div>
-  </div>
-</div>
-<div class="screen" id="battleScreen">
-  <div style="padding:14px">
-    <div class="b-top"><div class="turn-box t-mine" id="turnBox">YOUR TURN</div></div>
-    <div class="pot-c"><div class="pc-lbl">PRIZE POOL</div><div class="pc-val" id="battlePotVal">0 FREEDOM</div></div>
-    <div class="prog-w">
-      <div class="pc"><div class="plbl"><span style="color:#ff6060">YOUR HITS</span><span id="myHC">0/17</span></div><div class="pbar"><div class="pfill pf-a" id="myHBar" style="width:0%"></div></div></div>
-      <div class="pc"><div class="plbl"><span style="color:rgba(155,48,255,0.8)">ENEMY HITS</span><span id="enHC">0/17</span></div><div class="pbar"><div class="pfill pf-d" id="enHBar" style="width:0%"></div></div></div>
-    </div>
-    <div class="boards-wrap">
-      <div class="bcol"><div class="blbl bl-atk">ENEMY WATERS</div><div class="grid-wrap"><div class="gc" id="atkGrid"></div></div></div>
-      <div class="bcol"><div class="blbl bl-def">YOUR FLEET</div><div class="grid-wrap"><div class="gc" id="defGrid"></div></div></div>
-    </div>
-    <div class="log-box" id="logBox"><div class="l-info">Battle commenced. Fire at will!</div></div>
-    <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
-  </div>
-</div>
-<div class="screen" id="resultScreen">
-  <div style="max-width:520px;margin:48px auto;padding:0 20px;text-align:center">
-    <span class="res-icon" id="resIcon">&#x1F3C6;</span>
-    <div class="res-title" id="resTitle">VICTORY!</div>
-    <div style="font-size:12px;color:var(--dim);margin-bottom:6px;letter-spacing:2px">WINNER TAKES ALL</div>
-    <div class="res-prize"><span class="coin" id="resPrize">0</span> <span style="font-size:22px;color:var(--dim)">FREEDOM</span></div>
-    <div class="res-sub" id="resSub"></div>
-    <div class="res-stats" id="resStats"></div>
-    <div id="payoutStatus" style="margin-bottom:16px;font-size:13px;color:var(--g);font-family:monospace"></div>
-    <button class="btn btn-g" id="btnPlayAgain" style="max-width:300px;margin:0 auto 12px">NEW BATTLE</button>
-    <button class="btn btn-outline" id="btnBackMenu" style="max-width:300px;margin:0 auto">MAIN MENU</button>
-    <div class="brand-foot"><div class="h-brand"><span class="h-label">POWERED BY</span><span><span class="dg">DEGEN</span><span class="sf">SAFE</span><span class="fn">.FUN</span></span></div></div>
-  </div>
-</div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,set,get,update,onValue,remove,off,push}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const FB={apiKey:"AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",authDomain:"project-freedom-a004e.firebaseapp.com",databaseURL:"https://project-freedom-a004e-default-rtdb.firebaseio.com",projectId:"project-freedom-a004e",storageBucket:"project-freedom-a004e.firebasestorage.app",messagingSenderId:"844172246267",appId:"1:844172246267:web:023a064294d369d2f7845e"};
+const app=initializeApp(FB);
+const db=getDatabase(app);
+const SHIPS=[{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
+const TOTAL=17;
+const COLS="ABCDEFGHIJ".split("");
+const AI_DELAY=900;
+const API_BASE="https://dgn-battleship.vercel.app";
+const ESCROW="GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu";
+const FREEDOM_MINT="DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
+const HELIUS_RPC="https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a0-733d9d41d1a4";
+const PRIORITY_FEE=500000;
+let S={mode:null,roomCode:null,playerId:null,nickname:null,wager:0,myGrid:null,orient:'H',selShip:null,placedShips:[],myHits:[],enemyHits:[],aiGrid:null,aiHitStack:[],isPlayerTurn:true,turnCount:0,startTime:null,gameStats:{hits:0,misses:0},walletAddress:null,depositTxSig:null};
+const $=id=>document.getElementById(id);
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');}
+function showWait(t){$('waitTxt').textContent=t;$('waitingOverlay').classList.add('show');}
+function hideWait(){$('waitingOverlay').classList.remove('show');}
+function toast(m,d=3000){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function genCode(){return 'DGN-'+Math.floor(1000+Math.random()*9000);}
+function flatGrid(g){return g.map(r=>r.join(',')).join(';');}
+function parseGrid(f){return f.split(';').map(r=>r.split(',').map(Number));}
+function newGrid(){return Array(10).fill(null).map(()=>Array(10).fill(0));}
+
+$('walletBtn').addEventListener('click',async()=>{
+  try{
+    if(!window.solana?.isPhantom){alert('Install Phantom!\nhttps://phantom.app');window.open('https://phantom.app','_blank');return;}
+    const btn=$('walletBtn');
+    if(!S.walletAddress){
+      const resp=await window.solana.connect();
+      S.walletAddress=resp.publicKey.toString();
+      btn.textContent='OK '+S.walletAddress.slice(0,4)+'...'+S.walletAddress.slice(-4);
+      btn.style.borderColor='#39ff14';btn.style.color='#39ff14';
+      toast('Wallet connected!');
+    }else{
+      await window.solana.disconnect();
+      S.walletAddress=null;btn.textContent='CONNECT WALLET';
+      btn.style.borderColor='';btn.style.color='';toast('Wallet disconnected');
+    }
+  }catch(e){toast('Error: '+e.message);}
+});
+window.addEventListener('load',async()=>{
+  if(window.solana?.isPhantom){
+    try{
+      const resp=await window.solana.connect({onlyIfTrusted:true});
+      S.walletAddress=resp.publicKey.toString();
+      const btn=$('walletBtn');
+      btn.textContent='OK '+S.walletAddress.slice(0,4)+'...'+S.walletAddress.slice(-4);
+      btn.style.borderColor='#39ff14';btn.style.color='#39ff14';
+    }catch(e){}
+  }
+});
+
+async function sendDepositToEscrow(wagerAmount){
+  if(!S.walletAddress){toast('Connect wallet first!');return false;}
+  const msg=$('depositStatusMsg');
+  const setMsg=(t,c)=>{msg.textContent=t;msg.style.color=c||'var(--g)';};
+  try{
+    setMsg('Loading Solana...');
+    const{Connection,PublicKey,Transaction,ComputeBudgetProgram}=await import('https://esm.sh/@solana/web3.js@1.91.1');
+    const{getMint,getAssociatedTokenAddress,createTransferCheckedInstruction}=await import('https://esm.sh/@solana/spl-token@0.4.6');
+    setMsg('Connecting...');
+    const connection=new Connection(HELIUS_RPC,'confirmed');
+    const fromPubkey=new PublicKey(S.walletAddress);
+    const toPubkey=new PublicKey(ESCROW);
+    const mintPubkey=new PublicKey(FREEDOM_MINT);
+    setMsg('Getting token info...');
+    const mintInfo=await getMint(connection,mintPubkey);
+    const decimals=mintInfo.decimals;
+    const amount=BigInt(Math.floor(wagerAmount*Math.pow(10,decimals)));
+    const fromATA=await getAssociatedTokenAddress(mintPubkey,fromPubkey);
+    const toATA=await getAssociatedTokenAddress(mintPubkey,toPubkey);
+    setMsg('Preparing transaction...');
+    const{blockhash,lastValidBlockHeight}=await connection.getLatestBlockhash('finalized');
+    const tx=new Transaction();
+    tx.recentBlockhash=blockhash;
+    tx.feePayer=fromPubkey;
+    tx.add(ComputeBudgetProgram.setComputeUnitPrice({microLamports:PRIORITY_FEE}));
+    tx.add(ComputeBudgetProgram.setComputeUnitLimit({units:200000}));
+    tx.add(createTransferCheckedInstruction(fromATA,mintPubkey,toATA,fromPubkey,amount,decimals));
+    setMsg('Approve in Phantom...');
+    const{signature}=await window.solana.signAndSendTransaction(tx);
+    setMsg('Confirming...');
+    let confirmed=false;
+    for(let i=0;i<40;i++){
+      await new Promise(r=>setTimeout(r,1500));
+      const status=await connection.getSignatureStatus(signature,{searchTransactionHistory:true});
+      const conf=status?.value?.confirmationStatus;
+      if(conf==='confirmed'||conf==='finalized'){confirmed=true;break;}
+      if(status?.value?.err)throw new Error('TX failed on chain');
+    }
+    if(!confirmed)throw new Error('Timeout - check Solana Explorer');
+    S.depositTxSig=signature;
+    setMsg('Deposit confirmed! TX: '+signature.slice(0,8)+'...','#39ff14');
+    toast(wagerAmount+' FREEDOM deposited!');
+    return true;
+  }catch(e){
+    setMsg('Error: '+e.message,'#ff3232');
+    toast('Failed: '+e.message.slice(0,60));
+    return false;
+  }
+}
+
+async function loadLeaderboards(){
+  try{
+    const[s1,s2,s3]=await Promise.all([get(ref(db,'leaderboard/sp_points')),get(ref(db,'leaderboard/pvp_points')),get(ref(db,'leaderboard/pvp_tokens'))]);
+    renderLB('lb1',s1,'pts','score-g');
+    renderLB('lb2',s2,'pts','score-p');
+    renderLB('lb3',s3,'FREEDOM','score-gold');
+  }catch(e){}
+}
+function renderLB(id,snap,unit,sc){
+  const el=$(id);if(!snap.exists())return;
+  const entries=Object.values(snap.val()).sort((a,b)=>b.score-a.score).slice(0,10);
+  if(!entries.length)return;el.innerHTML='';
+  entries.forEach((e,i)=>{
+    const row=document.createElement('div');row.className='lb-row';
+    const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+    row.innerHTML='<div class="lb-rank '+rc+'">'+(i+1)+'</div><div class="lb-name">'+e.name+'</div><div class="lb-score '+sc+'">'+e.score.toLocaleString()+' '+unit+'</div>';
+    el.appendChild(row);
+  });
+}
+async function saveToLeaderboard(key,name,score){
+  if(!name||score<=0)return;
+  try{
+    const snap=await get(ref(db,'leaderboard/'+key));
+    let existing=null;
+    if(snap.exists()){
+      for(const[k,v]of Object.entries(snap.val())){
+        if(v.name===name){existing={k,v};break;}
+      }
+    }
+    if(existing){
+      if(score>existing.v.score)await update(ref(db,'leaderboard/'+key+'/'+existing.k),{score,updatedAt:Date.now()});
+    }else{
+      await push(ref(db,'leaderboard/'+key),{name,score,updatedAt:Date.now()});
+    }
+  }catch(e){}
+}
+document.querySelectorAll('.lb-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.lb-content').forEach(c=>c.classList.remove('active'));
+    tab.classList.add('active');$(tab.dataset.tab).classList.add('active');
+  });
+});
+loadLeaderboards();
+
+$('btnSinglePlayer').addEventListener('click',()=>showScreen('spSetupScreen'));
+$('btnMultiPlayer').addEventListener('click',()=>showScreen('mpSetupScreen'));
+$('spBack').addEventListener('click',()=>showScreen('menuScreen'));
+$('mpBack').addEventListener('click',()=>showScreen('menuScreen'));
+document.querySelectorAll('.wopt').forEach(el=>{
+  el.addEventListener('click',()=>{document.querySelectorAll('.wopt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');S.wager=parseInt(el.dataset.val);});
+});
+
+function setupDeposit(amount,potText,onSuccess,onAbort){
+  showScreen('depositScreen');
+  $('depositAmount').textContent=amount+' FREEDOM';
+  $('depositPot').textContent=potText;
+  $('depositStatusMsg').textContent='';
+  $('depositBtn').disabled=false;
+  $('depositBtn').onclick=async()=>{
+    $('depositBtn').disabled=true;
+    const ok=await sendDepositToEscrow(amount);
+    if(ok){setTimeout(onSuccess,1000);}
+    else{$('depositBtn').disabled=false;}
+  };
+  $('depositAbort').onclick=onAbort;
+}
+
+$('spStart').addEventListener('click',async()=>{
+  const nick=$('spNick').value.trim();
+  if(!nick)return toast('Enter your callsign!');
+  if(!S.walletAddress)return toast('Connect wallet first!');
+  S.mode='sp';S.nickname=nick;S.wager=100;
+  setupDeposit(100,'Entry fee - leaderboard points',()=>startPlacement(),()=>showScreen('spSetupScreen'));
+});
+
+$('mpCreateBtn').addEventListener('click',async()=>{
+  const nick=$('mpCreateNick').value.trim();
+  if(!nick)return toast('Enter your callsign!');
+  if(!S.wager)return toast('Select a wager!');
+  if(!S.walletAddress)return toast('Connect wallet first!');
+  S.nickname=nick;S.mode='mp';
+  setupDeposit(S.wager,(S.wager*2)+' FREEDOM',async()=>{
+    const code=genCode();showWait('CREATING ROOM...');
+    try{
+      await set(ref(db,'rooms/'+code),{wager:S.wager,status:'waiting',currentTurn:'p1',winner:null,p1:{nickname:nick,ready:false,grid:'',hits:'',wallet:S.walletAddress,depositTx:S.depositTxSig},p2:null});
+      S.roomCode=code;S.playerId='p1';hideWait();
+      showScreen('waitingScreen');
+      $('displayCode').textContent=code;
+      $('dispWager').textContent=S.wager.toLocaleString()+' FREEDOM';
+      $('dispPot').textContent=(S.wager*2).toLocaleString()+' FREEDOM';
+      listenOpponent();
+    }catch(e){hideWait();toast('Error creating room.');}
+  },()=>showScreen('mpSetupScreen'));
+});
+
+$('mpJoinBtn').addEventListener('click',async()=>{
+  const nick=$('mpJoinNick').value.trim();
+  const code=$('mpJoinCode').value.trim().toUpperCase();
+  if(!nick)return toast('Enter your callsign!');
+  if(!code)return toast('Enter room code!');
+  if(!S.walletAddress)return toast('Connect wallet first!');
+  showWait('CHECKING ROOM...');
+  try{
+    const snap=await get(ref(db,'rooms/'+code));
+    if(!snap.exists()){hideWait();return toast('Room not found!');}
+    const d=snap.val();
+    if(d.status!=='waiting'){hideWait();return toast('Battle already started!');}
+    if(d.p2){hideWait();return toast('Room is full!');}
+    hideWait();S.wager=d.wager;S.nickname=nick;S.mode='mp';
+    setupDeposit(S.wager,(S.wager*2)+' FREEDOM',async()=>{
+      showWait('JOINING...');
+      try{
+        const upd={};
+        upd['p2/nickname']=nick;upd['p2/ready']=false;upd['p2/grid']='';upd['p2/hits']='';
+        upd['p2/wallet']=S.walletAddress;upd['p2/depositTx']=S.depositTxSig;upd['status']='placement';
+        await update(ref(db,'rooms/'+code),upd);
+        S.roomCode=code;S.playerId='p2';hideWait();startPlacement();
+      }catch(e){hideWait();toast('Error joining.');}
+    },()=>showScreen('mpSetupScreen'));
+  }catch(e){hideWait();toast('Error.');}
+});
+
+$('btnAbort').addEventListener('click',async()=>{if(S.roomCode)await remove(ref(db,'rooms/'+S.roomCode));location.reload();});
+function listenOpponent(){
+  const r=ref(db,'rooms/'+S.roomCode);
+  onValue(r,snap=>{const d=snap.val();if(!d)return;if(d.p2&&d.status==='placement'){off(r);startPlacement();}});
+}
 function startPlacement(){
   showScreen('placementScreen');
   S.myGrid=newGrid();S.placedShips=[];S.selShip=SHIPS[0];S.orient='H';
-  var pill=$('placePill');
+  const pill=$('placePill');
   if(S.mode==='sp'){pill.textContent='VS AI - PLACE YOUR FLEET';pill.className='ppill ppill-g';}
   else{pill.textContent=S.playerId==='p1'?'PLAYER 1 - YOUR FLEET':'PLAYER 2 - YOUR FLEET';pill.className='ppill '+(S.playerId==='p1'?'ppill-g':'ppill-p');}
   renderTray();renderPlaceGrid();
 }
-
 function renderTray(){
-  var el=$('shipTray');el.innerHTML='';
-  SHIPS.forEach(function(ship){
-    var d=document.createElement('div');
-    var placed=S.placedShips.find(function(s){return s.name===ship.name;});
-    var sel=S.selShip&&S.selShip.name===ship.name;
+  const el=$('shipTray');el.innerHTML='';
+  SHIPS.forEach(ship=>{
+    const d=document.createElement('div');
+    const placed=S.placedShips.find(s=>s.name===ship.name);
+    const sel=S.selShip&&S.selShip.name===ship.name;
     d.className='schip '+(placed?'sc-done':sel?'sc-sel':'sc-pend');
     d.textContent=ship.name+' ('+ship.size+')';
-    if(!placed){d.onclick=function(){S.selShip=ship;renderTray();};}
+    if(!placed)d.onclick=()=>{S.selShip=ship;renderTray();};
     el.appendChild(d);
   });
 }
-
 function renderPlaceGrid(hr,hc){
   if(hr===undefined)hr=-1;if(hc===undefined)hc=-1;
-  var cont=$('placeGrid');cont.innerHTML='';
-  var top=document.createElement('div');top.className='gcr';
-  COLS.forEach(function(c){var l=document.createElement('div');l.className='gcl';l.textContent=c;top.appendChild(l);});
+  const cont=$('placeGrid');cont.innerHTML='';
+  const top=document.createElement('div');top.className='gcr';
+  COLS.forEach(c=>{const l=document.createElement('div');l.className='gcl';l.textContent=c;top.appendChild(l);});
   cont.appendChild(top);
-  var ship=S.selShip;var prev=[];var valid=false;
+  const ship=S.selShip;let prev=[],valid=false;
   if(ship&&hr>=0){
     valid=true;prev=[];
-    for(var i=0;i<ship.size;i++){
-      var r2=S.orient==='H'?hr:hr+i;
-      var c2=S.orient==='H'?hc+i:hc;
+    for(let i=0;i<ship.size;i++){
+      const r2=S.orient==='H'?hr:hr+i;
+      const c2=S.orient==='H'?hc+i:hc;
       if(r2>=10||c2>=10||S.myGrid[r2][c2]!==0)valid=false;
       prev.push(r2+'-'+c2);
     }
   }
-  for(var r=0;r<10;r++){
-    var row=document.createElement('div');row.className='grow';
-    var rl=document.createElement('div');rl.className='grl';rl.textContent=r+1;row.appendChild(rl);
-    for(var c=0;c<10;c++){
-      var cell=document.createElement('div');cell.className='cell';
+  for(let r=0;r<10;r++){
+    const row=document.createElement('div');row.className='grow';
+    const rl=document.createElement('div');rl.className='grl';rl.textContent=r+1;row.appendChild(rl);
+    for(let c=0;c<10;c++){
+      const cell=document.createElement('div');cell.className='cell';
       if(S.myGrid[r][c])cell.classList.add('ship');
-      var k=r+'-'+c;
+      const k=r+'-'+c;
       if(prev.indexOf(k)>=0)cell.classList.add(valid?'prev':'prev-bad');
       (function(rr,cc){
-        cell.addEventListener('mouseenter',function(){
-          if(ship&&!S.placedShips.find(function(s){return s.name===ship.name;}))renderPlaceGrid(rr,cc);
-        });
-        cell.addEventListener('mouseleave',function(){renderPlaceGrid();});
-        cell.addEventListener('click',function(){placeShip(rr,cc);});
+        cell.addEventListener('mouseenter',()=>{if(ship&&!S.placedShips.find(s=>s.name===ship.name))renderPlaceGrid(rr,cc);});
+        cell.addEventListener('mouseleave',()=>renderPlaceGrid());
+        cell.addEventListener('click',()=>placeShip(rr,cc));
       })(r,c);
       row.appendChild(cell);
     }
     cont.appendChild(row);
   }
 }
-
 function placeShip(r,c){
-  var ship=S.selShip;
-  if(!ship||S.placedShips.find(function(s){return s.name===ship.name;}))return;
-  var cells=[];var ok=true;
-  for(var i=0;i<ship.size;i++){
-    var row=S.orient==='H'?r:r+i;
-    var col=S.orient==='H'?c+i:c;
+  const ship=S.selShip;if(!ship||S.placedShips.find(s=>s.name===ship.name))return;
+  const cells=[];let ok=true;
+  for(let i=0;i<ship.size;i++){
+    const row=S.orient==='H'?r:r+i,col=S.orient==='H'?c+i:c;
     if(row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break;}
     cells.push([row,col]);
   }
   if(!ok)return;
-  cells.forEach(function(rc){S.myGrid[rc[0]][rc[1]]=1;});
+  cells.forEach(([row,col])=>{S.myGrid[row][col]=1;});
   S.placedShips.push(ship);
-  var rem=SHIPS.filter(function(s){return !S.placedShips.find(function(p){return p.name===s.name;});});
+  const rem=SHIPS.filter(s=>!S.placedShips.find(p=>p.name===s.name));
   S.selShip=rem[0]||null;
   if(S.placedShips.length===SHIPS.length)$('readyBtn').disabled=false;
   renderTray();renderPlaceGrid();
 }
-
-$('btnH').addEventListener('click',function(){S.orient='H';$('btnH').classList.add('active');$('btnV').classList.remove('active');});
-$('btnV').addEventListener('click',function(){S.orient='V';$('btnV').classList.add('active');$('btnH').classList.remove('active');});
-$('btnRandom').addEventListener('click',function(){
+$('btnH').addEventListener('click',()=>{S.orient='H';$('btnH').classList.add('active');$('btnV').classList.remove('active');});
+$('btnV').addEventListener('click',()=>{S.orient='V';$('btnV').classList.add('active');$('btnH').classList.remove('active');});
+$('btnRandom').addEventListener('click',()=>{
   S.myGrid=newGrid();S.placedShips=[];
-  SHIPS.forEach(function(ship){
-    var placed=false;var att=0;
+  for(const ship of SHIPS){
+    let placed=false,att=0;
     while(!placed&&att<1000){
-      att++;
-      var h=Math.random()<0.5;
-      var r=Math.floor(Math.random()*(h?10:11-ship.size));
-      var c=Math.floor(Math.random()*(h?11-ship.size:10));
-      var cells=[];var ok=true;
-      for(var i=0;i<ship.size;i++){
-        var row=h?r:r+i;var col=h?c+i:c;
-        if(row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break;}
-        cells.push([row,col]);
-      }
-      if(ok){cells.forEach(function(rc){S.myGrid[rc[0]][rc[1]]=1;});S.placedShips.push(ship);placed=true;}
+      att++;const h=Math.random()<0.5;
+      const r=Math.floor(Math.random()*(h?10:11-ship.size));
+      const c=Math.floor(Math.random()*(h?11-ship.size:10));
+      const cells=[];let ok=true;
+      for(let i=0;i<ship.size;i++){const row=h?r:r+i,col=h?c+i:c;if(row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break;}cells.push([row,col]);}
+      if(ok){cells.forEach(([row,col])=>{S.myGrid[row][col]=1;});S.placedShips.push(ship);placed=true;}
     }
-  });
+  }
   S.selShip=null;$('readyBtn').disabled=false;renderTray();renderPlaceGrid();
 });
-
-$('readyBtn').addEventListener('click',async function(){
+$('readyBtn').addEventListener('click',async()=>{
   if(S.mode==='sp'){
     S.aiGrid=placeShipsRandom();S.myHits=[];S.enemyHits=[];S.aiHitStack=[];
     S.startTime=Date.now();S.turnCount=0;S.gameStats={hits:0,misses:0};S.isPlayerTurn=true;
@@ -594,209 +666,141 @@ $('readyBtn').addEventListener('click',async function(){
   }
   showWait('WAITING FOR OPPONENT...');
   await update(ref(db,'rooms/'+S.roomCode+'/'+S.playerId),{ready:true,grid:flatGrid(S.myGrid),hits:''});
-  var r=ref(db,'rooms/'+S.roomCode);
-  onValue(r,function(snap){
-    var d=snap.val();if(!d)return;
-    if(d.p1&&d.p1.ready&&d.p2&&d.p2.ready&&d.status==='placement'){
-      update(ref(db,'rooms/'+S.roomCode),{status:'battle'});
-    }
+  const r=ref(db,'rooms/'+S.roomCode);
+  onValue(r,snap=>{
+    const d=snap.val();if(!d)return;
+    if(d.p1&&d.p1.ready&&d.p2&&d.p2.ready&&d.status==='placement'){update(ref(db,'rooms/'+S.roomCode),{status:'battle'});}
     if(d.status==='battle'){off(r);hideWait();startMPBattle(d);}
   });
 });
-
 function placeShipsRandom(){
-  var g=newGrid();
-  SHIPS.forEach(function(ship){
-    var placed=false;var att=0;
+  const g=newGrid();
+  for(const ship of SHIPS){
+    let placed=false,att=0;
     while(!placed&&att<1000){
-      att++;var h=Math.random()<0.5;
-      var r=Math.floor(Math.random()*(h?10:11-ship.size));
-      var c=Math.floor(Math.random()*(h?11-ship.size:10));
-      var cells=[];var ok=true;
-      for(var i=0;i<ship.size;i++){
-        var row=h?r:r+i;var col=h?c+i:c;
-        if(row>=10||col>=10||g[row][col]!==0){ok=false;break;}
-        cells.push([row,col]);
-      }
-      if(ok){cells.forEach(function(rc){g[rc[0]][rc[1]]=1;});placed=true;}
-    }
-  });
-  return g;
-}
-
-function aiChooseTarget(){
-  if(S.aiHitStack.length>0){
-    var last=S.aiHitStack[S.aiHitStack.length-1];
-    var dirs=[[0,1],[0,-1],[1,0],[-1,0]].sort(function(){return Math.random()-0.5;});
-    for(var i=0;i<dirs.length;i++){
-      var nr=last.r+dirs[i][0];var nc=last.c+dirs[i][1];
-      var k=nr+'-'+nc;
-      if(nr>=0&&nr<10&&nc>=0&&nc<10&&!S.enemyHits.find(function(h){return h.key===k;})){return {r:nr,c:nc};}
+      att++;const h=Math.random()<0.5;
+      const r=Math.floor(Math.random()*(h?10:11-ship.size));
+      const c=Math.floor(Math.random()*(h?11-ship.size:10));
+      const cells=[];let ok=true;
+      for(let i=0;i<ship.size;i++){const row=h?r:r+i,col=h?c+i:c;if(row>=10||col>=10||g[row][col]!==0){ok=false;break;}cells.push([row,col]);}
+      if(ok){cells.forEach(([row,col])=>{g[row][col]=1;});placed=true;}
     }
   }
-  var untried=[];
-  for(var r=0;r<10;r++){for(var c=0;c<10;c++){
-    var k=r+'-'+c;
-    if(!S.enemyHits.find(function(h){return h.key===k;}))untried.push({r:r,c:c});
-  }}
+  return g;
+}
+function aiChooseTarget(){
+  if(S.aiHitStack.length>0){
+    const last=S.aiHitStack[S.aiHitStack.length-1];
+    const dirs=[[0,1],[0,-1],[1,0],[-1,0]].sort(()=>Math.random()-0.5);
+    for(const[dr,dc]of dirs){
+      const nr=last.r+dr,nc=last.c+dc,k=nr+'-'+nc;
+      if(nr>=0&&nr<10&&nc>=0&&nc<10&&!S.enemyHits.find(h=>h.key===k))return{r:nr,c:nc};
+    }
+  }
+  const untried=[];
+  for(let r=0;r<10;r++)for(let c=0;c<10;c++){if(!S.enemyHits.find(h=>h.key===r+'-'+c))untried.push({r,c});}
   return untried[Math.floor(Math.random()*untried.length)];
 }
-
 function handleSPPlayerFire(r,c){
-  var k=r+'-'+c;
-  if(S.myHits.find(function(h){return h.key===k;})||!S.isPlayerTurn)return;
-  S.isPlayerTurn=false;
-  var isHit=S.aiGrid[r][c]===1;
-  S.myHits.push({key:k,hit:isHit,r:r,c:c});S.turnCount++;
+  const k=r+'-'+c;if(S.myHits.find(h=>h.key===k)||!S.isPlayerTurn)return;
+  S.isPlayerTurn=false;const isHit=S.aiGrid[r][c]===1;
+  S.myHits.push({key:k,hit:isHit,r,c});S.turnCount++;
   if(isHit){S.gameStats.hits++;addLog('Hit '+COLS[c]+(r+1)+'!','l-hit');}
   else{S.gameStats.misses++;addLog('Missed '+COLS[c]+(r+1),'l-miss');}
   renderBoards();updateProgress();
-  if(S.myHits.filter(function(h){return h.hit;}).length>=TOTAL){endSPGame(true);return;}
+  if(S.myHits.filter(h=>h.hit).length>=TOTAL){endSPGame(true);return;}
   if(isHit){S.isPlayerTurn=true;updateTurnBox(true);}
   else{updateTurnBox(false);setTimeout(doAITurn,AI_DELAY);}
 }
-
 function doAITurn(){
-  var target=aiChooseTarget();if(!target)return;
-  var k=target.r+'-'+target.c;
-  var isHit=S.myGrid[target.r][target.c]===1;
+  const target=aiChooseTarget();if(!target)return;
+  const k=target.r+'-'+target.c;const isHit=S.myGrid[target.r][target.c]===1;
   S.enemyHits.push({key:k,hit:isHit,r:target.r,c:target.c});
   if(isHit){S.aiHitStack.push(target);addLog('AI hit '+COLS[target.c]+(target.r+1)+'!','l-sunk');}
   else{addLog('AI missed '+COLS[target.c]+(target.r+1),'l-miss');}
   renderBoards();updateProgress();
-  if(S.enemyHits.filter(function(h){return h.hit;}).length>=TOTAL){endSPGame(false);return;}
+  if(S.enemyHits.filter(h=>h.hit).length>=TOTAL){endSPGame(false);return;}
   if(isHit){setTimeout(doAITurn,AI_DELAY);}
   else{S.isPlayerTurn=true;updateTurnBox(true);}
 }
-
 function calcScore(won){
   if(!won)return 0;
-  var timeBonus=Math.max(0,300-Math.floor((Date.now()-S.startTime)/1000));
-  var acc=S.gameStats.hits/Math.max(1,S.gameStats.hits+S.gameStats.misses);
-  return S.myHits.filter(function(h){return h.hit;}).length*50+Math.floor(acc*200)+timeBonus;
+  const timeBonus=Math.max(0,300-Math.floor((Date.now()-S.startTime)/1000));
+  const acc=S.gameStats.hits/Math.max(1,S.gameStats.hits+S.gameStats.misses);
+  return S.myHits.filter(h=>h.hit).length*50+Math.floor(acc*200)+timeBonus;
 }
-
 async function endSPGame(won){
   S.isPlayerTurn=false;
-  var score=calcScore(won);
+  const score=calcScore(won);
   if(won){
     addLog('VICTORY! Fleet destroyed!','l-sunk');
-    if(S.nickname&&score>0){await saveToLeaderboard('sp_points',S.nickname,score);}
+    if(S.nickname&&score>0)await saveToLeaderboard('sp_points',S.nickname,score);
   }else{
     addLog('DEFEATED!','l-sunk');
   }
   showResultScreen(won,0,score,true);
 }
-
-function startMPBattle(data){
-  showScreen('battleScreen');S.myHits=[];S.enemyHits=[];
-  $('battlePotVal').textContent=(S.wager*2).toLocaleString()+' FREEDOM';
-  renderBoards();listenBattle();
-}
-
-function renderBoards(){
-  buildGrid($('atkGrid'),true,false,S.myHits);
-  buildGrid($('defGrid'),false,true,S.enemyHits);
-  updateProgress();
-}
-
+function startMPBattle(data){showScreen('battleScreen');S.myHits=[];S.enemyHits=[];$('battlePotVal').textContent=(S.wager*2).toLocaleString()+' FREEDOM';renderBoards();listenBattle();}
+function renderBoards(){buildGrid($('atkGrid'),true,false,S.myHits);buildGrid($('defGrid'),false,true,S.enemyHits);updateProgress();}
 function buildGrid(container,clickable,showShips,hits){
   container.innerHTML='';
-  var top=document.createElement('div');top.className='gcr';
-  COLS.forEach(function(c){var l=document.createElement('div');l.className='gcl';l.textContent=c;top.appendChild(l);});
+  const top=document.createElement('div');top.className='gcr';
+  COLS.forEach(c=>{const l=document.createElement('div');l.className='gcl';l.textContent=c;top.appendChild(l);});
   container.appendChild(top);
-  for(var r=0;r<10;r++){
-    var row=document.createElement('div');row.className='grow';
-    var rl=document.createElement('div');rl.className='grl';rl.textContent=r+1;row.appendChild(rl);
-    for(var c=0;c<10;c++){
-      var cell=document.createElement('div');cell.className='cell';
-      var k=r+'-'+c;
-      var h=hits.find(function(x){return x.key===k;});
+  for(let r=0;r<10;r++){
+    const row=document.createElement('div');row.className='grow';
+    const rl=document.createElement('div');rl.className='grl';rl.textContent=r+1;row.appendChild(rl);
+    for(let c=0;c<10;c++){
+      const cell=document.createElement('div');cell.className='cell';
+      const k=r+'-'+c;const h=hits.find(x=>x.key===k);
       if(h){cell.classList.add(h.hit?'hit':'miss');}
-      else if(showShips&&S.myGrid&&S.myGrid[r][c]){cell.classList.add('ship');}
+      else if(showShips&&S.myGrid&&S.myGrid[r][c])cell.classList.add('ship');
       if(clickable){
-        (function(rr,cc){
-          cell.addEventListener('click',function(){
-            if(S.mode==='sp')handleSPPlayerFire(rr,cc);
-            else fireAt(rr,cc);
-          });
-        })(r,c);
+        (function(rr,cc){cell.addEventListener('click',()=>{if(S.mode==='sp')handleSPPlayerFire(rr,cc);else fireAt(rr,cc);});})(r,c);
       }
       row.appendChild(cell);
     }
     container.appendChild(row);
   }
 }
-
 function updateProgress(){
-  var mh=S.myHits.filter(function(h){return h.hit;}).length;
-  var eh=S.enemyHits.filter(function(h){return h.hit;}).length;
-  $('myHC').textContent=mh+'/'+TOTAL;
-  $('enHC').textContent=eh+'/'+TOTAL;
-  $('myHBar').style.width=(mh/TOTAL*100)+'%';
-  $('enHBar').style.width=(eh/TOTAL*100)+'%';
+  const mh=S.myHits.filter(h=>h.hit).length;const eh=S.enemyHits.filter(h=>h.hit).length;
+  $('myHC').textContent=mh+'/'+TOTAL;$('enHC').textContent=eh+'/'+TOTAL;
+  $('myHBar').style.width=(mh/TOTAL*100)+'%';$('enHBar').style.width=(eh/TOTAL*100)+'%';
 }
-
-function updateTurnBox(mine){
-  var tb=$('turnBox');
-  tb.textContent=mine?'YOUR TURN - FIRE!':'ENEMY TURN...';
-  tb.className='turn-box '+(mine?'t-mine':'t-enemy');
-}
-
+function updateTurnBox(mine){const tb=$('turnBox');tb.textContent=mine?'YOUR TURN - FIRE!':'ENEMY TURN...';tb.className='turn-box '+(mine?'t-mine':'t-enemy');}
 async function fireAt(r,c){
-  var k=r+'-'+c;
-  if(S.myHits.find(function(h){return h.key===k;}))return;
-  var snap=await get(ref(db,'rooms/'+S.roomCode));
-  var d=snap.val();
+  const k=r+'-'+c;if(S.myHits.find(h=>h.key===k))return;
+  const snap=await get(ref(db,'rooms/'+S.roomCode));const d=snap.val();
   if(!d||d.currentTurn!==S.playerId){toast('Wait for your turn!');return;}
   if(d.status!=='battle')return;
-  var eid=S.playerId==='p1'?'p2':'p1';
-  var egrid=parseGrid(d[eid].grid);
-  var isHit=egrid[r][c]===1;
-  var existing=d[S.playerId].hits?JSON.parse(d[S.playerId].hits):[];
-  existing.push({key:k,hit:isHit,r:r,c:c});
-  var upd={};
+  const eid=S.playerId==='p1'?'p2':'p1';
+  const egrid=parseGrid(d[eid].grid);const isHit=egrid[r][c]===1;
+  const existing=d[S.playerId].hits?JSON.parse(d[S.playerId].hits):[];
+  existing.push({key:k,hit:isHit,r,c});
+  const upd={};
   upd['rooms/'+S.roomCode+'/'+S.playerId+'/hits']=JSON.stringify(existing);
-  var hitCount=existing.filter(function(h){return h.hit;}).length;
-  if(hitCount>=TOTAL){
-    upd['rooms/'+S.roomCode+'/winner']=S.playerId;
-    upd['rooms/'+S.roomCode+'/status']='finished';
-  }else if(!isHit){
-    upd['rooms/'+S.roomCode+'/currentTurn']=eid;
-  }
+  const hitCount=existing.filter(h=>h.hit).length;
+  if(hitCount>=TOTAL){upd['rooms/'+S.roomCode+'/winner']=S.playerId;upd['rooms/'+S.roomCode+'/status']='finished';}
+  else if(!isHit){upd['rooms/'+S.roomCode+'/currentTurn']=eid;}
   await update(ref(db),upd);
 }
-
 function listenBattle(){
-  var r=ref(db,'rooms/'+S.roomCode);
-  onValue(r,function(snap){
-    var d=snap.val();if(!d)return;
-    var eid=S.playerId==='p1'?'p2':'p1';
-    var newMH=d[S.playerId]&&d[S.playerId].hits?JSON.parse(d[S.playerId].hits):[];
-    var newEH=d[eid]&&d[eid].hits?JSON.parse(d[eid].hits):[];
-    if(newMH.length>S.myHits.length){
-      var last=newMH[newMH.length-1];
-      addLog(last.hit?'Hit '+COLS[last.c]+(last.r+1)+'!':'Missed '+COLS[last.c]+(last.r+1),last.hit?'l-hit':'l-miss');
-    }
-    if(newEH.length>S.enemyHits.length){
-      var last2=newEH[newEH.length-1];
-      addLog(last2.hit?'Enemy hit '+COLS[last2.c]+(last2.r+1)+'!':'Enemy missed '+COLS[last2.c]+(last2.r+1),last2.hit?'l-sunk':'l-miss');
-    }
+  const r=ref(db,'rooms/'+S.roomCode);
+  onValue(r,snap=>{
+    const d=snap.val();if(!d)return;
+    const eid=S.playerId==='p1'?'p2':'p1';
+    const newMH=d[S.playerId]?.hits?JSON.parse(d[S.playerId].hits):[];
+    const newEH=d[eid]?.hits?JSON.parse(d[eid].hits):[];
+    if(newMH.length>S.myHits.length){const last=newMH[newMH.length-1];addLog(last.hit?'Hit '+COLS[last.c]+(last.r+1)+'!':'Missed '+COLS[last.c]+(last.r+1),last.hit?'l-hit':'l-miss');}
+    if(newEH.length>S.enemyHits.length){const last=newEH[newEH.length-1];addLog(last.hit?'Enemy hit '+COLS[last.c]+(last.r+1)+'!':'Enemy missed '+COLS[last.c]+(last.r+1),last.hit?'l-sunk':'l-miss');}
     S.myHits=newMH;S.enemyHits=newEH;renderBoards();
-    var mine=d.currentTurn===S.playerId;
-    var tb=$('turnBox');
-    tb.textContent=mine?'YOUR TURN - FIRE!':'ENEMY TURN - STANDBY...';
-    tb.className='turn-box '+(mine?'t-mine':'t-enemy');
+    const mine=d.currentTurn===S.playerId;
+    const tb=$('turnBox');tb.textContent=mine?'YOUR TURN - FIRE!':'ENEMY TURN - STANDBY...';tb.className='turn-box '+(mine?'t-mine':'t-enemy');
     if(d.status==='finished'&&d.winner){
-      off(r);
-      var won=d.winner===S.playerId;
-      var wager=parseFloat(d.wager)||0;
-      var score=newMH.filter(function(h){return h.hit;}).length*50;
-      if(won){
-        saveToLeaderboard('pvp_points',S.nickname,score);
-        saveToLeaderboard('pvp_tokens',S.nickname,wager*2);
-        triggerPayout(S.roomCode,S.walletAddress,wager);
-      }
+      off(r);const won=d.winner===S.playerId;const wager=parseFloat(d.wager)||0;
+      const score=newMH.filter(h=>h.hit).length*50;
+      if(won){saveToLeaderboard('pvp_points',S.nickname,score);saveToLeaderboard('pvp_tokens',S.nickname,wager*2);triggerPayout(S.roomCode,S.walletAddress,wager);}
       showResultScreen(won,wager,score,false);
     }
   });
@@ -805,57 +809,38 @@ async function triggerPayout(roomCode,winnerWallet,wager){
   if(!winnerWallet){$('payoutStatus').textContent='Connect wallet to receive payout!';return;}
   try{
     $('payoutStatus').textContent='Processing payout...';
-    var res=await fetch(API_BASE+'/api/payout',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':'DGN_FREEDOM_SECRET_2024_XKZP9'},
-      body:JSON.stringify({roomCode:roomCode,winnerWallet:winnerWallet})
-    });
-    var data=await res.json();
-    if(data.success){
-      $('payoutStatus').textContent='PAID! '+(wager*2)+' FREEDOM sent! TX: '+(data.signature?data.signature.slice(0,8):'')+'...';
-    }else{
-      $('payoutStatus').textContent='Error: '+data.error;
-    }
-  }catch(e){
-    $('payoutStatus').textContent='Payout error - contact admin';
-  }
+    const res=await fetch(API_BASE+'/api/payout',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'DGN_FREEDOM_SECRET_2024_XKZP9'},body:JSON.stringify({roomCode,winnerWallet})});
+    const data=await res.json();
+    if(data.success){$('payoutStatus').textContent='PAID! '+(wager*2)+' FREEDOM sent! TX: '+(data.signature?data.signature.slice(0,8):'')+' ...';}
+    else{$('payoutStatus').textContent='Error: '+data.error;}
+  }catch(e){$('payoutStatus').textContent='Payout error - contact admin';}
 }
-
 function addLog(msg,cls){
   if(!cls)cls='l-info';
-  var box=$('logBox');
-  var div=document.createElement('div');
-  div.className=cls;
-  div.textContent=msg;
-  box.prepend(div);
+  const box=$('logBox');const div=document.createElement('div');div.className=cls;div.textContent=msg;box.prepend(div);
 }
-
 function showResultScreen(won,wager,score,isSP){
   showScreen('resultScreen');
   $('resIcon').textContent=won?'WIN':'LOSS';
   $('resTitle').textContent=won?'VICTORY!':'DEFEATED!';
   $('resTitle').className='res-title '+(won?'rt-win':'rt-lose');
-  var prize=won?(isSP?0:wager*2):0;
+  const prize=won?(isSP?0:wager*2):0;
   $('resPrize').textContent=isSP?score.toLocaleString():prize.toLocaleString();
   $('resSub').textContent=isSP?('Score: '+score.toLocaleString()+' pts - Entry: 100 FREEDOM'):('Wager: '+wager.toLocaleString()+' FREEDOM x 2 players');
-  var hits=S.myHits.filter(function(h){return h.hit;}).length;
-  var misses=S.myHits.filter(function(h){return !h.hit;}).length;
-  var acc=(hits+misses>0)?Math.round((hits/(hits+misses))*100):0;
-  var statsHTML='';
+  const hits=S.myHits.filter(h=>h.hit).length;
+  const misses=S.myHits.filter(h=>!h.hit).length;
+  const acc=(hits+misses>0)?Math.round((hits/(hits+misses))*100):0;
+  let statsHTML='';
   statsHTML+='<div class="rs-row"><span class="rs-key">Shots fired</span><span class="rs-val">'+(hits+misses)+'</span></div>';
   statsHTML+='<div class="rs-row"><span class="rs-key">Hits</span><span class="rs-val">'+hits+'</span></div>';
   statsHTML+='<div class="rs-row"><span class="rs-key">Accuracy</span><span class="rs-val">'+acc+'%</span></div>';
-  if(isSP){
-    statsHTML+='<div class="rs-row"><span class="rs-key">Score</span><span class="rs-val">'+score.toLocaleString()+' pts</span></div>';
-  }else{
-    statsHTML+='<div class="rs-row"><span class="rs-key">Prize</span><span class="rs-val">'+prize.toLocaleString()+' FREEDOM</span></div>';
-  }
+  if(isSP){statsHTML+='<div class="rs-row"><span class="rs-key">Score</span><span class="rs-val">'+score.toLocaleString()+' pts</span></div>';}
+  else{statsHTML+='<div class="rs-row"><span class="rs-key">Prize</span><span class="rs-val">'+prize.toLocaleString()+' FREEDOM</span></div>';}
   $('resStats').innerHTML=statsHTML;
-  if(!isSP&&!won){$('payoutStatus').textContent='';}
+  if(!isSP&&!won)$('payoutStatus').textContent='';
 }
-
-$('btnPlayAgain').addEventListener('click',function(){location.reload();});
-$('btnBackMenu').addEventListener('click',function(){showScreen('menuScreen');loadLeaderboards();});
+$('btnPlayAgain').addEventListener('click',()=>location.reload());
+$('btnBackMenu').addEventListener('click',()=>{showScreen('menuScreen');loadLeaderboards();});
 </script>
 </body>
 </html>
