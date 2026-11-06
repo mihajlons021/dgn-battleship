@@ -205,9 +205,9 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
     <div class="mode-grid">
       <div class="mode-card" id="btnSinglePlayer">
         <span class="mode-icon">&#x1F916;</span>
-        <div class="mode-name">Single Player</div>
-        <div class="mode-desc">Battle against the AI. Entry fee 100 FREEDOM. Earn points for every hit, sunk ship, and speed of victory.</div>
-        <span class="mode-badge badge-g">100 FREEDOM ENTRY</span>
+        <div class="mode-name">Practice vs AI</div>
+        <div class="mode-desc">Battle the AI admiral. Free, no wallet needed. Earn leaderboard points for every hit, sunk ship and speed of victory.</div>
+        <span class="mode-badge badge-g">FREE · NO WALLET</span>
       </div>
       <div class="mode-card pvp" id="btnMultiPlayer">
         <span class="mode-icon">&#x2694;</span>
@@ -231,9 +231,9 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 </div>
 <div class="screen" id="spSetupScreen">
   <div class="wrap"><button class="btn-back" id="spBack">&larr; Back</button>
-    <div class="panel"><div class="panel-title">&#x1F916; Single Player vs AI</div>
+    <div class="panel"><div class="panel-title">&#x1F916; Practice vs AI</div>
       <input type="text" id="spNick" placeholder="YOUR CALLSIGN" maxlength="16">
-      <div class="fee-notice">Entry fee: <strong>100 FREEDOM</strong> &mdash; Approve in Phantom</div>
+      <div class="fee-notice"><strong>FREE</strong> &mdash; no wallet, no tokens. Just sink them all.</div>
       <button class="btn btn-g" id="spStart">DEPLOY FLEET</button>
     </div>
   </div>
@@ -515,9 +515,9 @@ function setupDeposit(amount,potText,onSuccess,onAbort){
 $('spStart').addEventListener('click',async()=>{
   const nick=$('spNick').value.trim();
   if(!nick)return toast('Enter your callsign!');
-  if(!S.walletAddress)return toast('Connect wallet first!');
-  S.mode='sp';S.nickname=nick;S.wager=100;
-  setupDeposit(100,'Entry fee - leaderboard points',()=>startPlacement(),()=>showScreen('spSetupScreen'));
+  // practice vs AI is free: no wallet, no deposit
+  S.mode='sp';S.nickname=nick;S.wager=0;
+  startPlacement();
 });
 
 $('mpCreateBtn').addEventListener('click',async()=>{
@@ -635,7 +635,7 @@ function placeShip(r,c){
     cells.push([row,col]);
   }
   if(!ok)return;
-  cells.forEach(([row,col])=>{S.myGrid[row][col]=1;});
+  cells.forEach(([row,col])=>{S.myGrid[row][col]=SHIPS.indexOf(ship)+1;});
   S.placedShips.push(ship);
   const rem=SHIPS.filter(s=>!S.placedShips.find(p=>p.name===s.name));
   S.selShip=rem[0]||null;
@@ -654,7 +654,7 @@ $('btnRandom').addEventListener('click',()=>{
       const c=Math.floor(Math.random()*(h?11-ship.size:10));
       const cells=[];let ok=true;
       for(let i=0;i<ship.size;i++){const row=h?r:r+i,col=h?c+i:c;if(row>=10||col>=10||S.myGrid[row][col]!==0){ok=false;break;}cells.push([row,col]);}
-      if(ok){cells.forEach(([row,col])=>{S.myGrid[row][col]=1;});S.placedShips.push(ship);placed=true;}
+      if(ok){cells.forEach(([row,col])=>{S.myGrid[row][col]=SHIPS.indexOf(ship)+1;});S.placedShips.push(ship);placed=true;}
     }
   }
   S.selShip=null;$('readyBtn').disabled=false;renderTray();renderPlaceGrid();
@@ -663,7 +663,7 @@ $('readyBtn').addEventListener('click',async()=>{
   if(S.mode==='sp'){
     S.aiGrid=placeShipsRandom();S.myHits=[];S.enemyHits=[];S.aiHitStack=[];
     S.startTime=Date.now();S.turnCount=0;S.gameStats={hits:0,misses:0};S.isPlayerTurn=true;
-    showScreen('battleScreen');$('battlePotVal').textContent='VS AI - 100 FREEDOM';
+    showScreen('battleScreen');$('battlePotVal').textContent='VS AI - FREE PRACTICE';
     renderBoards();updateTurnBox(true);addLog('Battle vs AI commenced!','l-info');return;
   }
   showWait('WAITING FOR OPPONENT...');
@@ -685,7 +685,7 @@ function placeShipsRandom(){
       const c=Math.floor(Math.random()*(h?11-ship.size:10));
       const cells=[];let ok=true;
       for(let i=0;i<ship.size;i++){const row=h?r:r+i,col=h?c+i:c;if(row>=10||col>=10||g[row][col]!==0){ok=false;break;}cells.push([row,col]);}
-      if(ok){cells.forEach(([row,col])=>{g[row][col]=1;});placed=true;}
+      if(ok){cells.forEach(([row,col])=>{g[row][col]=SHIPS.indexOf(ship)+1;});placed=true;}
     }
   }
   return g;
@@ -705,7 +705,7 @@ function aiChooseTarget(){
 }
 function handleSPPlayerFire(r,c){
   const k=r+'-'+c;if(S.myHits.find(h=>h.key===k)||!S.isPlayerTurn)return;
-  S.isPlayerTurn=false;const isHit=S.aiGrid[r][c]===1;
+  S.isPlayerTurn=false;const isHit=S.aiGrid[r][c]>0;
   S.myHits.push({key:k,hit:isHit,r,c});S.turnCount++;
   if(isHit){S.gameStats.hits++;addLog('Hit '+COLS[c]+(r+1)+'!','l-hit');}
   else{S.gameStats.misses++;addLog('Missed '+COLS[c]+(r+1),'l-miss');}
@@ -716,7 +716,7 @@ function handleSPPlayerFire(r,c){
 }
 function doAITurn(){
   const target=aiChooseTarget();if(!target)return;
-  const k=target.r+'-'+target.c;const isHit=S.myGrid[target.r][target.c]===1;
+  const k=target.r+'-'+target.c;const isHit=S.myGrid[target.r][target.c]>0;
   S.enemyHits.push({key:k,hit:isHit,r:target.r,c:target.c});
   if(isHit){S.aiHitStack.push(target);addLog('AI hit '+COLS[target.c]+(target.r+1)+'!','l-sunk');}
   else{addLog('AI missed '+COLS[target.c]+(target.r+1),'l-miss');}
@@ -777,7 +777,7 @@ async function fireAt(r,c){
   if(!d||d.currentTurn!==S.playerId){toast('Wait for your turn!');return;}
   if(d.status!=='battle')return;
   const eid=S.playerId==='p1'?'p2':'p1';
-  const egrid=parseGrid(d[eid].grid);const isHit=egrid[r][c]===1;
+  const egrid=parseGrid(d[eid].grid);const isHit=egrid[r][c]>0;
   const existing=d[S.playerId].hits?JSON.parse(d[S.playerId].hits):[];
   existing.push({key:k,hit:isHit,r,c});
   const upd={};
@@ -828,7 +828,7 @@ function showResultScreen(won,wager,score,isSP){
   $('resTitle').className='res-title '+(won?'rt-win':'rt-lose');
   const prize=won?(isSP?0:wager*2):0;
   $('resPrize').textContent=isSP?score.toLocaleString():prize.toLocaleString();
-  $('resSub').textContent=isSP?('Score: '+score.toLocaleString()+' pts - Entry: 100 FREEDOM'):('Wager: '+wager.toLocaleString()+' FREEDOM x 2 players');
+  $('resSub').textContent=isSP?('Score: '+score.toLocaleString()+' pts - free practice'):('Wager: '+wager.toLocaleString()+' FREEDOM x 2 players');
   const hits=S.myHits.filter(h=>h.hit).length;
   const misses=S.myHits.filter(h=>!h.hit).length;
   const acc=(hits+misses>0)?Math.round((hits/(hits+misses))*100):0;
