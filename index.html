@@ -265,7 +265,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
       <div class="panel-title" style="justify-content:center">&#x1F4B0; Deposit Required</div>
       <div class="deposit-box">
         <p>Send exactly <strong id="depositAmount" style="color:var(--g)">0 FREEDOM</strong> to escrow:</p>
-        <div class="deposit-addr">GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu</div>
+        <div class="deposit-addr">Deposits paused for maintenance</div>
         <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">&#x1F98A; SEND VIA PHANTOM</button>
         <div class="deposit-status" id="depositStatusMsg" style="color:var(--dim);margin-top:10px"></div>
       </div>
@@ -393,6 +393,8 @@ window.addEventListener('load',async()=>{
 });
 
 async function sendDepositToEscrow(wagerAmount){
+  // DEPOSITS_PAUSED (2026-11-06): escrow wallet compromised, do not take deposits.
+  toast('Deposits are temporarily paused for maintenance. No tokens were sent. Please try again later.',6000);return false;
   if(!S.walletAddress){toast('Connect wallet first!');return false;}
   const msg=$('depositStatusMsg');
   const setMsg=(t,c)=>{msg.textContent=t;msg.style.color=c||'var(--g)';};
