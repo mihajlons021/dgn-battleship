@@ -5,6 +5,10 @@ import { initializeApp, cert, getApps } from 'firebase-admin/app';
 
 // ─── Security: only allow POST ───────────────────────────────────────────────
 export default async function handler(req, res) {
+  // PAYOUTS_DISABLED (2026-11-06): emergency lock. The old auth could be bypassed by anyone,
+  // so no payout is sent until a server-verified payout flow replaces this.
+  return res.status(503).json({ error: "Payouts are temporarily disabled" });
+
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', 'https://dgn-battleship.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
