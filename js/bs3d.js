@@ -217,18 +217,24 @@ export function createBattle3D(container, cfg = {}) {
   function fitDist() {
     const key = camera.aspect.toFixed(2); if (fitCache[key]) return fitCache[key];
     probe.fov = camera.fov; probe.aspect = camera.aspect; probe.updateProjectionMatrix();
-    const dir = new THREE.Vector3(0, 0.78, 0.63).normalize(), look = new THREE.Vector3(0, 0, 0.3);
+    const dir = new THREE.Vector3(0, 0.78, 0.63).normalize();
     const pts = []; for (const x of [-6, 5.4]) for (const z of [-6, 5.4]) pts.push(new THREE.Vector3(x, 0.4, z));
-    let d = 8; for (; d < 80; d += 0.25) {
-      probe.position.copy(look).addScaledVector(dir, d); probe.lookAt(look); probe.updateMatrixWorld(true);
-      if (pts.every(p => { const v = p.clone().project(probe); return Math.abs(v.x) < 0.94 && Math.abs(v.y) < 0.86; })) break;
+    // keep the top band free for the HUD panels; slide the look point so the grid sits below them
+    const top = 0.56, bot = -0.94;
+    let best = { d: 80, o: 0.3 };
+    for (let o = -3; o <= 1.01; o += 0.25) {
+      const look = new THREE.Vector3(0, 0, o);
+      for (let d = 8; d < best.d; d += 0.25) {
+        probe.position.copy(look).addScaledVector(dir, d); probe.lookAt(look); probe.updateMatrixWorld(true);
+        if (pts.every(p => { const v = p.clone().project(probe); return Math.abs(v.x) < 0.94 && v.y < top && v.y > bot; })) { best = { d, o }; break; }
+      }
     }
-    return (fitCache[key] = d);
+    return (fitCache[key] = best);
   }
   function desiredCam(side) {
-    const z = side === 'enemy' ? -GAP : GAP, d = fitDist();
-    const look = new THREE.Vector3(0, 0, z + 0.3);
-    const pos = look.clone().add(new THREE.Vector3(0, 0.78, 0.63).normalize().multiplyScalar(d));
+    const z = side === 'enemy' ? -GAP : GAP, f = fitDist();
+    const look = new THREE.Vector3(0, 0, z + f.o);
+    const pos = look.clone().add(new THREE.Vector3(0, 0.78, 0.63).normalize().multiplyScalar(f.d));
     return { look, pos };
   }
   function focus(side) { focusSide = side; turnEl.classList.toggle('enemy', side === 'me'); turnEl.textContent = side === 'enemy' ? 'YOUR TURN — FIRE!' : 'ENEMY FIRING — BRACE!'; }
@@ -236,22 +242,89 @@ export function createBattle3D(container, cfg = {}) {
 
   // ---------- picking ----------
   const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(), plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-  function cellAt(ev) {
+  function cellAt(ev, side = 'enemy') {
     const r = renderer.domElement.getBoundingClientRect();
     mouse.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(mouse, camera); const p = new THREE.Vector3(); if (!ray.ray.intersectPlane(plane, p)) return null;
-    const c = Math.floor(p.x + 5), rr = Math.floor(p.z + GAP + 5);
+    const c = Math.floor(p.x + 5), rr = Math.floor(p.z + (side === 'enemy' ? GAP : -GAP) + 5);
     if (c < 0 || c > 9 || rr < 0 || rr > 9) return null; return { r: rr, c };
   }
+  // ---------- fleet placement (ghost ship follows the pointer on your grid) ----------
+  let placing = null;   // { id, size, orient: 'H'|'V' }
+  const ghost = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.7, depthWrite: false, toneMapped: false }));
+  ghost.rotation.x = -Math.PI / 2; ghost.visible = false; ghost.layers.set(1); scene.add(ghost);
+  const ghostCells = [];
+  const cellMat = [new THREE.MeshBasicMaterial({ color: 0x7CFF2E, transparent: true, opacity: 0.28, depthWrite: false }), new THREE.MeshBasicMaterial({ color: 0xff3b3b, transparent: true, opacity: 0.35, depthWrite: false })];
+  for (let i = 0; i < 5; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.92), cellMat[0]); m.rotation.x = -Math.PI / 2; m.visible = false; m.layers.set(1); scene.add(m); ghostCells.push(m); }
+  function hideGhost() { ghost.visible = false; ghostCells.forEach(m => m.visible = false); }
+  function showGhost(r, c) {
+    const { id, size, orient } = placing, valid = cfg.canPlace ? cfg.canPlace(r, c) : true;
+    const cells = []; for (let i = 0; i < size; i++) cells.push(orient === 'H' ? [r, c + i] : [r + i, c]);
+    ghostCells.forEach((m, i) => {
+      if (i >= size) { m.visible = false; return; }
+      const [rr, cc] = cells[i]; m.visible = rr < 10 && cc < 10; m.material = cellMat[valid ? 0 : 1];
+      m.position.copy(cellPos('me', rr, cc)).setY(0.07);
+    });
+    const w = Math.min(1.15, Math.max(0.6, size * shipAspect[id - 1] * 1.8));
+    ghost.geometry.dispose(); ghost.geometry = new THREE.PlaneGeometry(size * 0.98, w);
+    ghost.material.map = shipTex[id - 1]; ghost.material.color.setHex(valid ? 0xffffff : 0xff6a6a); ghost.material.needsUpdate = true;
+    const last = cells[size - 1];
+    ghost.position.copy(cellPos('me', r, c).add(cellPos('me', Math.min(last[0], 9), Math.min(last[1], 9))).multiplyScalar(0.5)).setY(0.12);
+    ghost.rotation.z = orient === 'H' ? 0 : -Math.PI / 2; ghost.visible = true;
+  }
   renderer.domElement.addEventListener('pointermove', e => {
+    if (placing) {
+      const cell = cellAt(e, 'me');
+      if (cell) { showGhost(cell.r, cell.c); renderer.domElement.style.cursor = 'pointer'; } else { hideGhost(); renderer.domElement.style.cursor = 'default'; }
+      return;
+    }
     const G = grids.enemy, cell = (focusSide === 'enemy' && cfg.canFire && cfg.canFire()) ? cellAt(e) : null;
     G.ret.visible = !!cell; renderer.domElement.style.cursor = cell ? 'crosshair' : 'default';
     if (cell) G.ret.position.set(cell.c - 4.5, 0.1, cell.r - 4.5);
   });
   renderer.domElement.addEventListener('click', e => {
+    if (placing) { const cell = cellAt(e, 'me'); if (cell && cfg.onPlace) cfg.onPlace(cell.r, cell.c); return; }
     if (focusSide !== 'enemy' || !cfg.canFire || !cfg.canFire()) return;
     const cell = cellAt(e); if (cell && cfg.onFire) cfg.onFire(cell.r, cell.c);
   });
+  function setPlacing(p) {
+    placing = p; hideGhost(); container.classList.toggle('bs-placing', !!p);
+    if (p) { focusSide = 'me'; turnEl.classList.remove('enemy'); turnEl.textContent = 'DEPLOY YOUR FLEET'; }
+  }
+
+  // ---------- arcade HUD: you vs enemy, fleet status ----------
+  if (!document.getElementById('bs-hud-css')) {
+    const st = document.createElement('style'); st.id = 'bs-hud-css';
+    st.textContent = `
+.bs-hud{position:absolute;top:12px;z-index:2;pointer-events:none;width:min(330px,34%);padding:10px 12px;font-family:'Chakra Petch',sans-serif;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--c) 24%,transparent),rgba(6,8,12,.82) 60%);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));backdrop-filter:blur(6px)}
+.bs-hud.me{left:12px;--c:#7CFF2E}.bs-hud.en{right:12px;--c:#ff3b5c;text-align:right}
+.bs-hud .nm{font:400 clamp(18px,2vw,28px)/1 Anton,Impact,sans-serif;letter-spacing:.05em;color:#fff;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 14px var(--c)}
+.bs-hud .tg{font-size:10px;font-weight:700;letter-spacing:.28em;color:var(--c);margin-top:2px}
+.bs-hud .fl{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.bs-hud.en .fl{justify-content:flex-end}
+.bs-hud .fl span{position:relative;height:14px;display:block;background-size:contain;background-repeat:no-repeat;background-position:center;filter:drop-shadow(0 0 3px rgba(0,0,0,.8))}
+.bs-hud .fl span.dead{filter:grayscale(1) brightness(.45)}
+.bs-hud .fl span.dead:after{content:'';position:absolute;left:-2px;right:-2px;top:50%;height:2px;background:#ff3b3b;transform:rotate(-12deg);box-shadow:0 0 6px #ff3b3b}
+.bs-hud .bar{height:4px;margin-top:8px;background:rgba(255,255,255,.1)}.bs-hud .bar b{display:block;height:100%;width:0;background:var(--c);box-shadow:0 0 8px var(--c);transition:width .5s}
+.bs-hud.en .bar b{margin-left:auto}
+.bs-hud .ct{font-size:11px;font-weight:700;letter-spacing:.18em;color:#cfd3dc;margin-top:4px}
+.bs-placing .bs-hud{display:none}
+@media(max-width:700px){.bs-hud{width:46%;padding:6px 8px}.bs-hud .fl span{height:10px}}`;
+    document.head.appendChild(st);
+  }
+  const hud = {};
+  ['me', 'en'].forEach(k => { const el = document.createElement('div'); el.className = 'bs-hud ' + k;
+    el.innerHTML = `<div class="nm"></div><div class="tg"></div><div class="fl">${SHIP_IMG.map((n, i) => `<span style="width:${[64, 52, 42, 42, 30][i]}px;background-image:url(assets/ships/${n}.png)"></span>`).join('')}</div><div class="bar"><b></b></div><div class="ct"></div>`;
+    container.appendChild(el); hud[k] = el; });
+  function setHud(k, { name, tag, sunk = [], hits = 0, total = 17 }) {
+    const el = hud[k]; if (!el) return;
+    if (name !== undefined) el.querySelector('.nm').textContent = name;
+    if (tag !== undefined) el.querySelector('.tg').textContent = tag;
+    el.querySelectorAll('.fl span').forEach((s, i) => s.classList.toggle('dead', sunk.includes(i + 1)));
+    el.querySelector('.bar b').style.width = Math.round(hits / total * 100) + '%';
+    el.querySelector('.ct').textContent = (5 - sunk.length) + ' SHIPS AFLOAT · DAMAGE ' + hits + '/' + total;
+  }
 
   // ---------- KILL-CAM: cinematic close-up when a ship is destroyed ----------
   if (!document.getElementById('bs-kc-css')) {
@@ -397,6 +470,10 @@ export function createBattle3D(container, cfg = {}) {
 
   return {
     setMyFleet: grid => setFleet('me', grid, true),
+    setPlacing, setHud,
+    // screen position (client px) of a cell centre - used by tests and tutorials
+    cellToScreen: (side, r, c) => { const v = cellPos(side, r, c).project(camera), b = renderer.domElement.getBoundingClientRect(); return [b.left + (v.x + 1) / 2 * b.width, b.top + (1 - v.y) / 2 * b.height]; },
+    busy: () => !!camOverride,
     shoot, focus, banner,
     victory: () => banner('VICTORY!', 'ENEMY FLEET DESTROYED', true, 2200),
     defeat: () => banner('DEFEATED', 'YOUR FLEET IS AT THE BOTTOM', false, 2200),

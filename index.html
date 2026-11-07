@@ -190,9 +190,14 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
 <style>
-#bs3d{display:none;width:100%;height:calc(100vh - 230px);min-height:440px;border-radius:14px;overflow:hidden;border:1px solid rgba(124,255,46,.35);box-shadow:0 0 40px rgba(124,255,46,.12)}
+#bs3d{display:none;width:100%;height:calc(100vh - 150px);min-height:440px;border-radius:14px;overflow:hidden;border:1px solid rgba(124,255,46,.35);box-shadow:0 0 40px rgba(124,255,46,.12)}
 body.has3d #bs3d{display:block}
 body.has3d .boards-wrap{display:none}
+body.has3d #battleScreen .b-top,body.has3d #battleScreen .pot-c,body.has3d #battleScreen .prog-w{display:none}
+body.has3d #placementScreen .grid-wrap{display:none}
+body.has3d #placementScreen{max-width:min(1400px,96vw)!important}
+body.has3d #placementScreen > div{max-width:none!important;width:100%!important}
+body.has3d #placementScreen #bs3d{height:calc(100vh - 290px);margin:10px 0}
 body.has3d #battleScreen > div{max-width:none!important;width:100%!important}
 </style>
 </head>
@@ -377,7 +382,9 @@ function ensure3D(){
   if(B3||b3Fail)return B3;
   try{B3=createBattle3D($('bs3d'),{
     canFire:()=>!animating&&(S.mode==='sp'?S.isPlayerTurn:mpMyTurn),
-    onFire:(r,c)=>{if(S.mode==='sp')handleSPPlayerFire(r,c);else fireAt(r,c);}
+    onFire:(r,c)=>{if(S.mode==='sp')handleSPPlayerFire(r,c);else fireAt(r,c);},
+    canPlace:(r,c)=>{const sh=S.selShip;if(!sh||S.placedShips.find(x=>x.name===sh.name))return false;for(let i=0;i<sh.size;i++){const rr=S.orient==='H'?r:r+i,cc=S.orient==='H'?c+i:c;if(rr>=10||cc>=10||S.myGrid[rr][cc]!==0)return false;}return true;},
+    onPlace:(r,c)=>placeShip(r,c)
   });document.body.classList.add('has3d');}catch(e){b3Fail=true;console.warn('3D unavailable',e);}
   return B3;
 }
@@ -387,7 +394,13 @@ function sunkInfo(grid,hits,r,c){
   for(let i=0;i<10;i++)for(let j=0;j<10;j++)if(grid[i][j]===id)cells.push([i,j]);
   return cells.every(([i,j])=>hits.some(h=>h.hit&&h.key===i+'-'+j))?{id,cells}:null;
 }
-function anim3D(shot){if(!B3)return Promise.resolve();anim=anim.then(async()=>{animating=true;try{await B3.shoot(shot);}finally{animating=false;}});return anim;}
+function anim3D(shot){if(!B3)return Promise.resolve();anim=anim.then(async()=>{animating=true;try{await B3.shoot(shot);}finally{animating=false;updHud();}});return anim;}
+function mountB3(where){const el=$('bs3d');if(!el)return;if(where==='place')$('placeGrid').closest('.grid-wrap').before(el);else{document.querySelector('#battleScreen .boards-wrap').before(el);setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150);}}
+function sync3DPlacement(){if(!B3)return;B3.setMyFleet(S.myGrid);B3.setPlacing(S.selShip&&!S.placedShips.find(x=>x.name===S.selShip.name)?{id:SHIPS.indexOf(S.selShip)+1,size:S.selShip.size,orient:S.orient}:null);updHud();}
+function sunkIds(grid,hits){const out=[];if(!grid)return out;for(let id=1;id<=5;id++){const cells=[];for(let i=0;i<10;i++)for(let j=0;j<10;j++)if(grid[i][j]===id)cells.push(i+'-'+j);if(cells.length&&cells.every(k=>hits.some(h=>h.hit&&h.key===k)))out.push(id);}return out;}
+function updHud(){if(!B3)return;const enGrid=S.mode==='sp'?S.aiGrid:S.enemyGrid;
+  B3.setHud('me',{name:S.nickname||'YOU',tag:'★ YOUR FLEET',sunk:sunkIds(S.myGrid,S.enemyHits||[]),hits:(S.enemyHits||[]).filter(h=>h.hit).length});
+  B3.setHud('en',{name:S.mode==='sp'?'AI ADMIRAL':(S.enemyName||'ENEMY'),tag:S.mode==='sp'?'BOT · ENEMY FLEET':'ENEMY FLEET',sunk:sunkIds(enGrid,S.myHits||[]),hits:(S.myHits||[]).filter(h=>h.hit).length});}
 function newGrid(){return Array(10).fill(null).map(()=>Array(10).fill(0));}
 
 $('walletBtn').addEventListener('click',async()=>{
@@ -606,6 +619,7 @@ function startPlacement(){
   if(S.mode==='sp'){pill.textContent='VS AI - PLACE YOUR FLEET';pill.className='ppill ppill-g';}
   else{pill.textContent=S.playerId==='p1'?'PLAYER 1 - YOUR FLEET':'PLAYER 2 - YOUR FLEET';pill.className='ppill '+(S.playerId==='p1'?'ppill-g':'ppill-p');}
   renderTray();renderPlaceGrid();
+  if(ensure3D()){mountB3('place');sync3DPlacement();}
 }
 function renderTray(){
   const el=$('shipTray');el.innerHTML='';
@@ -618,6 +632,7 @@ function renderTray(){
     if(!placed)d.onclick=()=>{S.selShip=ship;renderTray();};
     el.appendChild(d);
   });
+  sync3DPlacement();
 }
 function renderPlaceGrid(hr,hc){
   if(hr===undefined)hr=-1;if(hc===undefined)hc=-1;
@@ -669,8 +684,9 @@ function placeShip(r,c){
   if(S.placedShips.length===SHIPS.length)$('readyBtn').disabled=false;
   renderTray();renderPlaceGrid();
 }
-$('btnH').addEventListener('click',()=>{S.orient='H';$('btnH').classList.add('active');$('btnV').classList.remove('active');});
-$('btnV').addEventListener('click',()=>{S.orient='V';$('btnV').classList.add('active');$('btnH').classList.remove('active');});
+$('btnH').addEventListener('click',()=>{S.orient='H';$('btnH').classList.add('active');$('btnV').classList.remove('active');sync3DPlacement();});
+$('btnV').addEventListener('click',()=>{S.orient='V';$('btnV').classList.add('active');$('btnH').classList.remove('active');sync3DPlacement();});
+addEventListener('keydown',e=>{if((e.key==='r'||e.key==='R')&&$('placementScreen').classList.contains('active'))$(S.orient==='H'?'btnV':'btnH').click();});
 $('btnRandom').addEventListener('click',()=>{
   S.myGrid=newGrid();S.placedShips=[];
   for(const ship of SHIPS){
@@ -692,7 +708,7 @@ $('readyBtn').addEventListener('click',async()=>{
     S.startTime=Date.now();S.turnCount=0;S.gameStats={hits:0,misses:0};S.isPlayerTurn=true;
     showScreen('battleScreen');$('battlePotVal').textContent='VS AI - FREE PRACTICE';
     renderBoards();updateTurnBox(true);addLog('Battle vs AI commenced!','l-info');
-    if(ensure3D()){B3.setMyFleet(S.myGrid);B3.focus('enemy');}return;
+    if(ensure3D()){mountB3('battle');B3.setPlacing(null);B3.setMyFleet(S.myGrid);B3.focus('enemy');updHud();}return;
   }
   showWait('WAITING FOR OPPONENT...');
   await update(ref(db,'rooms/'+S.roomCode+'/'+S.playerId),{ready:true,grid:flatGrid(S.myGrid),hits:''});
@@ -772,7 +788,7 @@ async function endSPGame(won){
   }
   showResultScreen(won,0,score,true);
 }
-function startMPBattle(data){showScreen('battleScreen');S.myHits=[];S.enemyHits=[];if(ensure3D()){B3.setMyFleet(S.myGrid);}$('battlePotVal').textContent=(S.wager*2).toLocaleString()+' FREEDOM';renderBoards();listenBattle();}
+function startMPBattle(data){showScreen('battleScreen');S.myHits=[];S.enemyHits=[];const eid0=S.playerId==='p1'?'p2':'p1';S.enemyName=data[eid0]?.nickname||'ENEMY';S.enemyGrid=data[eid0]?.grid?parseGrid(data[eid0].grid):null;if(ensure3D()){mountB3('battle');B3.setPlacing(null);B3.setMyFleet(S.myGrid);updHud();}$('battlePotVal').textContent=(S.wager*2).toLocaleString()+' FREEDOM';renderBoards();listenBattle();}
 function renderBoards(){buildGrid($('atkGrid'),true,false,S.myHits);buildGrid($('defGrid'),false,true,S.enemyHits);updateProgress();}
 function buildGrid(container,clickable,showShips,hits){
   container.innerHTML='';
