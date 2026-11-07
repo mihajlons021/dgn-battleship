@@ -390,6 +390,7 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-ap
 import{getDatabase,ref,set,get,update,onValue,remove,off,push}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const FB={apiKey:"AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",authDomain:"project-freedom-a004e.firebaseapp.com",databaseURL:"https://project-freedom-a004e-default-rtdb.firebaseio.com",projectId:"project-freedom-a004e",storageBucket:"project-freedom-a004e.firebasestorage.app",messagingSenderId:"844172246267",appId:"1:844172246267:web:023a064294d369d2f7845e"};
 import { createBattle3D } from './js/bs3d.js';
+import { SFX } from './js/sfx.js';
 const app=initializeApp(FB);
 const db=getDatabase(app);
 const SHIPS=[{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
@@ -403,7 +404,9 @@ const HELIUS_RPC="https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a
 const PRIORITY_FEE=500000;
 let S={mode:null,roomCode:null,playerId:null,nickname:null,wager:0,myGrid:null,orient:'H',selShip:null,placedShips:[],myHits:[],enemyHits:[],aiGrid:null,aiHitStack:[],isPlayerTurn:true,turnCount:0,startTime:null,gameStats:{hits:0,misses:0},walletAddress:null,depositTxSig:null};
 const $=id=>document.getElementById(id);
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');
+  // music: full volume in the menus, ducked to 15% once you are deploying / fighting
+  if(id==='placementScreen'||id==='battleScreen')SFX.game();else SFX.menu();}
 function showWait(t){$('waitTxt').textContent=t;$('waitingOverlay').classList.add('show');}
 function hideWait(){$('waitingOverlay').classList.remove('show');}
 function toast(m,d=3000){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
@@ -418,7 +421,8 @@ function ensure3D(){
     canFire:()=>!animating&&(S.mode==='sp'?S.isPlayerTurn:mpMyTurn),
     onFire:(r,c)=>{if(S.mode==='sp')handleSPPlayerFire(r,c);else fireAt(r,c);},
     canPlace:(r,c)=>{const sh=S.selShip;if(!sh||S.placedShips.find(x=>x.name===sh.name))return false;for(let i=0;i<sh.size;i++){const rr=S.orient==='H'?r:r+i,cc=S.orient==='H'?c+i:c;if(rr>=10||cc>=10||S.myGrid[rr][cc]!==0)return false;}return true;},
-    onPlace:(r,c)=>placeShip(r,c)
+    onPlace:(r,c)=>placeShip(r,c),
+    sfx:SFX
   });document.body.classList.add('has3d');}catch(e){b3Fail=true;console.warn('3D unavailable',e);}
   return B3;
 }

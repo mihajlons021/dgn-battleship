@@ -397,7 +397,7 @@ export function createBattle3D(container, cfg = {}) {
         while (bi < booms.length && ms >= booms[bi]) {
           const off = (bi % 2 ? 1 : -1) * (0.3 + Math.random() * 0.9);
           const p = centre.clone().addScaledVector(along, bi === 0 ? 0 : off).setY(0.25);
-          blastFx(p, bi === 0 ? 1.35 : 0.85);
+          blastFx(p, bi === 0 ? 1.35 : 0.85); if (bi === 0) sfx('explosion', 1.6); else sfx('detonation');
           if (bi % 2) splashFx(centre.clone().addScaledVector(along, -off * 1.4).add(new THREE.Vector3(R(-.5, .5), 0.1, R(-.5, .5))));
           bi++;
         }
@@ -427,8 +427,9 @@ export function createBattle3D(container, cfg = {}) {
     await wait(side === 'me' ? 650 : 120);
     const to = cellPos(side, r, c).setY(0.1);
     const from = side === 'enemy' ? new THREE.Vector3(R(-6, 6), 0.5, GAP + 9) : new THREE.Vector3(R(-6, 6), 0.5, -GAP - 12);
+    sfx('launch', 0.95);
     await fireShell(from, to, 0.95);
-    if (hit) { blastFx(to, 1); addFire(side, r, c); } else { splashFx(to); addMiss(side, r, c); }
+    if (hit) { blastFx(to, 1); addFire(side, r, c); sfx('explosion', 1); } else { splashFx(to); addMiss(side, r, c); sfx('splash'); }
     if (hit && sunk) {
       await wait(350);
       const G = grids[side];
@@ -437,10 +438,13 @@ export function createBattle3D(container, cfg = {}) {
       ship.visible = true;
       sunk.cells.forEach(([rr, cc]) => { if (rr !== r || cc !== c) addFire(side, rr, cc); });
       await killCam(side, ship, sunk.id);
+      if (side === 'enemy') sfx('cheer');
       await banner('SHIP DOWN!', (side === 'enemy' ? 'ENEMY ' : 'YOUR ') + SHIP_NAME[sunk.id - 1] + ' SUNK', side === 'enemy', 1300);
     }
   }
   const wait = ms => new Promise(r => setTimeout(r, ms));
+  // sound hooks: cfg.sfx is optional, so the 3D view also works silently
+  function sfx(name, ...args) { try { cfg.sfx && cfg.sfx[name] && cfg.sfx[name](...args); } catch (e) { /* audio must never break the game */ } }
 
   // ---------- loop ----------
   function resize() {
@@ -481,7 +485,7 @@ export function createBattle3D(container, cfg = {}) {
     cellToScreen: (side, r, c) => { const v = cellPos(side, r, c).project(camera), b = renderer.domElement.getBoundingClientRect(); return [b.left + (v.x + 1) / 2 * b.width, b.top + (1 - v.y) / 2 * b.height]; },
     busy: () => !!camOverride,
     shoot, focus, banner,
-    victory: () => banner('VICTORY!', 'ENEMY FLEET DESTROYED', true, 3800),
-    defeat: () => banner('DEFEATED', 'YOUR FLEET IS AT THE BOTTOM', false, 2200),
+    victory: () => { sfx('victory'); return banner('VICTORY!', 'ENEMY FLEET DESTROYED', true, 3800); },
+    defeat: () => { sfx('defeat'); return banner('DEFEATED', 'YOUR FLEET IS AT THE BOTTOM', false, 2200); },
   };
 }
