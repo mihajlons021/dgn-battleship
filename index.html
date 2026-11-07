@@ -187,6 +187,14 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 .brand-foot{text-align:center;padding:18px;border-top:1px solid rgba(57,255,20,0.06);margin-top:16px}
 @media(max-width:600px){.cell{width:25px;height:25px}.gcl,.grl{width:25px}.boards-wrap{gap:8px}.wopt{font-size:12px;padding:12px 4px}.mode-grid{grid-template-columns:1fr}}
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
+<style>
+#bs3d{display:none;width:100%;height:calc(100vh - 230px);min-height:440px;border-radius:14px;overflow:hidden;border:1px solid rgba(124,255,46,.35);box-shadow:0 0 40px rgba(124,255,46,.12)}
+body.has3d #bs3d{display:block}
+body.has3d .boards-wrap{display:none}
+body.has3d #battleScreen > div{max-width:none!important;width:100%!important}
+</style>
 </head>
 <body>
 <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
@@ -315,6 +323,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
       <div class="pc"><div class="plbl"><span style="color:#ff6060">YOUR HITS</span><span id="myHC">0/17</span></div><div class="pbar"><div class="pfill pf-a" id="myHBar" style="width:0%"></div></div></div>
       <div class="pc"><div class="plbl"><span style="color:rgba(155,48,255,0.8)">ENEMY HITS</span><span id="enHC">0/17</span></div><div class="pbar"><div class="pfill pf-d" id="enHBar" style="width:0%"></div></div></div>
     </div>
+    <div id="bs3d"></div>
     <div class="boards-wrap">
       <div class="bcol"><div class="blbl bl-atk">&#x2694; ENEMY WATERS</div><div class="grid-wrap"><div class="gc" id="atkGrid"></div></div></div>
       <div class="bcol"><div class="blbl bl-def">&#x1F6E1; YOUR FLEET</div><div class="grid-wrap"><div class="gc" id="defGrid"></div></div></div>
@@ -341,6 +350,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 15px rgba(57,255,20,0.12)}
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getDatabase,ref,set,get,update,onValue,remove,off,push}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const FB={apiKey:"AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",authDomain:"project-freedom-a004e.firebaseapp.com",databaseURL:"https://project-freedom-a004e-default-rtdb.firebaseio.com",projectId:"project-freedom-a004e",storageBucket:"project-freedom-a004e.firebasestorage.app",messagingSenderId:"844172246267",appId:"1:844172246267:web:023a064294d369d2f7845e"};
+import { createBattle3D } from './js/bs3d.js';
 const app=initializeApp(FB);
 const db=getDatabase(app);
 const SHIPS=[{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
@@ -361,6 +371,23 @@ function toast(m,d=3000){const t=$('toast');t.textContent=m;t.classList.add('sho
 function genCode(){return 'DGN-'+Math.floor(1000+Math.random()*9000);}
 function flatGrid(g){return g.map(r=>r.join(',')).join(';');}
 function parseGrid(f){return f.split(';').map(r=>r.split(',').map(Number));}
+// ---- 3D battle view ----
+let B3=null,b3Fail=false,animating=false,anim=Promise.resolve(),mpMyTurn=false;
+function ensure3D(){
+  if(B3||b3Fail)return B3;
+  try{B3=createBattle3D($('bs3d'),{
+    canFire:()=>!animating&&(S.mode==='sp'?S.isPlayerTurn:mpMyTurn),
+    onFire:(r,c)=>{if(S.mode==='sp')handleSPPlayerFire(r,c);else fireAt(r,c);}
+  });document.body.classList.add('has3d');}catch(e){b3Fail=true;console.warn('3D unavailable',e);}
+  return B3;
+}
+// is the ship at (r,c) now fully hit? -> {id,cells}
+function sunkInfo(grid,hits,r,c){
+  const id=grid&&grid[r][c];if(!id)return null;const cells=[];
+  for(let i=0;i<10;i++)for(let j=0;j<10;j++)if(grid[i][j]===id)cells.push([i,j]);
+  return cells.every(([i,j])=>hits.some(h=>h.hit&&h.key===i+'-'+j))?{id,cells}:null;
+}
+function anim3D(shot){if(!B3)return Promise.resolve();anim=anim.then(async()=>{animating=true;try{await B3.shoot(shot);}finally{animating=false;}});return anim;}
 function newGrid(){return Array(10).fill(null).map(()=>Array(10).fill(0));}
 
 $('walletBtn').addEventListener('click',async()=>{
@@ -664,7 +691,8 @@ $('readyBtn').addEventListener('click',async()=>{
     S.aiGrid=placeShipsRandom();S.myHits=[];S.enemyHits=[];S.aiHitStack=[];
     S.startTime=Date.now();S.turnCount=0;S.gameStats={hits:0,misses:0};S.isPlayerTurn=true;
     showScreen('battleScreen');$('battlePotVal').textContent='VS AI - FREE PRACTICE';
-    renderBoards();updateTurnBox(true);addLog('Battle vs AI commenced!','l-info');return;
+    renderBoards();updateTurnBox(true);addLog('Battle vs AI commenced!','l-info');
+    if(ensure3D()){B3.setMyFleet(S.myGrid);B3.focus('enemy');}return;
   }
   showWait('WAITING FOR OPPONENT...');
   await update(ref(db,'rooms/'+S.roomCode+'/'+S.playerId),{ready:true,grid:flatGrid(S.myGrid),hits:''});
@@ -703,27 +731,29 @@ function aiChooseTarget(){
   for(let r=0;r<10;r++)for(let c=0;c<10;c++){if(!S.enemyHits.find(h=>h.key===r+'-'+c))untried.push({r,c});}
   return untried[Math.floor(Math.random()*untried.length)];
 }
-function handleSPPlayerFire(r,c){
-  const k=r+'-'+c;if(S.myHits.find(h=>h.key===k)||!S.isPlayerTurn)return;
+async function handleSPPlayerFire(r,c){
+  const k=r+'-'+c;if(S.myHits.find(h=>h.key===k)||!S.isPlayerTurn||animating)return;
   S.isPlayerTurn=false;const isHit=S.aiGrid[r][c]>0;
   S.myHits.push({key:k,hit:isHit,r,c});S.turnCount++;
   if(isHit){S.gameStats.hits++;addLog('Hit '+COLS[c]+(r+1)+'!','l-hit');}
   else{S.gameStats.misses++;addLog('Missed '+COLS[c]+(r+1),'l-miss');}
   renderBoards();updateProgress();
-  if(S.myHits.filter(h=>h.hit).length>=TOTAL){endSPGame(true);return;}
-  if(isHit){S.isPlayerTurn=true;updateTurnBox(true);}
-  else{updateTurnBox(false);setTimeout(doAITurn,AI_DELAY);}
+  await anim3D({side:'enemy',r,c,hit:isHit,sunk:isHit?sunkInfo(S.aiGrid,S.myHits,r,c):null});
+  if(S.myHits.filter(h=>h.hit).length>=TOTAL){if(B3)await B3.victory();endSPGame(true);return;}
+  if(isHit){S.isPlayerTurn=true;updateTurnBox(true);if(B3)B3.focus('enemy');}
+  else{updateTurnBox(false);setTimeout(doAITurn,B3?300:AI_DELAY);}
 }
-function doAITurn(){
+async function doAITurn(){
   const target=aiChooseTarget();if(!target)return;
   const k=target.r+'-'+target.c;const isHit=S.myGrid[target.r][target.c]>0;
   S.enemyHits.push({key:k,hit:isHit,r:target.r,c:target.c});
   if(isHit){S.aiHitStack.push(target);addLog('AI hit '+COLS[target.c]+(target.r+1)+'!','l-sunk');}
   else{addLog('AI missed '+COLS[target.c]+(target.r+1),'l-miss');}
   renderBoards();updateProgress();
-  if(S.enemyHits.filter(h=>h.hit).length>=TOTAL){endSPGame(false);return;}
-  if(isHit){setTimeout(doAITurn,AI_DELAY);}
-  else{S.isPlayerTurn=true;updateTurnBox(true);}
+  await anim3D({side:'me',r:target.r,c:target.c,hit:isHit,sunk:isHit?sunkInfo(S.myGrid,S.enemyHits,target.r,target.c):null});
+  if(S.enemyHits.filter(h=>h.hit).length>=TOTAL){if(B3)await B3.defeat();endSPGame(false);return;}
+  if(isHit){setTimeout(doAITurn,B3?250:AI_DELAY);}
+  else{S.isPlayerTurn=true;updateTurnBox(true);if(B3)B3.focus('enemy');}
 }
 function calcScore(won){
   if(!won)return 0;
@@ -742,7 +772,7 @@ async function endSPGame(won){
   }
   showResultScreen(won,0,score,true);
 }
-function startMPBattle(data){showScreen('battleScreen');S.myHits=[];S.enemyHits=[];$('battlePotVal').textContent=(S.wager*2).toLocaleString()+' FREEDOM';renderBoards();listenBattle();}
+function startMPBattle(data){showScreen('battleScreen');S.myHits=[];S.enemyHits=[];if(ensure3D()){B3.setMyFleet(S.myGrid);}$('battlePotVal').textContent=(S.wager*2).toLocaleString()+' FREEDOM';renderBoards();listenBattle();}
 function renderBoards(){buildGrid($('atkGrid'),true,false,S.myHits);buildGrid($('defGrid'),false,true,S.enemyHits);updateProgress();}
 function buildGrid(container,clickable,showShips,hits){
   container.innerHTML='';
@@ -796,14 +826,18 @@ function listenBattle(){
     const newEH=d[eid]?.hits?JSON.parse(d[eid].hits):[];
     if(newMH.length>S.myHits.length){const last=newMH[newMH.length-1];addLog(last.hit?'Hit '+COLS[last.c]+(last.r+1)+'!':'Missed '+COLS[last.c]+(last.r+1),last.hit?'l-hit':'l-miss');}
     if(newEH.length>S.enemyHits.length){const last=newEH[newEH.length-1];addLog(last.hit?'Enemy hit '+COLS[last.c]+(last.r+1)+'!':'Enemy missed '+COLS[last.c]+(last.r+1),last.hit?'l-sunk':'l-miss');}
+    const egrid=d[eid]?.grid?parseGrid(d[eid].grid):null;
+    newMH.slice(S.myHits.length).forEach(h=>anim3D({side:'enemy',r:h.r,c:h.c,hit:h.hit,sunk:h.hit?sunkInfo(egrid,newMH,h.r,h.c):null}));
+    newEH.slice(S.enemyHits.length).forEach(h=>anim3D({side:'me',r:h.r,c:h.c,hit:h.hit,sunk:h.hit?sunkInfo(S.myGrid,newEH,h.r,h.c):null}));
     S.myHits=newMH;S.enemyHits=newEH;renderBoards();
-    const mine=d.currentTurn===S.playerId;
+    const mine=d.currentTurn===S.playerId;mpMyTurn=mine&&d.status==='battle';
+    if(B3&&d.status==='battle')anim.then(()=>B3.focus(mine?'enemy':'me'));
     const tb=$('turnBox');tb.textContent=mine?'YOUR TURN - FIRE!':'ENEMY TURN - STANDBY...';tb.className='turn-box '+(mine?'t-mine':'t-enemy');
     if(d.status==='finished'&&d.winner){
       off(r);const won=d.winner===S.playerId;const wager=parseFloat(d.wager)||0;
       const score=newMH.filter(h=>h.hit).length*50;
       if(won){saveToLeaderboard('pvp_points',S.nickname,score);saveToLeaderboard('pvp_tokens',S.nickname,wager*2);triggerPayout(S.roomCode,S.walletAddress,wager);}
-      showResultScreen(won,wager,score,false);
+      anim.then(async()=>{if(B3)await(won?B3.victory():B3.defeat());showResultScreen(won,wager,score,false);});
     }
   });
 }
