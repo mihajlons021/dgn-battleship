@@ -199,10 +199,32 @@ header .h-sub{margin:10px 0 0!important}
 .res-shiba{display:none}
 #resultScreen.won .res-icon{display:none}
 #resultScreen.won .res-wrap{max-width:860px!important;display:grid;grid-template-columns:minmax(180px,300px) 1fr;column-gap:28px;align-items:center;text-align:left}
-#resultScreen.won .res-shiba{display:block;grid-row:1 / span 20;width:100%;height:auto;max-height:70vh;object-fit:contain;filter:drop-shadow(0 0 30px rgba(124,255,46,.35)) drop-shadow(0 20px 30px rgba(0,0,0,.7));animation:shibaIn .7s cubic-bezier(.2,1.4,.4,1) both}
+#resultScreen.won .res-shiba{display:block;grid-row:1 / span 20;width:100%;max-width:300px;max-height:70vh;margin:0 auto;--play:running}
 #resultScreen.won .res-wrap > *:not(.res-shiba){grid-column:2}
 #resultScreen.won .res-wrap .btn{margin-left:0!important}
-@keyframes shibaIn{from{opacity:0;transform:translateX(-80px) scale(.85)}to{opacity:1;transform:none}}
+/* Shiba victory: swings in holding the rifle with both hands, jolts, then throws it over the shoulder */
+.shiba-stage{position:relative;aspect-ratio:480/1012;perspective:1100px;--play:paused}
+.shiba-stage:before{content:'';position:absolute;left:8%;right:8%;bottom:-2%;height:6%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent);filter:blur(4px)}
+.shiba-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform-origin:50% 92%;filter:drop-shadow(0 0 30px rgba(124,255,46,.38)) drop-shadow(0 18px 24px rgba(0,0,0,.75));animation-duration:2.4s;animation-fill-mode:both;animation-timing-function:cubic-bezier(.25,.9,.3,1);animation-play-state:var(--play)}
+.shiba-stage .p1{animation-name:shibaReady}
+.shiba-stage .p2{animation-name:shibaShoulder}
+.shiba-stage .fx{position:absolute;left:-10%;top:4%;width:120%;height:30%;pointer-events:none;background:radial-gradient(closest-side,rgba(255,255,255,.95),rgba(200,255,120,.55) 35%,rgba(124,255,46,0) 70%);mix-blend-mode:screen;opacity:0;animation:shibaFlash 2.4s both;animation-play-state:var(--play)}
+@keyframes shibaReady{
+  0%{opacity:0;transform:translateX(-70%) rotateY(62deg) scale(.82)}
+  24%{opacity:1;transform:translateX(3%) rotateY(-10deg) scale(1.02)}
+  32%{transform:translateX(0) rotateY(0) scale(1)}
+  40%{transform:translateY(-1.2%) rotate(-1.5deg) scale(1.01)}
+  47%{transform:translateY(0) rotate(0)}
+  60%{opacity:1;transform:rotateY(12deg) rotate(1.5deg) translateY(-1%)}
+  70%{opacity:0;transform:rotateY(22deg) translateY(-2.5%)}
+  100%{opacity:0;transform:rotateY(22deg)}}
+@keyframes shibaShoulder{
+  0%,58%{opacity:0;transform:rotateY(-18deg) translateY(2%) scale(.98)}
+  72%{opacity:1;transform:rotateY(5deg) translateY(-3%) scale(1.02)}
+  84%{transform:rotateY(-2deg) translateY(.6%) scale(1)}
+  100%{opacity:1;transform:none}}
+@keyframes shibaFlash{0%,60%{opacity:0;transform:scale(.4)}68%{opacity:1;transform:scale(1.15)}82%,100%{opacity:0;transform:scale(1.4)}}
+@media (prefers-reduced-motion:reduce){.shiba-stage img,.shiba-stage .fx{animation:none!important}.shiba-stage .p1,.shiba-stage .fx{opacity:0}.shiba-stage .p2{opacity:1}}
 @media(max-width:640px){#resultScreen.won .res-wrap{grid-template-columns:1fr;text-align:center}#resultScreen.won .res-wrap > *{grid-column:1!important}#resultScreen.won .res-shiba{grid-row:auto;max-height:42vh;margin:0 auto}#resultScreen.won .res-wrap .btn{margin:0 auto 12px!important}}
 body.has3d .boards-wrap{display:none}
 body.has3d #battleScreen .b-top,body.has3d #battleScreen .pot-c,body.has3d #battleScreen .prog-w{display:none}
@@ -350,7 +372,7 @@ body.has3d #battleScreen > div{max-width:none!important;width:100%!important}
 </div>
 <div class="screen" id="resultScreen">
   <div class="res-wrap" style="max-width:520px;margin:48px auto;padding:0 20px;text-align:center">
-    <img class="res-shiba" id="resShiba" src="assets/brand/shiba-soldier.png" alt="DegenSafe Shiba soldier saluting the winner">
+    <div class="res-shiba shiba-stage" id="resShiba" role="img" aria-label="DegenSafe Shiba soldier throws his rifle over his shoulder for the winner"><img class="p1" src="assets/brand/shiba-pose-ready.png" alt=""><img class="p2" src="assets/brand/shiba-pose-shoulder.png" alt=""><i class="fx"></i></div>
     <span class="res-icon" id="resIcon">&#x1F3C6;</span>
     <div class="res-title" id="resTitle">VICTORY!</div>
     <div style="font-size:12px;color:var(--dim);margin-bottom:6px;letter-spacing:2px">WINNER TAKES ALL</div>
@@ -888,7 +910,7 @@ function showResultScreen(won,wager,score,isSP){
   $('resIcon').textContent=won?'WIN':'LOSS';
   $('resTitle').textContent=won?'VICTORY!':'DEFEATED!';
   $('resTitle').className='res-title '+(won?'rt-win':'rt-lose');
-  $('resultScreen').classList.toggle('won',!!won);
+  $('resultScreen').classList.remove('won');void $('resultScreen').offsetWidth;$('resultScreen').classList.toggle('won',!!won);
   const prize=won?(isSP?0:wager*2):0;
   $('resPrize').textContent=isSP?score.toLocaleString():prize.toLocaleString();
   $('resSub').textContent=isSP?('Score: '+score.toLocaleString()+' pts - free practice'):('Wager: '+wager.toLocaleString()+' FREEDOM x 2 players');

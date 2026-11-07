@@ -187,10 +187,9 @@ export function createBattle3D(container, cfg = {}) {
 .bs-ban .bg{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,60,40,.35),rgba(5,4,10,.75) 65%)}
 .bs-ban.win .bg{background:radial-gradient(circle,rgba(124,255,46,.32),rgba(5,4,10,.75) 65%)}
 .bs-ban .row{position:relative;display:flex;align-items:center;gap:clamp(10px,3vw,48px)}
-.bs-ban .shiba{display:none;height:min(72vh,640px);width:auto;filter:drop-shadow(0 0 40px rgba(124,255,46,.45)) drop-shadow(0 25px 30px rgba(0,0,0,.8))}
-.bs-ban.win .shiba{display:block;opacity:0}
-.bs-ban.win.on .shiba{animation:bsShiba .6s .15s cubic-bezier(.2,1.3,.4,1) forwards}
-@keyframes bsShiba{from{opacity:0;transform:translateX(-120px) scale(.8)}to{opacity:1;transform:none}}
+.bs-ban .shiba{display:none;height:min(72vh,640px)}
+.bs-ban.win .shiba{display:block}
+.bs-ban.win.on .shiba{--play:running}
 @media(max-width:700px){.bs-ban .row{flex-direction:column;gap:0}.bs-ban .shiba{height:38vh}}
 .bs-ban .t{position:relative;text-align:center;transform:scale(0) rotate(-6deg)}
 .bs-ban.on .t{animation:bsSlam .45s cubic-bezier(.2,1.8,.4,1) forwards}
@@ -203,12 +202,13 @@ export function createBattle3D(container, cfg = {}) {
 .bs-turn.enemy{background:#ff3b5c;box-shadow:0 0 20px #ff3b5c;color:#fff}`;
     document.head.appendChild(st);
   }
-  const ban = document.createElement('div'); ban.className = 'bs-ban'; ban.innerHTML = '<div class="bg"></div><div class="row"><img class="shiba" src="assets/brand/shiba-soldier.png" alt=""><div class="t"><b></b><i></i></div></div>'; document.body.appendChild(ban);
+  const ban = document.createElement('div'); ban.className = 'bs-ban'; ban.innerHTML = '<div class="bg"></div><div class="row"><div class="shiba shiba-stage"><img class="p1" src="assets/brand/shiba-pose-ready.png" alt=""><img class="p2" src="assets/brand/shiba-pose-shoulder.png" alt=""><i class="fx"></i></div><div class="t"><b></b><i></i></div></div>'; document.body.appendChild(ban);
   function banner(big, small, win, ms = 1700) {
     return new Promise(res => {
       ban.querySelector('b').textContent = big; ban.querySelector('i').textContent = small;
       ban.classList.toggle('win', !!win);
-      const t = ban.querySelector('.t'); t.style.animation = 'none'; void t.offsetWidth; t.style.animation = '';
+      const t = ban.querySelector('.t'); const anims = [t, ...ban.querySelectorAll('.shiba-stage img, .shiba-stage .fx')];
+      anims.forEach(el => el.style.animation = 'none'); void t.offsetWidth; anims.forEach(el => el.style.animation = '');
       ban.classList.add('on'); setTimeout(() => { ban.classList.remove('on'); res(); }, ms);
     });
   }
@@ -481,7 +481,7 @@ export function createBattle3D(container, cfg = {}) {
     cellToScreen: (side, r, c) => { const v = cellPos(side, r, c).project(camera), b = renderer.domElement.getBoundingClientRect(); return [b.left + (v.x + 1) / 2 * b.width, b.top + (1 - v.y) / 2 * b.height]; },
     busy: () => !!camOverride,
     shoot, focus, banner,
-    victory: () => banner('VICTORY!', 'ENEMY FLEET DESTROYED', true, 3400),
+    victory: () => banner('VICTORY!', 'ENEMY FLEET DESTROYED', true, 3800),
     defeat: () => banner('DEFEATED', 'YOUR FLEET IS AT THE BOTTOM', false, 2200),
   };
 }
