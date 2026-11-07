@@ -133,7 +133,7 @@ export function createBattle3D(container, cfg = {}) {
     flash(p, big);
     for (let i = 0; i < 28 * big; i++) spawn({ tex: fireTex, add: true, pos: p.clone().add(new THREE.Vector3(R(-.3, .3), R(.1, .5), R(-.3, .3))), vel: new THREE.Vector3(R(-2, 2), R(1.5, 5), R(-2, 2)).multiplyScalar(big), grav: 2, life: R(.5, 1), size: R(.6, 1.3) * big, grow: 1.4 * big, drag: .93 });
     for (let i = 0; i < 36 * big; i++) spawn({ tex: softTex, add: true, color: 0xffc070, pos: p.clone().add(new THREE.Vector3(0, .3, 0)), vel: new THREE.Vector3(R(-6, 6), R(3, 10), R(-6, 6)).multiplyScalar(big), grav: 12, life: R(.6, 1.2), size: .12, drag: .98 });
-    for (let i = 0; i < 16 * big; i++) spawn({ tex: smokeTex, color: 0x2a2724, pos: p.clone().add(new THREE.Vector3(R(-.4, .4), R(.4, 1), R(-.4, .4))), vel: new THREE.Vector3(R(-.4, .4), R(.6, 1.6), R(-.4, .4)), life: R(2, 3.2), size: R(.8, 1.4) * big, grow: 1.1, opacity: .85, spin: 1 });
+    for (let i = 0; i < 12 * big; i++) spawn({ tex: smokeTex, color: 0x2a2724, pos: p.clone().add(new THREE.Vector3(R(-.4, .4), R(.4, 1), R(-.4, .4))), vel: new THREE.Vector3(R(-.4, .4), R(.6, 1.6), R(-.4, .4)), life: R(1.4, 2.2), size: R(.7, 1.2) * big, grow: .9, opacity: .7, spin: 1 });
     shake(0.45 * big);
   }
   // muzzle-flash light
@@ -146,7 +146,9 @@ export function createBattle3D(container, cfg = {}) {
     burning.forEach(b => {
       b.t += dt;
       if (Math.random() < dt * 14) spawn({ tex: fireTex, add: true, pos: b.p.clone().add(new THREE.Vector3(R(-.2, .2), 0, R(-.2, .2))), vel: new THREE.Vector3(R(-.2, .2), R(.8, 1.6), R(-.2, .2)), life: R(.45, .8), size: R(.35, .6), grow: -.2 });
-      if (Math.random() < dt * 5) spawn({ tex: smokeTex, color: 0x1e1c1b, pos: b.p.clone().add(new THREE.Vector3(0, .5, 0)), vel: new THREE.Vector3(R(-.1, .3), R(.9, 1.5), R(-.2, .1)), life: R(2.5, 3.5), size: .6, grow: .9, opacity: .7, spin: .6 });
+      const heavy = b.t < 2;
+      if (Math.random() < dt * (heavy ? 5 : 1.1)) spawn({ tex: smokeTex, color: heavy ? 0x1e1c1b : 0x3a3633, pos: b.p.clone().add(new THREE.Vector3(0, .5, 0)), vel: new THREE.Vector3(R(-.1, .3), R(.9, 1.5), R(-.2, .1)),
+        life: heavy ? R(2.5, 3.5) : R(1.2, 1.8), size: heavy ? .6 : .32, grow: heavy ? .9 : .3, opacity: heavy ? .7 : .3, spin: .6 });
     });
   }
   // miss marker: small floating white buoy ring
@@ -251,6 +253,92 @@ export function createBattle3D(container, cfg = {}) {
     const cell = cellAt(e); if (cell && cfg.onFire) cfg.onFire(cell.r, cell.c);
   });
 
+  // ---------- KILL-CAM: cinematic close-up when a ship is destroyed ----------
+  if (!document.getElementById('bs-kc-css')) {
+    const st = document.createElement('style'); st.id = 'bs-kc-css';
+    st.textContent = `
+.bs-kc{position:absolute;inset:0;z-index:3;pointer-events:none}
+.bs-kc .bar{position:absolute;left:0;right:0;height:0;background:#000;transition:height .45s cubic-bezier(.2,.8,.2,1)}
+.bs-kc .bar.t{top:0}.bs-kc .bar.b{bottom:0}
+.bs-kc.on .bar{height:11%}
+.bs-kc .lt{position:absolute;left:5%;bottom:14%;opacity:0;transform:translateX(-30px);transition:opacity .4s .3s,transform .5s .3s}
+.bs-kc.on .lt{opacity:1;transform:none}
+.bs-kc .lt small{display:block;font:700 clamp(11px,1.2vw,15px) 'Chakra Petch',sans-serif;letter-spacing:.4em;color:#ff5a4a;text-shadow:0 0 10px #ff3b2e}
+.bs-kc .lt b{display:block;font:400 clamp(40px,6vw,92px)/.95 Anton,Impact,sans-serif;letter-spacing:.04em;color:#fff;text-shadow:0 6px 0 rgba(0,0,0,.6),0 0 30px rgba(255,90,40,.6)}
+.bs-kc .lt i{display:block;margin-top:6px;font:700 clamp(12px,1.4vw,18px) 'Chakra Petch',sans-serif;font-style:normal;letter-spacing:.3em;color:#ffd166}
+.bs-kc .rec{position:absolute;right:4%;top:14%;font:700 13px 'Chakra Petch',monospace;letter-spacing:.2em;color:#ff3b3b;opacity:0}
+.bs-kc.on .rec{opacity:1;animation:bsRec 1s steps(1) infinite}
+@keyframes bsRec{50%{opacity:.25}}
+.bs-kc .vig{position:absolute;inset:0;opacity:0;transition:opacity .4s;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.65) 100%)}
+.bs-kc.on .vig{opacity:1}`;
+    document.head.appendChild(st);
+  }
+  const kc = document.createElement('div'); kc.className = 'bs-kc';
+  kc.innerHTML = '<div class="vig"></div><div class="bar t"></div><div class="bar b"></div><div class="rec">● KILL CAM</div><div class="lt"><small></small><b></b><i></i></div>';
+  container.appendChild(kc);
+  let camOverride = null;
+
+  // split a ship sprite into two halves that can break apart
+  function splitShip(ship) {
+    const id = ship.userData.id, len = ship.geometry.parameters.width, w = ship.geometry.parameters.height;
+    const halves = [0, 1].map(k => {
+      const t = shipTex[id - 1].clone(); t.needsUpdate = true; t.repeat.set(0.5, 1); t.offset.set(k * 0.5, 0);
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(len / 2, w), new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.05, toneMapped: false }));
+      const pivot = new THREE.Group(); pivot.add(m);
+      m.position.x = (k ? 1 : -1) * len / 4;      // each half hangs from the break point
+      return { pivot, m, k };
+    });
+    const holder = new THREE.Group(); holder.position.copy(ship.position); holder.rotation.copy(ship.rotation);
+    halves.forEach(h => holder.add(h.pivot));
+    ship.parent.add(holder); ship.visible = false;
+    return { holder, halves };
+  }
+
+  async function killCam(side, ship, sunkId) {
+    const centre = ship.getWorldPosition(new THREE.Vector3());
+    const brk = splitShip(ship);
+    const along = new THREE.Vector3(1, 0, 0).applyQuaternion(brk.holder.getWorldQuaternion(new THREE.Quaternion())); // ship's length axis (world)
+    kc.querySelector('small').textContent = side === 'enemy' ? 'TARGET DESTROYED' : 'YOU LOST A SHIP';
+    kc.querySelector('b').textContent = (side === 'enemy' ? 'ENEMY ' : 'YOUR ') + SHIP_NAME[sunkId - 1];
+    kc.querySelector('i').textContent = side === 'enemy' ? '★ CONFIRMED KILL ★' : '✖ HULL BREACHED ✖';
+    kc.classList.add('on');
+    const t0 = performance.now(), T = 4200;
+    const startAng = Math.random() * Math.PI * 2;
+    camOverride = { look: centre.clone(), pos: camera.position.clone() };
+    const booms = [0, 380, 760, 1150, 1600, 2200];
+    let bi = 0;
+    await new Promise(res => {
+      (function step() {
+        const ms = performance.now() - t0, k = Math.min(ms / T, 1);
+        // camera: swoop down and orbit slowly around the wreck
+        const ang = startAng + k * 0.9, dist = 5.2 - k * 1.2, h = 2.4 - k * 0.6;
+        const target = centre.clone().add(new THREE.Vector3(Math.cos(ang) * dist, h, Math.sin(ang) * dist));
+        camOverride.pos.lerp(target, 0.08); camOverride.look.lerp(centre.clone().setY(0.2), 0.12);
+        // explosions walk along the hull
+        while (bi < booms.length && ms >= booms[bi]) {
+          const off = (bi % 2 ? 1 : -1) * (0.3 + Math.random() * 0.9);
+          const p = centre.clone().addScaledVector(along, bi === 0 ? 0 : off).setY(0.25);
+          blastFx(p, bi === 0 ? 1.35 : 0.85);
+          if (bi % 2) splashFx(centre.clone().addScaledVector(along, -off * 1.4).add(new THREE.Vector3(R(-.5, .5), 0.1, R(-.5, .5))));
+          bi++;
+        }
+        // hull snaps in the middle: bow and stern rise, the wreck settles and burns
+        const brkK = Math.min(Math.max((ms - 350) / 2600, 0), 1), e = brkK * brkK * (3 - 2 * brkK);
+        brk.halves.forEach(hh => {
+          const dir = hh.k ? 1 : -1;
+          hh.pivot.position.x = dir * e * 0.25;
+          hh.pivot.rotation.y = -dir * e * 0.35;       // ends lift out of the water
+          hh.m.material.color.setRGB(1 - e * 0.55, 1 - e * 0.65, 1 - e * 0.7);
+        });
+        brk.holder.position.y = 0.08 - e * 0.12;
+        if (Math.random() < 0.5) spawn({ tex: fireTex, add: true, pos: centre.clone().addScaledVector(along, R(-1, 1)).setY(.25), vel: new THREE.Vector3(R(-.2, .2), R(.8, 1.8), R(-.2, .2)), life: R(.4, .8), size: R(.4, .8), grow: -.2 });
+        if (k < 1) requestAnimationFrame(step); else res();
+      })();
+    });
+    kc.classList.remove('on');
+    camOverride = null;
+    brk.holder.userData.wreck = true;
+  }
   // ---------- public: animate one shot ----------
   const done = { enemy: new Set(), me: new Set() };
   async function shoot({ side, r, c, hit, sunk }) {
@@ -267,10 +355,10 @@ export function createBattle3D(container, cfg = {}) {
       const G = grids[side];
       let ship = G.ships[sunk.id];
       if (!ship) { ship = makeShip(sunk.id, sunk.cells); ship.position.set(ship.userData.c - 4.5, 0.08, ship.userData.r - 4.5); G.g.add(ship); G.ships[sunk.id] = ship; }
-      ship.visible = true; ship.userData.sinking = 0;
-      sunk.cells.forEach(([rr, cc]) => { blastFx(cellPos(side, rr, cc).setY(.2), 0.7); if (rr !== r || cc !== c) addFire(side, rr, cc); });
-      blastFx(ship.getWorldPosition(new THREE.Vector3()).setY(.3), 1.8);
-      await banner('SHIP DOWN!', (side === 'enemy' ? 'ENEMY ' : 'YOUR ') + SHIP_NAME[sunk.id - 1] + ' SUNK', side === 'enemy', 1600);
+      ship.visible = true;
+      sunk.cells.forEach(([rr, cc]) => { if (rr !== r || cc !== c) addFire(side, rr, cc); });
+      await killCam(side, ship, sunk.id);
+      await banner('SHIP DOWN!', (side === 'enemy' ? 'ENEMY ' : 'YOUR ') + SHIP_NAME[sunk.id - 1] + ' SUNK', side === 'enemy', 1300);
     }
   }
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -286,9 +374,9 @@ export function createBattle3D(container, cfg = {}) {
   (function loop() {
     const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
     water.material.uniforms.time.value += dt * 0.6;
-    const d = desiredCam(focusSide);
-    camPos.copy(camera.position).lerp(d.pos, Math.min(1, dt * 2.2)); camera.position.copy(camPos);
-    camTarget.lerp(d.look, Math.min(1, dt * 2.2));
+    const d = camOverride ? camOverride : desiredCam(focusSide), cs = camOverride ? 3.5 : 2.2;
+    camPos.copy(camera.position).lerp(d.pos, Math.min(1, dt * cs)); camera.position.copy(camPos);
+    camTarget.lerp(d.look, Math.min(1, dt * cs));
     camera.position.x += Math.sin(t * 0.25) * 0.004;
     camera.lookAt(camTarget);
     if (shakeAmt > 0.002) { camera.position.x += R(-1, 1) * shakeAmt; camera.position.y += R(-1, 1) * shakeAmt; shakeAmt *= 0.86; }
