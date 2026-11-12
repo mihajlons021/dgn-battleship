@@ -1,3 +1,4 @@
+/* global BigInt */
 // pf-pay.js — Project Freedom stakes and payouts for the games (browser, no build step needed).
 // Source of truth: freedom-payouts/public/pf-pay.js. A copy lives in every game, so no game loads payment code from another site.
 //
@@ -43,7 +44,7 @@ export async function pfDeposit({ game, room, amount, rpc = "https://api.mainnet
   const st = await pfStatus(true);
   if (!st.enabled || !st.escrow) throw new Error("Token games are paused right now. No tokens were sent.");
   if (!(amount > 0) || amount > st.maxStake) throw new Error(`Stake must be between 1 and ${st.maxStake.toLocaleString()} FREEDOM.`);
-  const { Connection, PublicKey, Transaction, TransactionInstruction, ComputeBudgetProgram, SystemProgram } = await import(WEB3);
+  const { Connection, PublicKey, Transaction, TransactionInstruction, ComputeBudgetProgram, SystemProgram } = await import(/* webpackIgnore: true */ /* @vite-ignore */ WEB3);
   const c = new Connection(rpc, "confirmed");
   const me = new PublicKey(p.publicKey.toString()), mint = new PublicKey(st.mint), escrow = new PublicKey(st.escrow);
   const tokenP = new PublicKey(TOKEN), ataP = new PublicKey(ATA);
