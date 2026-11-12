@@ -91,8 +91,49 @@ export async function pfSettle(body, onStatus = () => {}) {
   throw new Error("Stakes are not final yet. Try again in a minute.");
 }
 
+/**
+ * End of a staked game: every player signs the same result, the signatures travel through the game's own
+ * database (store.put / store.watch), and as soon as all are there any client asks the server to pay.
+ *   deposits:   every stake transaction of the room
+ *   resultFrom: (stakes read from the chain) => winner wallet | "draw"
+ *   store:      { put(wallet, signature), watch(cb(allSigs)) -> unsubscribe }
+ * Returns { result, players, sign(), ask() } or throws if the stakes can't be verified.
+ */
+export async function pfRoundUp({ game, room, deposits, resultFrom, store, onStatus = () => {}, onPaid = () => {} }) {
+  const chk = await pfInspect({ game, room, deposits });
+  if (chk.some(x => x.paid)) { onPaid(null); throw new Error("This game has already been paid out."); }
+  if (chk.length !== deposits.length || chk.some(x => !x.ok)) throw new Error("Stake problem: " + (chk.find(x => !x.ok)?.error || "not found"));
+  const players = chk.map(x => x.player), result = resultFrom(chk);
+  const body = { game, room, result, deposits };
+  let paying = false, mySig = null;
+  const stop = store.watch(async (sigs = {}) => {
+    const have = players.filter(w => sigs[w]);
+    onStatus(`${have.length}/${players.length} players confirmed`);
+    if (have.length < players.length || paying) return;
+    paying = true;
+    try {
+      const r = await pfSettle({ ...body, signatures: Object.fromEntries(players.map(w => [w, sigs[w]])) }, onStatus);
+      stop && stop(); onPaid(r);
+    } catch (e) {
+      if (/already been paid/i.test(e.message)) { stop && stop(); onPaid(null); } else { paying = false; onStatus("Payout: " + e.message); }
+    }
+  });
+  return {
+    result, players,
+    sign: async () => { const s = await pfSign(body); mySig = s; await store.put(s.wallet, s.signature); return s; },
+    ask: async () => {
+      if (!mySig) mySig = await pfSign(body);
+      const r = await fetch(PF_API + "/api/dispute", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...body, wallet: mySig.wallet, signature: mySig.signature }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || "Could not reach the owner.");
+    },
+  };
+}
+
 /** Who really deposited, read from the blockchain (not from the game database). */
 export async function pfInspect({ game, room, deposits }) {
   const r = await fetch(PF_API + "/api/inspect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ game, room, deposits }) });
-  return (await r.json()).deposits || [];
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || "Payout server did not answer.");
+  return j.deposits || [];
 }
