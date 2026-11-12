@@ -311,7 +311,7 @@ body.has3d #battleScreen > div{max-width:none!important;width:100%!important}
       <div class="panel-title" style="justify-content:center">&#x1F4B0; Deposit Required</div>
       <div class="deposit-box">
         <p>Send exactly <strong id="depositAmount" style="color:var(--g)">0 FREEDOM</strong> to escrow:</p>
-        <div class="deposit-addr">Deposits paused for maintenance</div>
+        <div class="deposit-addr">Escrow checked by the Project Freedom payout server</div>
         <button class="btn btn-g" id="depositBtn" style="max-width:280px;margin:0 auto">&#x1F98A; SEND VIA PHANTOM</button>
         <div class="deposit-status" id="depositStatusMsg" style="color:var(--dim);margin-top:10px"></div>
       </div>
@@ -391,14 +391,13 @@ import{getDatabase,ref,set,get,update,onValue,remove,off,push}from"https://www.g
 const FB={apiKey:"AIzaSyAKmKRj7Hhy4K6DsY_XDbqLb3oYOwZC5jw",authDomain:"project-freedom-a004e.firebaseapp.com",databaseURL:"https://project-freedom-a004e-default-rtdb.firebaseio.com",projectId:"project-freedom-a004e",storageBucket:"project-freedom-a004e.firebasestorage.app",messagingSenderId:"844172246267",appId:"1:844172246267:web:023a064294d369d2f7845e"};
 import { createBattle3D } from './js/bs3d.js';
 import { SFX } from './js/sfx.js';
+import { pfStatus, pfDeposit, pfSign, pfSettle, pfInspect, PF_API } from './js/pf-pay.js';
 const app=initializeApp(FB);
 const db=getDatabase(app);
 const SHIPS=[{name:"Carrier",size:5},{name:"Battleship",size:4},{name:"Cruiser",size:3},{name:"Submarine",size:3},{name:"Destroyer",size:2}];
 const TOTAL=17;
 const COLS="ABCDEFGHIJ".split("");
 const AI_DELAY=900;
-const API_BASE="https://dgn-battleship.vercel.app";
-const ESCROW="GynyDkXj8WVdP7XDL1nTekF7Azv7ebxA7RCMnY3a3tSu";
 const FREEDOM_MINT="DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
 const HELIUS_RPC="https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a0-733d9d41d1a4";
 const PRIORITY_FEE=500000;
@@ -471,56 +470,51 @@ window.addEventListener('load',async()=>{
 });
 
 async function sendDepositToEscrow(wagerAmount){
-  // DEPOSITS_PAUSED (2026-11-06): escrow wallet compromised, do not take deposits.
-  toast('Deposits are temporarily paused for maintenance. No tokens were sent. Please try again later.',6000);return false;
-  if(!S.walletAddress){toast('Connect wallet first!');return false;}
   const msg=$('depositStatusMsg');
   const setMsg=(t,c)=>{msg.textContent=t;msg.style.color=c||'var(--g)';};
   try{
-    setMsg('Loading Solana...');
-    const{Connection,PublicKey,Transaction,ComputeBudgetProgram}=await import('https://esm.sh/@solana/web3.js@1.91.1');
-    const{getMint,getAssociatedTokenAddress,createTransferCheckedInstruction}=await import('https://esm.sh/@solana/spl-token@0.4.6');
-    setMsg('Connecting...');
-    const connection=new Connection(HELIUS_RPC,'confirmed');
-    const fromPubkey=new PublicKey(S.walletAddress);
-    const toPubkey=new PublicKey(ESCROW);
-    const mintPubkey=new PublicKey(FREEDOM_MINT);
-    setMsg('Getting token info...');
-    const mintInfo=await getMint(connection,mintPubkey);
-    const decimals=mintInfo.decimals;
-    const amount=BigInt(Math.floor(wagerAmount*Math.pow(10,decimals)));
-    const fromATA=await getAssociatedTokenAddress(mintPubkey,fromPubkey);
-    const toATA=await getAssociatedTokenAddress(mintPubkey,toPubkey);
-    setMsg('Preparing transaction...');
-    const{blockhash,lastValidBlockHeight}=await connection.getLatestBlockhash('finalized');
-    const tx=new Transaction();
-    tx.recentBlockhash=blockhash;
-    tx.feePayer=fromPubkey;
-    tx.add(ComputeBudgetProgram.setComputeUnitPrice({microLamports:PRIORITY_FEE}));
-    tx.add(ComputeBudgetProgram.setComputeUnitLimit({units:200000}));
-    tx.add(createTransferCheckedInstruction(fromATA,mintPubkey,toATA,fromPubkey,amount,decimals));
-    setMsg('Approve in Phantom...');
-    const{signature}=await window.solana.signAndSendTransaction(tx);
-    setMsg('Confirming...');
-    let confirmed=false;
-    for(let i=0;i<40;i++){
-      await new Promise(r=>setTimeout(r,1500));
-      const status=await connection.getSignatureStatus(signature,{searchTransactionHistory:true});
-      const conf=status?.value?.confirmationStatus;
-      if(conf==='confirmed'||conf==='finalized'){confirmed=true;break;}
-      if(status?.value?.err)throw new Error('TX failed on chain');
-    }
-    if(!confirmed)throw new Error('Timeout - check Solana Explorer');
-    S.depositTxSig=signature;
-    setMsg('Deposit confirmed! TX: '+signature.slice(0,8)+'...','#39ff14');
-    toast(wagerAmount+' FREEDOM deposited!');
+    const r=await pfDeposit({game:'battleship',room:S.pfRoom,amount:wagerAmount,rpc:HELIUS_RPC,onStatus:t=>setMsg(t)});
+    S.depositTxSig=r.signature;S.walletAddress=r.wallet;
+    addPending({room:S.pfRoom,sig:r.signature,amount:wagerAmount,t:Date.now()});
+    setMsg('Stake confirmed! TX: '+r.signature.slice(0,8)+'...','#39ff14');
+    toast(wagerAmount+' FREEDOM staked!');
     return true;
   }catch(e){
     setMsg('Error: '+e.message,'#ff3232');
-    toast('Failed: '+e.message.slice(0,60));
+    toast('Failed: '+String(e.message).slice(0,70));
     return false;
   }
 }
+
+// ── unmatched stakes: kept on this device until the game pays out or the stake is refunded ──
+const PEND='pf_bs_stakes';
+const pending=()=>{try{return JSON.parse(localStorage.getItem(PEND)||'[]');}catch{return[];}};
+function addPending(x){localStorage.setItem(PEND,JSON.stringify([...pending().filter(p=>p.sig!==x.sig),x]));renderPending();}
+function dropPending(sig){localStorage.setItem(PEND,JSON.stringify(pending().filter(p=>p.sig!==sig)));renderPending();}
+function renderPending(){
+  let box=document.getElementById('pfPending');
+  const list=pending();
+  if(!list.length){if(box)box.remove();return;}
+  if(!box){box=document.createElement('div');box.id='pfPending';box.className='panel';box.style.cssText='max-width:900px;margin:0 auto 20px;padding:14px 18px';
+    const host=document.querySelector('#menuScreen > div');host.appendChild(box);}
+  box.innerHTML='<div class="panel-title">&#x21A9; Your stakes waiting for a result</div>';
+  list.forEach(x=>{
+    const mins=Math.ceil(31-(Date.now()-x.t)/60000);
+    const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;font-size:12px';
+    row.innerHTML='<span>'+x.amount+' FREEDOM · room '+x.room.split('-').slice(0,2).join('-')+'</span>';
+    const b=document.createElement('button');b.className='btn btn-outline';b.style.cssText='max-width:200px;margin:0;padding:8px 12px;font-size:11px';
+    b.textContent=mins>0?('Refund in '+mins+' min'):'Get my stake back';b.disabled=mins>0;
+    b.onclick=async()=>{
+      try{b.disabled=true;b.textContent='Sign in Phantom...';
+        const sg=await pfSign({game:'battleship',room:x.room,result:'refund',deposits:[x.sig]});
+        const r=await pfSettle({game:'battleship',room:x.room,result:'refund',deposits:[x.sig],signatures:{[sg.wallet]:sg.signature}},m=>b.textContent=m.slice(0,30));
+        dropPending(x.sig);toast('Stake returned! TX '+r.signature.slice(0,8));
+      }catch(e){toast(String(e.message).slice(0,140),7000);if(/already been paid/i.test(e.message))dropPending(x.sig);b.disabled=false;b.textContent='Get my stake back';}
+    };
+    row.appendChild(b);box.appendChild(row);
+  });
+}
+window.addEventListener('load',()=>{renderPending();setInterval(renderPending,60000);});
 
 async function loadLeaderboards(){
   try{
@@ -604,15 +598,19 @@ $('mpCreateBtn').addEventListener('click',async()=>{
   if(!S.wager)return toast('Select a wager!');
   if(!S.walletAddress)return toast('Connect wallet first!');
   S.nickname=nick;S.mode='mp';
-  setupDeposit(S.wager,(S.wager*2)+' FREEDOM',async()=>{
-    const code=genCode();showWait('CREATING ROOM...');
+  const st=await pfStatus(true).catch(()=>({}));
+  if(!st.enabled)return toast('Token battles are paused right now. Practice vs AI is open.',6000);
+  let code=genCode();for(let i=0;i<5&&(await get(ref(db,'rooms/'+code))).exists();i++)code=genCode();
+  S.pfRoom=code+'-'+Math.random().toString(36).slice(2,10);
+  setupDeposit(S.wager,(S.wager*2*0.95)+' FREEDOM',async()=>{
+    showWait('CREATING ROOM...');
     try{
-      await set(ref(db,'rooms/'+code),{wager:S.wager,status:'waiting',currentTurn:'p1',winner:null,p1:{nickname:nick,ready:false,grid:'',hits:'',wallet:S.walletAddress,depositTx:S.depositTxSig},p2:null});
+      await set(ref(db,'rooms/'+code),{wager:S.wager,pfRoom:S.pfRoom,status:'waiting',currentTurn:'p1',winner:null,p1:{nickname:nick,ready:false,grid:'',hits:'',wallet:S.walletAddress,depositTx:S.depositTxSig},p2:null});
       S.roomCode=code;S.playerId='p1';hideWait();
       showScreen('waitingScreen');
       $('displayCode').textContent=code;
       $('dispWager').textContent=S.wager.toLocaleString()+' FREEDOM';
-      $('dispPot').textContent=(S.wager*2).toLocaleString()+' FREEDOM';
+      $('dispPot').textContent=(S.wager*2*0.95).toLocaleString()+' FREEDOM';
       listenOpponent();
     }catch(e){hideWait();toast('Error creating room.');}
   },()=>showScreen('mpSetupScreen'));
@@ -631,8 +629,10 @@ $('mpJoinBtn').addEventListener('click',async()=>{
     const d=snap.val();
     if(d.status!=='waiting'){hideWait();return toast('Battle already started!');}
     if(d.p2){hideWait();return toast('Room is full!');}
-    hideWait();S.wager=d.wager;S.nickname=nick;S.mode='mp';
-    setupDeposit(S.wager,(S.wager*2)+' FREEDOM',async()=>{
+    if(!d.pfRoom){hideWait();return toast('This room was made by an old version of the game. Ask your friend for a new room.',6000);}
+    if(d.p1?.wallet&&d.p1.wallet===S.walletAddress){hideWait();return toast("You can't join your own room.");}
+    hideWait();S.wager=d.wager;S.nickname=nick;S.mode='mp';S.pfRoom=d.pfRoom;
+    setupDeposit(S.wager,(S.wager*2*0.95)+' FREEDOM',async()=>{
       showWait('JOINING...');
       try{
         const upd={};
@@ -645,7 +645,10 @@ $('mpJoinBtn').addEventListener('click',async()=>{
   }catch(e){hideWait();toast('Error.');}
 });
 
-$('btnAbort').addEventListener('click',async()=>{if(S.roomCode)await remove(ref(db,'rooms/'+S.roomCode));location.reload();});
+$('btnAbort').addEventListener('click',async()=>{
+  if(S.roomCode){const d=(await get(ref(db,'rooms/'+S.roomCode))).val();if(d&&!d.p2)await remove(ref(db,'rooms/'+S.roomCode));}
+  if(S.depositTxSig)alert('Your stake is safe. You can get it back from the main menu 30 minutes after you staked.');
+  location.reload();});
 function listenOpponent(){
   const r=ref(db,'rooms/'+S.roomCode);
   onValue(r,snap=>{const d=snap.val();if(!d)return;if(d.p2&&d.status==='placement'){off(r);startPlacement();}});
@@ -890,20 +893,53 @@ function listenBattle(){
     if(d.status==='finished'&&d.winner){
       off(r);const won=d.winner===S.playerId;const wager=parseFloat(d.wager)||0;
       const score=newMH.filter(h=>h.hit).length*50;
-      if(won){saveToLeaderboard('pvp_points',S.nickname,score);saveToLeaderboard('pvp_tokens',S.nickname,wager*2);triggerPayout(S.roomCode,S.walletAddress,wager);}
+      if(won){saveToLeaderboard('pvp_points',S.nickname,score);saveToLeaderboard('pvp_tokens',S.nickname,wager*2*0.95);}
+      settleBattle(d,won);
       anim.then(async()=>{if(B3)await(won?B3.victory():B3.defeat());showResultScreen(won,wager,score,false);});
     }
   });
 }
-async function triggerPayout(roomCode,winnerWallet,wager){
-  if(!winnerWallet){$('payoutStatus').textContent='Connect wallet to receive payout!';return;}
+// Both players sign the result in Phantom (free, nothing leaves their wallet). With both signatures the
+// payout server pays the winner. If the loser won't sign, the winner can ask the owner to decide.
+async function settleBattle(d,won){
+  const out=$('payoutStatus');const say=(t,c)=>{out.innerHTML='';out.style.color=c||'var(--g)';out.append(t);};
+  const btn=(label,fn,cls)=>{const b=document.createElement('button');b.className='btn '+(cls||'btn-g');b.style.cssText='max-width:320px;margin:10px auto 0;display:block';b.textContent=label;b.onclick=fn;out.appendChild(b);return b;};
+  const code=S.roomCode,room=d.pfRoom,deps=[d.p1?.depositTx,d.p2?.depositTx];
+  if(!room||!deps.every(Boolean))return say('This battle had no stakes from both players.','var(--dim)');
   try{
-    $('payoutStatus').textContent='Processing payout...';
-    const res=await fetch(API_BASE+'/api/payout',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'DGN_FREEDOM_SECRET_2024_XKZP9'},body:JSON.stringify({roomCode,winnerWallet})});
-    const data=await res.json();
-    if(data.success){$('payoutStatus').textContent='PAID! '+(wager*2)+' FREEDOM sent! TX: '+(data.signature?data.signature.slice(0,8):'')+' ...';}
-    else{$('payoutStatus').textContent='Error: '+data.error;}
-  }catch(e){$('payoutStatus').textContent='Payout error - contact admin';}
+    say('Checking both stakes on the blockchain...');
+    const chk=await pfInspect({game:'battleship',room,deposits:deps});
+    if(chk.some(x=>x.paid)){deps.forEach(dropPending);return say('This battle has already been paid out.');}
+    if(chk.length!==2||chk.some(x=>!x.ok))return say('Stake problem: '+(chk.find(x=>!x.ok)?.error||'not found'),'#ff3232');
+    const winnerWallet=chk.find(x=>x.sig===d[d.winner].depositTx).player;
+    const players=chk.map(x=>x.player);
+    const body={game:'battleship',room,result:winnerWallet,deposits:deps};
+    let mine=null;
+    const sign=async()=>{const sg=await pfSign(body);await set(ref(db,'rooms/'+code+'/sigs/'+sg.wallet),sg.signature);return sg;};
+    say(won?'You won! Confirm the result in Phantom, then your opponent confirms and you get paid.':'Confirm the result in Phantom so the battle closes fairly. It is free and nothing leaves your wallet.');
+    const b=btn('✍ CONFIRM RESULT',async()=>{try{b.disabled=true;mine=await sign();b.remove();}catch(e){b.disabled=false;toast(String(e.message).slice(0,90));}});
+    let paid=false,askBtn=null;const started=Date.now();
+    const sr=ref(db,'rooms/'+code+'/sigs');
+    onValue(sr,async snap=>{
+      const sigs=snap.val()||{};
+      const have=players.filter(w=>sigs[w]);
+      if(have.length<2){
+        if(mine||sigs[S.walletAddress])say(won?'Waiting for your opponent to confirm...':'Thanks! Result confirmed.');
+        if(won&&!askBtn&&(mine||sigs[S.walletAddress])){
+          setTimeout(()=>{if(paid)return;askBtn=btn('ASK THE OWNER TO DECIDE',async()=>{try{askBtn.disabled=true;
+            const r=await fetch(PF_API+'/api/dispute',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,wallet:S.walletAddress,signature:sigs[S.walletAddress]||mine?.signature})});
+            const j=await r.json();toast(r.ok?'The owner was notified. You will be paid when he decides.':j.error,7000);}catch(e){askBtn.disabled=false;}},'btn-outline');},Math.max(0,180000-(Date.now()-started)));
+        }
+        return;
+      }
+      if(paid)return;paid=true;off(sr);
+      try{say('Both confirmed. Paying out...');
+        const r=await pfSettle({...body,signatures:Object.fromEntries(players.map(w=>[w,sigs[w]]))},m=>say(m));
+        deps.forEach(dropPending);
+        say('PAID! '+r.transfers[0].amount+' FREEDOM sent. TX: '+r.signature.slice(0,8)+'...');
+      }catch(e){paid=false;say('Payout: '+e.message,'#ff3232');}
+    });
+  }catch(e){say('Payout check failed: '+e.message,'#ff3232');}
 }
 function addLog(msg,cls){
   if(!cls)cls='l-info';
