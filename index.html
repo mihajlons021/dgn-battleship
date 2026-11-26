@@ -399,7 +399,9 @@ const TOTAL=17;
 const COLS="ABCDEFGHIJ".split("");
 const AI_DELAY=900;
 const FREEDOM_MINT="DGNPSiTrX5xnKcpVKBaXUsWBZbFuA2cJcb7fUJmoAJrd";
-const HELIUS_RPC="https://mainnet.helius-rpc.com/?api-key=45c09379-40fc-49f0-93a0-733d9d41d1a4";
+// Solana RPC for staking. Never put an API key here: this file is public.
+// undefined = pf-pay default; token games are paused on the payout server.
+const SOLANA_RPC=undefined;
 const PRIORITY_FEE=500000;
 let S={mode:null,roomCode:null,playerId:null,nickname:null,wager:0,myGrid:null,orient:'H',selShip:null,placedShips:[],myHits:[],enemyHits:[],aiGrid:null,aiHitStack:[],isPlayerTurn:true,turnCount:0,startTime:null,gameStats:{hits:0,misses:0},walletAddress:null,depositTxSig:null};
 const $=id=>document.getElementById(id);
@@ -473,7 +475,7 @@ async function sendDepositToEscrow(wagerAmount){
   const msg=$('depositStatusMsg');
   const setMsg=(t,c)=>{msg.textContent=t;msg.style.color=c||'var(--g)';};
   try{
-    const r=await pfDeposit({game:'battleship',room:S.pfRoom,amount:wagerAmount,rpc:HELIUS_RPC,onStatus:t=>setMsg(t)});
+    const r=await pfDeposit({game:'battleship',room:S.pfRoom,amount:wagerAmount,rpc:SOLANA_RPC,onStatus:t=>setMsg(t)});
     S.depositTxSig=r.signature;S.walletAddress=r.wallet;
     addPending({room:S.pfRoom,sig:r.signature,amount:wagerAmount,t:Date.now()});
     setMsg('Stake confirmed! TX: '+r.signature.slice(0,8)+'...','#39ff14');
